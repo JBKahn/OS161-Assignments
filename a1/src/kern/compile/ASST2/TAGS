@@ -1,0 +1,2498 @@
+
+../../../common/libc/printf/__printf.c,786
+#define assert 43,1943
+#define USE_LONGLONG64,2391
+#define INTTYPE 70,2517
+#define INTTYPE 72,2550
+#define NUMBER_BUF_SIZE 84,2889
+	void (*sendfunc)sendfunc91,3068
+	void *clientdata;clientdata92,3134
+	va_list ap;95,3190
+	int charcount;98,3245
+	int in_pct;101,3328
+		INTSZ,105,3399
+		LONGSZ,106,3409
+		LLONGSZ,108,3440
+	} size;110,3458
+	unsigned INTTYPE num;113,3519
+	int sign;116,3609
+	int spacing;119,3659
+	int rightspc;122,3727
+	int fillchar;125,3799
+	int base;128,3879
+	int baseprefix;131,3959
+	int altformat;134,4036
+} PF;135,4052
+__pf_print(145,4262
+__pf_endfield(156,4439
+__pf_modifier(180,4969
+__pf_getnum(237,5982
+__pf_setbase(312,7391
+__pf_fill(337,7712
+__pf_printstuff(354,8095
+__pf_printnum(402,9284
+__pf_send(485,11076
+__vprintf(558,12519
+
+../../../common/libc/printf/snprintf.c,150
+	char *buf;buf61,2294
+	size_t buflen;62,2306
+	size_t bufpos;63,2322
+} SNP;64,2338
+__snprintf_send(75,2591
+vsnprintf(99,3005
+snprintf(148,4308
+
+../../../common/libc/stdlib/atoi.c,14
+atoi(50,2068
+
+../../..icommon/libc/string/bzero.c,15
+bzero(49,1942
+
+../../..icommon/libc/string/memcpy.c,16
+memcpy(48,1912
+
+../../..icommon/libc/string/memmove.c,17
+memmove(49,1955
+
+../../..icommon/libc/string/strcat.c,16
+strcat(47,1904
+
+../../..icommon/libc/string/strchr.c,16
+strchr(47,1927
+
+../../../common/libc/string/strcmp.c,16
+strcmp(48,1923
+
+../../../common/libc/string/strcpy.c,16
+strcpy(46,1901
+
+../../../common/libc/string/strlen.c,16
+strlen(47,1897
+
+../../..icommon/libc/string/strrchr.c,17
+strrchr(47,1928
+
+../../../common/libc/string/strtok_r.c,18
+strtok_r(50,2104
+
+autoconf.c,998
+static int nextunit_beep;16,650
+static int nextunit_con;17,676
+static int nextunit_emu;18,701
+static int nextunit_lhd;19,726
+static int nextunit_lrandom;20,751
+static int nextunit_lser;21,780
+static int nextunit_ltimer;22,806
+static int nextunit_ltrace;23,834
+static int nextunit_random;24,862
+static int nextunit_rtclock;25,890
+tryattach_emu_to_lamebus(29,931
+tryattach_ltrace_to_lamebus(53,1424
+tryattach_ltimer_to_lamebus(77,1938
+tryattach_lrandom_to_lamebus(101,2452
+tryattach_lhd_to_lamebus(125,2973
+tryattach_lser_to_lamebus(149,3466
+tryattach_beep_to_ltimer(173,3966
+tryattach_con_to_lser(197,4462
+tryattach_rtclock_to_ltimer(221,4943
+tryattach_random_to_lrandom(245,5460
+autoconf_con(270,5976
+autoconf_lser(277,6069
+autoconf_lhd(289,6244
+autoconf_emu(296,6337
+autoconf_random(303,6430
+autoconf_ltimer(310,6529
+autoconf_lamebus(326,6795
+autoconf_beep(375,7800
+autoconf_lrandom(382,7895
+autoconf_rtclock(394,8085
+autoconf_ltrace(401,8186
+pseudoconfig(407,8278
+
+../../dev/generic/beep.c,88
+static struct beep_softc *the_beep the_beep47,2071
+config_beep(50,2119
+beep(63,2306
+
+../../dev/generic/console.c,628
+static struct con_softc *the_console the_console65,2693
+static struct lock *con_userlock_read con_userlock_read71,2852
+static struct lock *con_userlock_write con_userlock_write72,2898
+#define DELAYBUFSIZE 81,3181
+static char delayed_outbuf[delayed_outbuf82,3208
+static size_t delayed_outbuf_pos=83,3250
+putch_delayed(87,3299
+flush_delay_buf(100,3532
+putch_polled(117,3826
+putch_intr(129,4052
+getch_intr(140,4233
+con_input(161,4847
+con_start(182,5267
+putch(200,5588
+getch(216,5823
+con_open(233,6105
+con_close(242,6206
+con_io(250,6275
+con_ioctl(301,6992
+attach_console_to_vfs(312,7132
+config_con(346,7695
+
+../../dev/generic/random.c,191
+static struct random_softc *the_random the_random50,2109
+randopen(58,2229
+randclose(74,2391
+randio(85,2516
+randioctl(101,2739
+config_random(116,2923
+random(151,3560
+randmax(160,3701
+
+../../dev/generic/rtclock.c,99
+static struct rtclock_softc *the_clock the_clock50,2193
+config_rtclock(53,2245
+gettime(66,2443
+
+../../de//lamebus/beep_ltimer.c,31
+attach_beep_to_ltimer(42,1857
+
+../../dev/lamebus/con_lser.c,28
+attach_con_to_lser(42,1848
+
+../../demulamebus/emu.c,2490
+#define REG_HANDLE 58,2397
+#define REG_OFFSET 59,2421
+#define REG_IOLEN 60,2445
+#define REG_OPER 61,2469
+#define REG_RESULT 62,2494
+#define EMU_BUFFER 65,2544
+#define EMU_OP_OPEN 68,2608
+#define EMU_OP_CREATE 69,2639
+#define EMU_OP_EXCLCREATE 70,2670
+#define EMU_OP_CLOSE 71,2701
+#define EMU_OP_READ 72,2732
+#define EMU_OP_READDIR 73,2763
+#define EMU_OP_WRITE 74,2794
+#define EMU_OP_GETSIZE 75,2825
+#define EMU_OP_TRUNC 76,2856
+#define EMU_RES_SUCCESS 79,2922
+#define EMU_RES_BADHANDLE 80,2953
+#define EMU_RES_BADOP 81,2984
+#define EMU_RES_BADPATH 82,3015
+#define EMU_RES_BADSIZE 83,3046
+#define EMU_RES_EXISTS 84,3077
+#define EMU_RES_ISDIR 85,3108
+#define EMU_RES_MEDIA 86,3139
+#define EMU_RES_NOHANDLES 87,3170
+#define EMU_RES_NOSPACE 88,3201
+#define EMU_RES_NOTDIR 89,3233
+#define EMU_RES_UNKNOWN 90,3265
+#define EMU_RES_UNSUPP 91,3297
+emu_rreg(104,3479
+emu_wreg(115,3651
+emu_irq(124,3850
+translate_err(140,4147
+emu_waitdone(167,4947
+emu_open(181,5298
+emu_close(229,6224
+emu_doread(267,6830
+emu_read(299,7429
+emu_readdir(310,7649
+emu_write(321,7859
+emu_getsize(352,8412
+emu_trunc(374,8791
+emufs_eachopen(407,9411
+emufs_eachopendir(431,9831
+emufs_lastclose(454,10123
+emufs_reclaim(467,10289
+emufs_read(527,11404
+emufs_getdirentry(563,11932
+emufs_write(583,12236
+emufs_ioctl(619,12764
+emufs_stat(637,12928
+emufs_file_gettype(665,13491
+emufs_dir_gettype(677,13640
+emufs_tryseek(689,13772
+emufs_fsync(706,13934
+emufs_truncate(717,14023
+emufs_creat(728,14191
+emufs_lookup(759,14770
+emufs_lookparent(789,15326
+emufs_namefile(821,15831
+emufs_mmap(843,16122
+emufs_dir_tryseek(857,16272
+emufs_symlink(866,16372
+emufs_mkdir(876,16515
+emufs_link(886,16643
+emufs_remove(896,16781
+emufs_rmdir(905,16884
+emufs_rename(914,16986
+emufs_void_op_isdir(941,17621
+emufs_uio_op_isdir(949,17700
+emufs_uio_op_notdir(958,17807
+emufs_name_op_notdir(967,17916
+emufs_readlink_notlink(976,18028
+emufs_creat_notdir(985,18139
+emufs_symlink_notdir(998,18342
+emufs_mkdir_notdir(1008,18493
+emufs_link_notdir(1018,18629
+emufs_rename_notdir(1028,18775
+emufs_lookup_notdir(1040,18946
+emufs_lookparent_notdir(1050,19097
+emufs_truncate_isdir(1064,19303
+static const struct vnode_ops emufs_fileops 1076,19470
+static const struct vnode_ops emufs_dirops 1111,20140
+emufs_loadvnode(1148,20798
+emufs_sync(1225,22268
+emufs_getvolname(1236,22367
+emufs_getroot(1248,22532
+emufs_unmount(1268,22781
+emufs_addtovfs(1284,23159
+config_emu(1333,24109
+
+../../dev/lamebus/emu_att.c,90
+#define LOW_VERSION 41,1825
+#define HIGH_VERSION 43,1883
+attach_emu_to_lamebus(46,1927
+
+../../dev/lamebus/lamebus.c,952
+#define CFGREG_VID 42,1836
+#define CFGREG_DID 43,1878
+#define CFGREG_DRL 44,1920
+#define CTLREG_RAMSZ 47,2053
+#define CTLREG_IRQS 48,2083
+#define CTLREG_PWR 49,2113
+#define CTLREG_IRQE 50,2143
+#define CTLREG_CPUS 51,2173
+#define CTLREG_CPUE 52,2203
+#define CTLREG_SELF 53,2233
+#define CTLCPU_CIRQE	56,2337
+#define CTLCPU_CIPI	57,2364
+#define CTLCPU_CRAM	58,2390
+read_cfg_register(67,2494
+write_cfg_register(80,2806
+read_ctl_register(93,3073
+write_ctl_register(105,3342
+write_ctlcpu_register(116,3567
+lamebus_find_cpus(127,3846
+lamebus_start_cpus(184,5168
+lamebus_probe(228,6220
+lamebus_mark(284,7330
+lamebus_unmark(304,7712
+lamebus_attach_interrupt(325,8174
+lamebus_detach_interrupt(353,8819
+lamebus_mask_interrupt(377,9329
+lamebus_unmask_interrupt(390,9681
+lamebus_interrupt(407,10105
+lamebus_poweroff(556,13991
+lamebus_ramsize(573,14315
+lamebus_assert_ipi(589,14687
+lamebus_clear_ipi(596,14852
+lamebus_init(607,15105
+
+../../dev/lamebus/lhd.c,581
+#define LHD_REG_NSECT 45,1884
+#define LHD_REG_STAT 46,1936
+#define LHD_REG_SECT 47,1977
+#define LHD_REG_RPM 48,2026
+#define LHD_IDLE 51,2118
+#define LHD_WORKING 52,2164
+#define LHD_OK 53,2220
+#define LHD_INVSECT 54,2274
+#define LHD_MEDIA 55,2333
+#define LHD_ISWRITE 56,2379
+#define LHD_STATEMASK 57,2443
+#define LHD_BUFFER 60,2548
+uint32_t lhd_rdreg(67,2636
+void lhd_wreg(77,2816
+int lhd_code_to_errno(86,3023
+lhd_iodone(103,3407
+lhd_irq(115,3642
+lhd_open(140,4045
+lhd_close(156,4232
+lhd_ioctl(171,4378
+lhd_reset(190,4663
+lhd_io(201,4801
+config_lhd(282,6647
+
+../../dev/lamebus/lhd_att.c,90
+#define LOW_VERSION 40,1813
+#define HIGH_VERSION 42,1871
+attach_lhd_to_lamebus(45,1915
+
+../../dev/lamebus/lrandom.c,152
+#define LR_REG_RAND 41,1836
+#define LR_RANDMAX 44,1903
+config_lrandom(47,1939
+lrandom_random(55,2049
+lrandom_randmax(62,2197
+lrandom_read(69,2273
+
+../../de//lamebus/lrandom_att.c,94
+#define LOW_VERSION 37,1766
+#define HIGH_VERSION 39,1824
+attach_lrandom_to_lamebus(42,1872
+
+../../dev/lamebus/lser.c,310
+#define LSER_REG_CHAR 38,1787
+#define LSER_REG_WIRQ 39,1839
+#define LSER_REG_RIRQ 40,1897
+#define LSER_IRQ_ENABLE 43,1987
+#define LSER_IRQ_ACTIVE 44,2014
+#define LSER_IRQ_FORCE 45,2041
+lser_irq(48,2074
+lser_write(88,3010
+lser_poll_until_write(117,3653
+lser_writepolled(131,3895
+config_lser(175,5032
+
+../../dev/lamebus/lser_att.c,91
+#define LOW_VERSION 37,1763
+#define HIGH_VERSION 39,1821
+attach_lser_to_lamebus(42,1866
+
+../../dev/lamebus/ltimer.c,331
+#define LT_REG_SEC 42,1849
+#define LT_REG_NSEC 43,1904
+#define LT_REG_ROE 44,1963
+#define LT_REG_IRQ 45,2036
+#define LT_REG_COUNT 46,2096
+#define LT_REG_SPKR 47,2162
+#define LT_GRANULARITY 50,2254
+static bool havetimerclock;52,2288
+config_ltimer(58,2395
+ltimer_irq(107,3901
+ltimer_beep(136,4505
+ltimer_gettime(149,4778
+
+../../dev/lamebus/ltimer_att.c,93
+#define LOW_VERSION 40,1824
+#define HIGH_VERSION 42,1882
+attach_ltimer_to_lamebus(45,1929
+
+../../dev/lamebus/ltrace.c,296
+#define LTRACE_REG_TRON 37,1767
+#define LTRACE_REG_TROFF 38,1796
+#define LTRACE_REG_DEBUG 39,1825
+#define LTRACE_REG_DUMP 40,1854
+static struct ltrace_softc *the_trace;the_trace42,1885
+ltrace_on(45,1930
+ltrace_off(54,2091
+ltrace_debug(63,2254
+ltrace_dump(72,2419
+config_ltrace(81,2581
+
+../../dev/lamebus/ltrace_att.c,93
+#define LOW_VERSION 37,1765
+#define HIGH_VERSION 39,1823
+attach_ltrace_to_lamebus(42,1870
+
+../../dev/lamebus/random_lrandom.c,34
+attach_random_to_lrandom(42,1852
+
+../../dev/lamebus/rtclock_ltimer.c,34
+attach_rtclock_to_ltimer(48,2173
+
+../../lib/array.c,162
+#define ARRAYINLINE30,1493
+array_create(38,1609
+array_destroy(50,1732
+array_init(57,1803
+array_cleanup(64,1877
+array_setsize(79,2143
+array_remove(113,2827
+
+../../lib/bitmap.c,365
+#define BITS_PER_WORD 46,2038
+#define WORD_TYPE 47,2073
+#define WORD_ALLBITS 48,2111
+struct bitmap 50,2143
+        unsigned nbits;51,2159
+        WORD_TYPE *v;v52,2183
+bitmap_create(57,2226
+bitmap_getdata(93,3203
+bitmap_alloc(99,3266
+bitmap_translate(126,4142
+bitmap_mark(135,4360
+bitmap_unmark(148,4608
+bitmap_isset(162,4859
+bitmap_destroy(172,5042
+
+../../lib/bswap.c,127
+bswap16(47,2091
+bswap32(54,2187
+bswap64(63,2353
+#define TO(95,3244
+#define TO(106,3603
+TO(119,3839
+split64to32(150,4609
+
+../../lib/kgets.c,31
+backsp(41,1782
+kgets(54,2019
+
+../../lf./kprintf.c,232
+uint32_t dbflags 43,1877
+static struct lock *kprintf_lock;kprintf_lock46,1935
+static struct spinlock kprintf_spinlock;49,2001
+kprintf_bootstrap(63,2263
+console_send(79,2557
+kprintf(94,2726
+panic(131,3325
+badassert(202,4646
+
+../../lib/misc.c,35
+kstrdup(38,1727
+strerror(55,1998
+
+../../lib/uio.c,60
+uiomove(42,1778
+uiomovezeros(123,3519
+uio_kinit(153,3990
+
+../../startup/main.c,133
+static const char harvard_copyright[harvard_copyright70,2620
+boot(80,2852
+shutdown(151,4759
+sys_reboot(176,5256
+kmain(213,5858
+
+../../startup/menu.c,917
+#define _PATH_SHELL 48,1936
+#define MAXMENUARGS 50,1967
+getinterval(54,2036
+free_args(76,2461
+copy_args(87,2587
+cmd_progthread(124,3428
+common_prog(171,4526
+cmd_prog(209,5390
+dbflags_print(228,5653
+cmd_dbflags(248,6017
+cmd_shell(288,6912
+cmd_chdir(306,7149
+cmd_pwd(321,7357
+cmd_sync(352,7829
+cmd_panic(367,7981
+cmd_quit(381,8141
+	const char *name;name398,8389
+	int (*func)func399,8408
+} mounttable[mounttable400,8442
+cmd_mount(406,8492
+cmd_unmount(436,9030
+cmd_bootfs(465,9534
+cmd_kheapstats(486,9861
+showmenu(502,10034
+static const char *opsmenu[opsmenu525,10348
+cmd_opsmenu(543,10896
+static const char *testmenu[testmenu552,11008
+cmd_testmenu(576,11738
+static const char *mainmenu[mainmenu591,12047
+cmd_mainmenu(601,12266
+	const char *name;name615,12455
+	int (*func)func616,12474
+} cmdtable[cmdtable617,12512
+cmd_dispatch(680,13724
+menu_execute(739,14995
+menu(780,15974
+
+../../syscall/loadelf.c,41
+load_segment(79,3222
+load_elf(153,5275
+
+../../syscall/proc_syscalls.c,17
+sys_fork(23,319
+
+../../syscall/runprogram.c,362
+struct argvdata 34,954
+	char *buffer;buffer35,972
+	char *bufend;bufend36,987
+	size_t *offsets;offsets37,1002
+	int nargs;38,1020
+	struct lock *lock;lock39,1032
+static struct argvdata argdata;42,1056
+execv_bootstrap(45,1094
+execv_shutdown(54,1241
+copyin_args(66,1431
+copyout_args(124,2665
+loadexec(192,4158
+runprogram(283,6068
+sys_execv(376,8153
+
+../../syscall/time_syscalls.c,20
+sys___time(39,1755
+
+../../tet./arraytest.c,61
+#define TESTSIZE 35,1690
+testa(39,1723
+arraytest(122,3188
+
+../../test/bitmaptest.c,46
+#define TESTSIZE 35,1691
+bitmaptest(38,1717
+
+../../tt.t/fstest.c,646
+#define SLOGAN 53,2119
+#define FILENAME 54,2163
+#define NCHUNKS 55,2193
+#define NTHREADS 56,2214
+#define NLONG 57,2234
+static struct semaphore *threadsem threadsem59,2255
+init_threadsem(63,2311
+rotate(79,2608
+fstest_makename(103,2954
+#define MAKENAME(110,3137
+fstest_remove(114,3220
+fstest_write(134,3492
+fstest_read(212,5047
+dofstest(277,6406
+readstress_thread(303,6863
+doreadstress(314,7049
+writestress_thread(353,7741
+dowritestress(382,8271
+writestress2_thread(410,8778
+dowritestress2(425,9010
+longstress_thread(476,10018
+dolongstress(511,10633
+checkfilesystem(540,11155
+#define DEFTEST(559,11464
+printfile(581,12156
+
+../../test/malloctest.c,141
+#define NTRIES 50,2013
+#define ITEMSIZE 51,2035
+#define NTHREADS 52,2057
+mallocthread(56,2090
+malloctest(94,2655
+mallocstress(107,2836
+
+../../tet./synchtest.c,598
+#define NSEMLOOPS 43,1817
+#define NLOCKLOOPS 44,1842
+#define NCVLOOPS 45,1868
+#define NTHREADS 46,1892
+static volatile unsigned long testval1;48,1918
+static volatile unsigned long testval2;49,1958
+static volatile unsigned long testval3;50,1998
+static struct semaphore *testsem;testsem51,2038
+static struct lock *testlock;testlock52,2072
+static struct cv *testcv;testcv53,2102
+static struct semaphore *donesem;donesem54,2128
+inititems(58,2175
+semtestthread(88,2748
+semtest(106,3017
+fail(143,3614
+locktestthread(156,3832
+locktest(198,4493
+cvtestthread(227,4936
+cvtest(277,5932
+
+../../test/threadtest.c,192
+#define NTHREADS 39,1738
+static struct semaphore *tsem tsem41,1759
+init_sem(45,1810
+loudthread(57,1967
+quietthread(82,2400
+runthreads(98,2575
+threadtest(122,2975
+threadtest2(136,3162
+
+../../test/tt3.c,631
+#define DIM 45,1884
+#define DIM 47,1905
+#define SLEEPALOT_PRINTS 51,1977
+#define SLEEPALOT_ITERS 52,2036
+#define WAKER_WAKES 54,2139
+#define COMPUTE_ITERS 56,2218
+#define NWAITCHANS 58,2252
+static struct wchan *waitchans[waitchans59,2274
+static volatile int wakerdone;61,2351
+static struct semaphore *wakersem;wakersem62,2382
+static struct semaphore *donesem;donesem63,2417
+setup(67,2464
+sleepalot_thread(85,2764
+waker_thread(106,3073
+make_sleepalots(135,3428
+compute_thread(155,3862
+	struct matrix 157,3911
+		char m[m158,3928
+make_computes(212,4788
+finish(228,5082
+runtest3(242,5240
+threadtest3(255,5521
+
+../../test/waittest.c,165
+#define NTHREADS 45,1862
+static struct semaphore *exitsems[exitsems47,1883
+init_sem(51,1941
+waitfirstthread(66,2173
+exitfirstthread(83,2463
+waittest(101,2767
+
+../../tckead/clock.c,204
+#define SCHEDULE_HARDCLOCKS	53,2212
+#define MIGRATE_HARDCLOCKS	54,2279
+static struct wchan *lbolt;lbolt59,2420
+hardclock_bootstrap(65,2471
+timerclock(78,2682
+hardclock(89,2848
+clocksleep(109,3175
+
+../../t.cead/pid.c,565
+struct pidinfo 53,2101
+	pid_t pi_pid;54,2118
+	pid_t pi_ppid;55,2164
+	volatile bool pi_exited;56,2213
+	int pi_exitstatus;57,2268
+	struct cv *pi_cv;pi_cv58,2322
+static struct lock *pidlock;pidlock70,2630
+static struct pidinfo *pidinfo[pidinfo71,2689
+static pid_t nextpid;72,2751
+static int nprocs;73,2797
+pidinfo_create(82,2933
+pidinfo_destroy(112,3392
+pid_bootstrap(126,3644
+pi_get(154,4163
+pi_put(178,4521
+pi_drop(196,4891
+inc_nextpid(218,5239
+pid_alloc(232,5408
+pid_unalloc(286,6304
+pid_detach(315,6918
+pid_exit(331,7287
+pid_join(350,7728
+
+../../thckad/spinlock.c,164
+#define SPINLOCK_INLINE 31,1649
+spinlock_init(49,1878
+spinlock_cleanup(59,2022
+spinlock_acquire(73,2384
+spinlock_release(117,3281
+spinlock_do_i_hold(133,3609
+
+../../thread/spl.c,80
+#define SPL_INLINE	31,1644
+splraise(87,3328
+spllower(107,3713
+splx(132,4188
+
+../../thread/synch.c,282
+sem_create(48,1946
+sem_destroy(79,2562
+P(91,2815
+V(133,4068
+lock_create(151,4384
+lock_destroy(179,4932
+lock_acquire(192,5168
+lock_release(212,5608
+lock_do_i_hold(224,5846
+cv_create(243,6140
+cv_destroy(269,6607
+cv_wait(280,6759
+cv_signal(289,6908
+cv_broadcast(296,7005
+
+../../th.cad/thread.c,1074
+#define THREAD_STACK_MAGIC 57,2260
+struct wchan 60,2319
+	const char *wc_name;wc_name61,2334
+	struct threadlist wc_threads;62,2385
+	struct spinlock wc_lock;63,2446
+static struct cpuarray allcpus;69,2583
+static struct semaphore *cpu_startup_sem;cpu_startup_sem72,2670
+thread_checkstack_init(83,2946
+thread_checkstack(103,3707
+thread_create(119,4202
+cpu_create(173,5414
+thread_destroy(253,7274
+exorcise(291,8136
+thread_panic(308,8476
+thread_shutdown(350,9722
+thread_bootstrap(365,9949
+cpu_hatch(410,11208
+thread_start_cpus(428,11537
+thread_make_runnable(451,11924
+thread_fork(499,13306
+thread_switch(594,15887
+thread_startup(778,21683
+thread_exit(831,22810
+thread_yield(871,23686
+schedule(886,23950
+thread_consider_migration(912,24791
+wchan_create(1031,28121
+wchan_destroy(1050,28462
+wchan_lock(1061,28643
+wchan_unlock(1067,28715
+wchan_sleep(1079,29024
+wchan_wakeone(1091,29234
+wchan_wakeall(1116,29725
+wchan_isempty(1154,30633
+ipi_send(1175,30989
+ipi_broadcast(1186,31227
+ipi_tlbshootdown(1200,31428
+interprocessor_interrupt(1222,31876
+
+../../thread/threadlist.c,460
+threadlistnode_init(40,1749
+threadlistnode_cleanup(51,1940
+threadlist_init(61,2128
+threadlist_cleanup(75,2419
+threadlist_isempty(92,2870
+threadlist_insertafternode(107,3108
+threadlist_insertbeforenode(127,3523
+threadlist_removenode(147,3937
+threadlist_addhead(163,4301
+threadlist_addtail(173,4486
+threadlist_remhead(183,4683
+threadlist_remtail(201,5005
+threadlist_insertafter(219,5316
+threadlist_insertbefore(227,5500
+threadlist_remove(235,5680
+
+../../v.c/device.c,539
+dev_open(53,2053
+dev_close(70,2305
+dev_reclaim(82,2496
+dev_read(94,2671
+null_io(107,2927
+dev_write(119,3069
+dev_ioctl(131,3271
+dev_stat(144,3527
+dev_gettype(185,4385
+dev_tryseek(204,4686
+null_fsync(237,5250
+dev_mmap(249,5453
+dev_truncate(260,5576
+dev_namefile(282,5975
+null_creat(302,6294
+null_mkdir(315,6488
+null_symlink(325,6616
+null_nameop(335,6759
+null_link(344,6862
+null_rename(354,6996
+dev_lookup(378,7601
+dev_lookparent(396,7950
+static const struct vnode_ops dev_vnode_ops 415,8250
+dev_create_vnode(448,8765
+
+../../vfs/devnull.c,97
+nullopen(44,1897
+nullclose(55,2017
+nullio(64,2103
+nullioctl(83,2394
+devnull_create(100,2582
+
+../../v.c/vfscwd.c,113
+vfs_getcurdir(52,2047
+vfs_setcurdir(72,2329
+vfs_clearcurdir(102,2704
+vfs_chdir(121,2955
+vfs_getcwd(141,3284
+
+../../vt./vfslist.c,812
+#define VFSINLINE35,1724
+struct knowndev 77,3167
+	char *kd_name;kd_name78,3185
+	char *kd_rawname;kd_rawname79,3201
+	struct device *kd_device;kd_device80,3220
+	struct vnode *kd_vnode;kd_vnode81,3247
+	struct fs *kd_fs;kd_fs82,3272
+static struct knowndevarray *knowndevs;knowndevs88,3352
+static struct lock *vfs_biglock;vfs_biglock91,3462
+static unsigned vfs_biglock_depth;92,3495
+vfs_bootstrap(99,3562
+vfs_biglock_acquire(123,4188
+vfs_biglock_release(132,4315
+vfs_biglock_do_i_hold(143,4508
+vfs_sync(152,4646
+vfs_getroot(177,5055
+vfs_getdevname(257,6886
+mkrawname(289,7493
+samestring(308,7784
+samestring3(323,8020
+badnames(335,8260
+vfs_doadd(372,9019
+vfs_adddev(453,10312
+vfs_addfs(464,10597
+findmount(477,10844
+vfs_mount(509,11512
+vfs_unmount(555,12383
+vfs_unmountall(600,13016
+
+../../vku/vfslookup.c,194
+static struct vnode *bootfs_vnode bootfs_vnode43,1827
+change_bootfs(50,1944
+vfs_setbootfs(71,2301
+vfs_clearbootfs(115,2981
+getdevice(130,3232
+vfs_lookparent(232,5055
+vfs_lookup(265,5633
+
+../../vfs/vfspath.c,184
+vfs_open(45,1853
+vfs_close(119,2952
+vfs_remove(141,3651
+vfs_rename(160,3946
+vfs_link(195,4655
+vfs_symlink(235,5463
+vfs_readlink(260,5977
+vfs_mkdir(281,6241
+vfs_rmdir(303,6566
+
+../../vfs/vnode.c,157
+vnode_init(45,1841
+vnode_cleanup(64,2163
+vnode_incref(82,2428
+vnode_decref(99,2665
+vnode_incopen(128,3103
+vnode_decopen(142,3299
+vnode_check(174,3849
+
+../../vm/kmalloc.c,1297
+fill_deadbeef(42,1730
+#undef  SLOW	79,3108
+#undef SLOWER	80,3146
+#define NSIZES 86,3259
+static const size_t sizes[sizes87,3276
+#define SMALLEST_SUBPAGE_SIZE 89,3356
+#define LARGEST_SUBPAGE_SIZE 90,3389
+struct freelist 100,3567
+	struct freelist *next;next101,3585
+struct pageref 104,3613
+	struct pageref *next_samesize;next_samesize105,3630
+	struct pageref *next_all;next_all106,3662
+	vaddr_t pageaddr_and_blocktype;107,3689
+	uint16_t freelist_offset;108,3722
+	uint16_t nfree;109,3749
+#define INVALID_OFFSET 112,3770
+#define PR_PAGEADDR(114,3805
+#define PR_BLOCKTYPE(115,3874
+#define MKPAB(116,3944
+#define NPAGEREFS 138,4765
+static struct pageref pagerefs[pagerefs139,4820
+#define INUSE_WORDS 141,4864
+static uint32_t pagerefs_inuse[pagerefs_inuse142,4899
+allocpageref(146,4969
+freepageref(171,5325
+static struct pageref *sizebases[sizebases186,5623
+static struct pageref *allbase;allbase187,5665
+static struct spinlock kmalloc_spinlock 198,6019
+#define SLOW205,6179
+checksubpage(212,6231
+#define checksubpage(246,6964
+checksubpages(252,7036
+#define checksubpages(277,7456
+dumpsubpage(284,7543
+kheap_printstats(334,8721
+remove_lists(354,9069
+int blocktype(379,9497
+subpage_kmalloc(397,9758
+subpage_kfree(513,12553
+kmalloc(602,14708
+kfree(622,15036
+
+../../..ccommon/gcc-millicode/adddi3.c,18
+__adddi3(47,2140
+
+../../..ccommon/gcc-millicode/anddi3.c,18
+__anddi3(44,1950
+
+../../../common/gcc-millicode/ashldi3.c,19
+__ashldi3(45,2034
+
+../../..ccommon/gcc-millicode/ashrdi3.c,19
+__ashrdi3(44,1989
+
+../../../common/gcc-millicode/cmpdi2.c,18
+__cmpdi2(46,2048
+
+../../..ccommon/gcc-millicode/divdi3.c,18
+__divdi3(45,2021
+
+../../..ccommon/gcc-millicode/iordi3.c,18
+__iordi3(44,1950
+
+../../../common/gcc-millicode/lshldi3.c,19
+__lshldi3(45,2033
+
+../../..ccommon/gcc-millicode/lshrdi3.c,19
+__lshrdi3(44,1990
+
+../../../common/gcc-millicode/moddi3.c,18
+__moddi3(46,2058
+
+../../../common/gcc-millicode/muldi3.c,197
+__muldi3(100,3883
+#define	u1	105,4007
+#define	u0	106,4026
+#define	v1	107,4045
+#define	v0	108,4064
+#undef u1160,5274
+#undef u0161,5284
+#undef v1162,5294
+#undef v0163,5304
+__lmulq(184,6000
+
+../../../common/gcc-millicode/negdi2.c,18
+__negdi2(44,1988
+
+../../../common/gcc-millicode/notdi2.c,23
+__one_cmpldi2(45,2006
+
+../../..ccommon/gcc-millicode/qdivrem.c,151
+#define	B	45,2017
+#define	COMBINE(48,2129
+typedef unsigned short digit;52,2317
+typedef unsigned int digit;54,2353
+__qdivrem(68,2775
+shl(271,7819
+
+../../../common/gcc-millicode/subdi3.c,18
+__subdi3(46,2073
+
+../../../common/gcc-millicode/ucmpdi2.c,19
+__ucmpdi2(45,2007
+
+../../..ccommon/gcc-millicode/udivdi3.c,19
+__udivdi3(44,1965
+
+../../../common/gcc-millicode/umoddi3.c,19
+__umoddi3(44,1990
+
+../../../common/gcc-millicode/xordi3.c,18
+__xordi3(44,1950
+
+../../..icommon/libc/arch/mips/setjmp.S,48
+setjmp:setjmp51,2111
+longjmp:longjmp80,2672
+
+../../arch/mips/locore/trap.c,188
+#define NTRAPCODES 52,2063
+static const char *const trapcodenames[trapcodenames53,2085
+kill_curthread(74,2508
+mips_trap(126,3477
+mips_usermode(367,10283
+enter_new_process(418,11932
+
+../../arch/mips/syscall/syscall.c,48
+syscall(79,3550
+enter_forked_process(180,5787
+
+../../arch/mips/thread/cpu.c,300
+vaddr_t cpustacks[cpustacks59,2480
+vaddr_t cputhreads[cputhreads60,2508
+cpu_machdep_init(68,2717
+cpu_identify(100,3390
+#define GET_STATUS(130,4238
+#define SET_STATUS(131,4301
+cpu_irqon(137,4395
+cpu_irqoff(150,4536
+cpu_irqonoff(164,4692
+wait(194,5252
+cpu_idle(220,5932
+cpu_halt(230,6026
+
+../../arhh/mips/thread/switch.S,47
+switchframe_switch:switchframe_switch42,1824
+
+../../arhh/mips/thread/switchframe.c,26
+switchframe_init(55,2397
+
+../../arch/mips/thread/thread_machdep.c,61
+thread_machdep_init(40,1720
+thread_machdep_cleanup(46,1806
+
+../../arhh/mips/thread/threadstart.S,43
+mips_threadstart:mips_threadstart42,1820
+
+../../arch/mips/vm/dumbvm.c,451
+#define DUMBVM_STACKPAGES 49,2137
+static struct spinlock stealmem_lock 54,2213
+vm_bootstrap(57,2280
+getppages(64,2338
+alloc_kpages(78,2569
+free_kpages(89,2701
+vm_tlbshootdown_all(97,2785
+vm_tlbshootdown(103,2869
+vm_fault(110,2984
+as_create(203,5495
+as_destroy(222,5775
+as_activate(228,5830
+as_define_region(245,6076
+as_zero_region(285,6855
+as_prepare_load(291,6971
+as_complete_load(320,7564
+as_define_stack(327,7634
+as_copy(336,7770
+
+../../arch/mips/vm/ram.c,163
+vaddr_t firstfree;36,1691
+static paddr_t firstpaddr;38,1762
+static paddr_t lastpaddr;39,1832
+ram_bootstrap(46,2008
+ram_stealmem(95,3476
+ram_getsize(121,3953
+
+../../vutcopyinout.c,133
+copyfail(100,4449
+copycheck(118,4950
+copyin(153,5601
+copyout(189,6359
+copystr(235,7591
+copyinstr(266,8224
+copyoutstr(299,8971
+
+../../aroh/mips/locore/cache-mips161.S,43
+mips_flushicache:mips_flushicache46,2060
+
+../../aroh/mips/locore/exception-mips1.S,301
+mips_utlb_handler:mips_utlb_handler68,2663
+mips_utlb_end:mips_utlb_end72,2796
+mips_general_handler:mips_general_handler86,3094
+mips_general_end:mips_general_end90,3233
+common_exception:common_exception104,3510
+exception_return:exception_return270,8764
+asm_usermode:asm_usermode340,10330
+
+../../arch/mips/vm/tlb-mips1.S,147
+tlb_random:tlb_random50,2091
+tlb_write:tlb_write71,2651
+tlb_read:tlb_read95,3409
+tlb_probe:tlb_probe123,4352
+tlb_reset:tlb_reset170,5854
+
+../../ar/h/sys161/dev/lamebus_machdep.c,538
+#define CPU_FREQUENCY 51,2096
+mips_timer_set(62,2389
+static struct lamebus_softc *lamebus;lamebus81,2926
+mainbus_bootstrap(84,2970
+mainbus_start_cpus(123,3805
+lamebus_map_area(134,4028
+lamebus_read_register(150,4338
+lamebus_write_register(161,4548
+mainbus_poweroff(174,4759
+mainbus_reboot(189,5021
+mainbus_halt(208,5487
+mainbus_panic(221,5776
+mainbus_ramsize(231,5924
+mainbus_send_ipi(240,6003
+#define LAMEBUS_IRQ_BIT 250,6181
+#define LAMEBUS_IPI_BIT 251,6244
+#define MIPS_TIMER_BIT 252,6312
+mainbus_interrupt(255,6374
+
+../../arch/sys161/startup/start.S,103
+__start:__start39,1766
+panicstr:panicstr232,7651
+cpu_start_secondary:cpu_start_secondary242,7859
+
+../../include/addrspace.h,305
+#define _ADDRSPACE_H_31,1638
+struct addrspace 51,1893
+        vaddr_t as_vbase1;53,1927
+        paddr_t as_pbase1;54,1954
+        size_t as_npages1;55,1981
+        vaddr_t as_vbase2;56,2008
+        paddr_t as_pbase2;57,2035
+        size_t as_npages2;58,2062
+        paddr_t as_stackpbase;59,2089
+
+../../iralude/array.h,440
+#define _ARRAY_H_31,1511
+#define ARRAYS_CHECKED36,1567
+#define ARRAYASSERT 39,1613
+#define ARRAYASSERT(41,1647
+struct array 64,2529
+	void **v;v65,2544
+	unsigned num,66,2555
+	unsigned num, max;66,2555
+#define ARRAYINLINE 85,3104
+array_num(89,3160
+array_get(95,3233
+array_set(102,3355
+array_add(109,3486
+#define DECLARRAY_BYTYPE(165,4944
+#define DEFARRAY_BYTYPE(181,5566
+#define DECLARRAY(248,7091
+#define DEFARRAY(249,7149
+
+../../itmlude/bitmap.h,27
+#define _BITMAP_H_31,1599
+
+../../ieflude/cdefs.h,177
+#define _CDEFS_H_31,1610
+#define COMPILE_ASSERT(42,1846
+#define __PF(49,1988
+#define __PF(51,2058
+#define INLINE 116,5057
+#define INLINE 120,5152
+#define INLINE 124,5227
+
+../../ioclude/clock.h,66
+#define _CLOCK_H_31,1634
+#define HZ 53,2234
+#define HZ 56,2285
+
+../../include/copyinout.h,30
+#define _COPYINOUT_H_31,1638
+
+../../iu.lude/cpu.h,678
+#define _CPU_H_31,1590
+struct cpu 49,1998
+	struct cpu *c_self;c_self53,2048
+	unsigned c_number;54,2109
+	unsigned c_hardware_number;55,2158
+	struct thread *c_curthread;c_curthread60,2262
+	struct threadlist c_zombies;61,2319
+	unsigned c_hardclocks;62,2378
+	bool c_isidle;68,2512
+	struct threadlist c_runqueue;69,2561
+	struct spinlock c_runqueue_lock;70,2621
+	uint32_t c_ipi_pending;86,3172
+	struct tlbshootdown c_shootdown[c_shootdown87,3232
+	int c_numshootdown;88,3284
+	struct spinlock c_ipi_lock;89,3305
+#define TLBSHOOTDOWN_ALL 92,3338
+#define IPI_PANIC	161,5555
+#define IPI_OFFLINE	162,5608
+#define IPI_UNIDLE	163,5668
+#define IPI_TLBSHOOTDOWN	164,5727
+
+../../inntude/current.h,141
+#define _CURRENT_H_31,1594
+#define curthread 47,2024
+#define CURCPU_EXISTS(48,2062
+#define curcpu 55,2160
+#define CURCPU_EXISTS(56,2192
+
+../../ivilude/device.h,288
+#define _DEVICE_H_31,1635
+struct device 44,1828
+	int (*d_open)d_open45,1844
+	int (*d_close)d_close46,1898
+	int (*d_io)d_io47,1932
+	int (*d_ioctl)d_ioctl48,1977
+	blkcnt_t d_blocks;50,2036
+	blksize_t d_blocksize;51,2056
+	dev_t d_devnumber;53,2081
+	void *d_data;d_data55,2138
+
+../../if.lude/elf.h,3010
+#define _ELF_H_31,1632
+#define	ELF_NIDENT	50,2004
+	unsigned char	e_ident[e_ident52,2043
+	uint16_t	e_type;53,2107
+	uint16_t	e_machine;54,2167
+	uint32_t	e_version;55,2233
+	uint32_t	e_entry;56,2284
+	uint32_t	e_phoff;57,2350
+	uint32_t	e_shoff;58,2411
+	uint32_t	e_flags;59,2453
+	uint16_t	e_ehsize;60,2488
+	uint16_t	e_phentsize;61,2550
+	uint16_t	e_phnum;62,2605
+	uint16_t	e_shentsize;63,2656
+	uint16_t	e_shnum;64,2698
+	uint16_t	e_shstrndx;65,2740
+} Elf32_Ehdr;66,2782
+#define	EI_MAG0	69,2850
+#define	EI_MAG1	70,2882
+#define	EI_MAG2	71,2914
+#define	EI_MAG3	72,2946
+#define	EI_CLASS	73,2978
+#define	EI_DATA	74,3034
+#define	EI_VERSION	75,3101
+#define	EI_OSABI	76,3152
+#define	EI_ABIVERSION	77,3207
+#define	EI_PAD	78,3257
+#define	ELFMAG0	83,3381
+#define	ELFMAG1	84,3403
+#define	ELFMAG2	85,3424
+#define	ELFMAG3	86,3445
+#define	ELFCLASSNONE	89,3495
+#define	ELFCLASS32	90,3538
+#define	ELFCLASS64	91,3580
+#define	ELFDATANONE	94,3646
+#define	ELFDATA2LSB	95,3696
+#define	ELFDATA2MSB	96,3757
+#define	EV_NONE	99,3845
+#define	EV_CURRENT	100,3886
+#define	ELFOSABI_SYSV	103,3954
+#define	ELFOSABI_HPUX	104,4003
+#define	ELFOSABI_STANDALONE	105,4057
+#define	ET_NONE	111,4159
+#define	ET_REL	112,4197
+#define	ET_EXEC	113,4238
+#define	ET_DYN	114,4279
+#define	ET_CORE	115,4322
+#define	ET_NUM	116,4357
+#define	EM_NONE	121,4407
+#define	EM_M32	122,4443
+#define	EM_SPARC	123,4481
+#define	EM_386	124,4512
+#define	EM_68K	125,4548
+#define	EM_88K	126,4587
+#define	EM_486	127,4626
+#define	EM_860	128,4662
+#define	EM_MIPS	129,4698
+#define	EM_S370	130,4743
+#define	EM_MIPS_RS3_LE	131,4793
+#define	EM_RS6000	132,4851
+#define	EM_PARISC	133,4903
+#define	EM_NCUBE	134,4954
+#define	EM_VPP500	135,4999
+#define	EM_SPARC32PLUS	136,5041
+#define	EM_960	137,5104
+#define	EM_PPC	138,5141
+#define	EM_V800	139,5174
+#define	EM_FR20	140,5209
+#define	EM_RH32	141,5248
+#define	EM_RCE	142,5284
+#define	EM_ARM	143,5322
+#define	EM_ALPHA	144,5374
+#define	EM_SH	145,5414
+#define	EM_SPARCV9	146,5454
+#define	EM_TRICORE	147,5498
+#define	EM_ARC	148,5542
+#define	EM_H8_300	149,5586
+#define	EM_H8_300H	150,5628
+#define	EM_H8S	151,5672
+#define	EM_H8_500	152,5709
+#define	EM_IA_64	153,5751
+#define	EM_MIPS_X	154,5800
+#define	EM_COLDFIRE	155,5843
+#define	EM_68HC12	156,5890
+#define	EM_VAX	157,5935
+#define	EM_ALPHA_EXP	158,5972
+#define	EM_NUM	159,6036
+	uint32_t	p_type;169,6283
+	uint32_t	p_offset;170,6328
+	uint32_t	p_vaddr;171,6386
+	uint32_t	p_paddr;172,6431
+	uint32_t	p_filesz;173,6467
+	uint32_t	p_memsz;174,6521
+	uint32_t	p_flags;175,6587
+	uint32_t	p_align;176,6622
+} Elf32_Phdr;177,6683
+#define	PT_NULL	180,6722
+#define	PT_LOAD	181,6782
+#define	PT_DYNAMIC	182,6833
+#define	PT_INTERP	183,6889
+#define	PT_NOTE	184,6936
+#define	PT_SHLIB	185,6984
+#define	PT_PHDR	186,7042
+#define	PT_NUM	187,7098
+#define	PT_MIPS_REGINFO	188,7116
+#define	PF_R	191,7177
+#define	PF_W	192,7221
+#define	PF_X	193,7265
+typedef Elf32_Ehdr Elf_Ehdr;196,7313
+typedef Elf32_Phdr Elf_Phdr;197,7342
+
+../../in.hude/emufs.h,341
+#define _EMUFS_H_31,1634
+struct emufs_vnode 44,1761
+	struct vnode ev_v;45,1782
+	struct emu_softc *ev_emu;ev_emu46,1834
+	uint32_t ev_handle;47,1874
+struct emufs_fs 50,1918
+	struct fs ef_fs;51,1936
+	struct emu_softc *ef_emu;ef_emu52,1991
+	struct emufs_vnode *ef_root;ef_root53,2031
+	struct vnodearray *ef_vnodes;ef_vnodes54,2078
+
+../../idilude/endian.h,27
+#define _ENDIAN_H_31,1593
+
+../../include/fs.h,386
+#define _FS_H_31,1631
+struct fs 64,2784
+	int           (*fs_sync)fs_sync65,2796
+	const char   *(*fs_getvolname)fs_getvolname66,2836
+	struct vnode *(*fs_getroot)fs_getroot67,2882
+	int           (*fs_unmount)fs_unmount68,2925
+	void *fs_data;fs_data70,2969
+#define FSOP_SYNC(76,3040
+#define FSOP_GETVOLNAME(77,3089
+#define FSOP_GETROOT(78,3144
+#define FSOP_UNMOUNT(79,3196
+
+../../ib.lude/lib.h,625
+#define _LIB_H_31,1632
+#define KASSERT(63,2502
+#define KASSERT(65,2545
+#define DEBUGASSERT(70,2675
+#define DEBUGASSERT(72,2722
+#define DB_LOCORE 79,2859
+#define DB_SYSCALL 80,2888
+#define DB_INTERRUPT 81,2917
+#define DB_DEVICE 82,2946
+#define DB_THREADS 83,2975
+#define DB_VM 84,3004
+#define DB_EXEC 85,3033
+#define DB_VFS 86,3062
+#define DB_SFS 87,3091
+#define DB_NET 88,3120
+#define DB_NETFS 89,3149
+#define DB_KMALLOC 90,3178
+static const char *flag_name[flag_name92,3208
+#define DEBUG(127,4210
+#define RANDOM_MAX 134,4405
+int snprintf(166,5340
+#define DIVROUNDUP(202,6297
+#define ROUNDUP(203,6339
+
+../../imilude/limits.h,319
+#define _LIMITS_H_31,1629
+#define NAME_MAX 41,1809
+#define PATH_MAX 42,1844
+#define ARG_MAX 43,1879
+#define PID_MIN 44,1913
+#define PID_MAX 45,1947
+#define PIPE_BUF 46,1981
+#define PROCS_MAX 47,2016
+#define NGROUPS_MAX 48,2052
+#define LOGIN_NAME_MAX 49,2090
+#define OPEN_MAX 50,2131
+#define IOV_MAX 51,2166
+
+../../include/mainbus.h,28
+#define _MAINBUS_H_31,1636
+
+../../include/pid.h,81
+#define _PID_H_35,1665
+#define INVALID_PID	38,1683
+#define BOOTUP_PID	39,1732
+
+../../inp.ude/setjmp.h,27
+#define _SETJMP_H_31,1635
+
+../../ignlude/signal.h,27
+#define _SIGNAL_H_31,1599
+
+../../include/spinlock.h,216
+#define _SPINLOCK_H_31,1637
+#define SPINLOCK_INLINE 42,1925
+struct spinlock 57,2325
+	volatile spinlock_data_t splk_lock;58,2343
+	struct cpu *splk_holder;splk_holder59,2413
+#define SPINLOCK_INITIALIZER	65,2555
+
+../../il.lude/spl.h,136
+#define _SPL_H_31,1632
+#define IPL_NONE 72,2795
+#define IPL_HIGH 73,2816
+#define SPL_INLINE 91,3370
+spl0(96,3419
+splhigh(103,3474
+
+../../iatlude/stat.h,225
+#define _STAT_H_31,1591
+#define S_IFMT 40,1804
+#define S_IFREG 41,1829
+#define S_IFDIR 42,1855
+#define S_IFLNK 43,1881
+#define S_IFIFO 44,1907
+#define S_IFSOCK 45,1933
+#define S_IFCHR 46,1960
+#define S_IFBLK 47,1986
+
+../../ing.ude/stdarg.h,184
+#define _STDARG_H_31,1635
+typedef __va_list va_list;44,1889
+#define va_start(46,1917
+#define va_arg(47,1976
+#define va_copy(48,2027
+#define va_end(49,2082
+void vkprintf(59,2454
+
+../../include/synch.h,495
+#define _SYNCH_H_31,1634
+struct semaphore 46,1856
+        char *sem_name;sem_name47,1875
+	struct wchan *sem_wchan;sem_wchan48,1899
+	struct spinlock sem_lock;49,1925
+        volatile int sem_count;50,1952
+struct lock 75,2639
+        char *lk_name;lk_name76,2653
+	struct wchan *lk_wchan;lk_wchan77,2676
+	struct spinlock lk_lock;78,2701
+	struct thread *volatile lk_holder;79,2727
+struct cv 115,3789
+        char *cv_name;cv_name116,3801
+	struct wchan *cv_wchan;cv_wchan117,3824
+
+../../inllude/syscall.h,28
+#define _SYSCALL_H_31,1636
+
+../../istlude/test.h,25
+#define _TEST_H_31,1633
+
+../../irelude/thread.h,740
+#define _THREAD_H_31,1635
+#define STACK_SIZE 51,1942
+#define STACK_MASK 54,2042
+#define SAME_STACK(57,2156
+	S_RUN,62,2282
+	S_READY,63,2305
+	S_SLEEP,64,2334
+	S_ZOMBIE,65,2359
+} threadstate_t;66,2411
+struct thread 69,2453
+	char *t_name;t_name74,2565
+	const char *t_wchan_name;t_wchan_name75,2608
+	threadstate_t t_state;76,2675
+	struct thread_machdep t_machdep;81,2778
+	struct threadlistnode t_listnode;82,2844
+	void *t_stack;t_stack83,2917
+	struct switchframe *t_context;t_context84,2960
+	struct cpu *t_cpu;t_cpu85,3032
+	bool t_in_interrupt;100,3533
+	int t_curspl;101,3586
+	int t_iplhigh_count;102,3630
+	pid_t t_pid;109,3740
+	struct addrspace *t_addrspace;t_addrspace112,3791
+	struct vnode *t_cwd;t_cwd115,3863
+
+../../include/threadlist.h,416
+#define _THREADLIST_H_31,1597
+struct threadlistnode 53,2308
+	struct threadlistnode *tln_prev;tln_prev54,2332
+	struct threadlistnode *tln_next;tln_next55,2366
+	struct thread *tln_self;tln_self56,2400
+struct threadlist 59,2430
+	struct threadlistnode tl_head;60,2450
+	struct threadlistnode tl_tail;61,2482
+	unsigned tl_count;62,2514
+#define THREADLIST_FORALL(90,3664
+#define THREADLIST_FORALL_REV(95,3867
+
+../../include/threadprivate.h,34
+#define _THREADPRIVATE_H_31,1642
+
+../../in.hude/types.h,1466
+#define _TYPES_H_31,1634
+struct __userptr 90,3859
+struct __userptr { char _dummy;90,3859
+typedef struct __userptr *userptr_t;userptr_t91,3894
+typedef const struct __userptr *const_userptr_t;const_userptr_t92,3931
+typedef __i8 int8_t;100,4124
+typedef __i16 int16_t;101,4145
+typedef __i32 int32_t;102,4168
+typedef __i64 int64_t;103,4191
+typedef __u8 uint8_t;104,4214
+typedef __u16 uint16_t;105,4236
+typedef __u32 uint32_t;106,4260
+typedef __u64 uint64_t;107,4284
+typedef __size_t size_t;108,4308
+typedef __ssize_t ssize_t;109,4333
+typedef __intptr_t intptr_t;110,4360
+typedef __uintptr_t uintptr_t;111,4389
+typedef __ptrdiff_t ptrdiff_t;112,4420
+typedef __blkcnt_t blkcnt_t;115,4506
+typedef __blksize_t blksize_t;116,4535
+typedef __daddr_t daddr_t;117,4566
+typedef __dev_t dev_t;118,4593
+typedef __fsid_t fsid_t;119,4616
+typedef __gid_t gid_t;120,4641
+typedef __in_addr_t in_addr_t;121,4664
+typedef __in_port_t in_port_t;122,4695
+typedef __ino_t ino_t;123,4726
+typedef __mode_t mode_t;124,4749
+typedef __nlink_t nlink_t;125,4774
+typedef __off_t off_t;126,4801
+typedef __pid_t pid_t;127,4824
+typedef __rlim_t rlim_t;128,4847
+typedef __sa_family_t sa_family_t;129,4872
+typedef __time_t time_t;130,4907
+typedef __uid_t uid_t;131,4932
+typedef __nfds_t nfds_t;133,4956
+typedef __socklen_t socklen_t;134,4981
+#define CHAR_BIT 140,5049
+#define NULL 146,5103
+typedef _Bool bool;151,5148
+#define true 152,5168
+#define false 153,5184
+
+../../io.lude/uio.h,515
+#define _UIO_H_31,1632
+enum uio_rw 43,1835
+        UIO_READ,44,1849
+        UIO_WRITE,45,1898
+enum uio_seg 49,1978
+        UIO_USERISPACE,50,1993
+        UIO_USERSPACE,51,2044
+        UIO_SYSSPACE,52,2094
+struct uio 55,2136
+	struct iovec     *uio_iov;uio_iov56,2149
+	unsigned          uio_iovcnt;57,2195
+	off_t             uio_offset;58,2249
+	size_t            uio_resid;59,2313
+	enum uio_seg      uio_segflg;60,2379
+	enum uio_rw       uio_rw;61,2445
+	struct addrspace *uio_space;uio_space62,2508
+
+../../include/version.h,89
+#define _VERSION_H_31,1636
+#define BASE_VERSION 37,1753
+#define GROUP_VERSION 42,1862
+
+../../is.lude/vfs.h,52
+#define _VFS_H_31,1632
+#define VFSINLINE 181,7383
+
+../../i.hlude/vm.h,121
+#define _VM_H_31,1631
+#define VM_FAULT_READ 43,1802
+#define VM_FAULT_WRITE 44,1863
+#define VM_FAULT_READONLY 45,1925
+
+../../iodlude/vnode.h,2199
+#define _VNODE_H_31,1634
+struct vnode 54,2168
+	int vn_refcount;55,2183
+	int vn_opencount;56,2238
+	struct fs *vn_fs;vn_fs58,2258
+	void *vn_data;vn_data60,2326
+	const struct vnode_ops *vn_ops;vn_ops62,2391
+#define VOP_MAGIC	193,8596
+struct vnode_ops 195,8626
+	unsigned long vop_magic;196,8645
+	int (*vop_eachopen)vop_eachopen198,8705
+	int (*vop_lastclose)vop_lastclose199,8770
+	int (*vop_reclaim)vop_reclaim200,8815
+	int (*vop_read)vop_read203,8859
+	int (*vop_readlink)vop_readlink204,8914
+	int (*vop_getdirentry)vop_getdirentry205,8973
+	int (*vop_write)vop_write206,9034
+	int (*vop_ioctl)vop_ioctl207,9090
+	int (*vop_stat)vop_stat208,9155
+	int (*vop_gettype)vop_gettype209,9217
+	int (*vop_tryseek)vop_tryseek210,9276
+	int (*vop_fsync)vop_fsync211,9330
+	int (*vop_mmap)vop_mmap212,9371
+	int (*vop_truncate)vop_truncate213,9425
+	int (*vop_namefile)vop_namefile214,9478
+	int (*vop_creat)vop_creat217,9539
+	int (*vop_symlink)vop_symlink220,9651
+	int (*vop_mkdir)vop_mkdir222,9738
+	int (*vop_link)vop_link224,9818
+	int (*vop_remove)vop_remove226,9897
+	int (*vop_rmdir)vop_rmdir228,9960
+	int (*vop_rename)vop_rename231,10021
+	int (*vop_lookup)vop_lookup235,10126
+	int (*vop_lookparent)vop_lookparent237,10210
+#define __VOP(242,10337
+#define VOP_EACHOPEN(244,10410
+#define VOP_LASTCLOSE(245,10483
+#define VOP_RECLAIM(246,10550
+#define VOP_READ(248,10616
+#define VOP_READLINK(249,10683
+#define VOP_GETDIRENTRY(250,10754
+#define VOP_WRITE(251,10827
+#define VOP_IOCTL(252,10895
+#define VOP_STAT(253,10967
+#define VOP_GETTYPE(254,11029
+#define VOP_TRYSEEK(255,11102
+#define VOP_FSYNC(256,11172
+#define VOP_MMAP(257,11235
+#define VOP_TRUNCATE(258,11312
+#define VOP_NAMEFILE(259,11383
+#define VOP_CREAT(261,11455
+#define VOP_SYMLINK(262,11535
+#define VOP_MKDIR(263,11615
+#define VOP_LINK(264,11690
+#define VOP_REMOVE(265,11763
+#define VOP_RMDIR(266,11833
+#define VOP_RENAME(267,11902
+#define VOP_LOOKUP(269,11983
+#define VOP_LOOKPARENT(270,12058
+#define VOP_INCREF(283,12361
+#define VOP_DECREF(284,12404
+#define VOP_INCOPEN(295,12736
+#define VOP_DECOPEN(296,12780
+#define VOP_INIT(305,13037
+#define VOP_CLEANUP(313,13257
+
+../../in.hude/wchan.h,26
+#define _WCHAN_H_31,1634
+
+../../include/kern/endian.h,122
+#define _KERN_ENDIAN_H_31,1598
+#define _LITTLE_ENDIAN 42,1835
+#define _BIG_ENDIAN 43,1863
+#define _PDP_ENDIAN 44,1891
+
+../../include/kern/errmsg.h,112
+#define _KERN_ERRMSG_H_31,1634
+const char *const sys_errlist[sys_errlist41,1929
+const int sys_nerr 112,5085
+
+../../include/kern/errno.h,1661
+#define _KERN_ERRNO_H_31,1633
+#define ENOSYS 45,2047
+#define EUNIMP 46,2104
+#define ENOMEM 47,2163
+#define EAGAIN 48,2214
+#define EINTR 49,2273
+#define EFAULT 50,2334
+#define ENAMETOOLONG 51,2392
+#define EINVAL 52,2445
+#define EPERM 53,2499
+#define EACCES 54,2560
+#define EMPROC 55,2615
+#define ENPROC 56,2671
+#define ENOEXEC 57,2737
+#define E2BIG 58,2797
+#define ESRCH 59,2857
+#define ECHILD 60,2910
+#define ENOTDIR 61,2966
+#define EISDIR 62,3019
+#define ENOENT 63,3071
+#define ELOOP 64,3134
+#define ENOTEMPTY 65,3205
+#define EEXIST 66,3262
+#define EMLINK 67,3321
+#define EXDEV 68,3378
+#define ENODEV 69,3433
+#define ENXIO 70,3485
+#define EBUSY 71,3543
+#define EMFILE 72,3604
+#define ENFILE 73,3661
+#define EBADF 74,3728
+#define EIOCTL 75,3781
+#define EIO 76,3849
+#define ESPIPE 77,3905
+#define EPIPE 78,3955
+#define EROFS 79,4004
+#define ENOSPC 80,4063
+#define EDQUOT 81,4124
+#define EFBIG 82,4181
+#define EFTYPE 83,4233
+#define EDOM 84,4298
+#define ERANGE 85,4357
+#define EILSEQ 86,4414
+#define ENOTSOCK 87,4488
+#define EISSOCK 88,4538
+#define EISCONN 89,4587
+#define ENOTCONN 90,4652
+#define ESHUTDOWN 91,4713
+#define EPFNOSUPPORT 92,4776
+#define ESOCKTNOSUPPORT 93,4843
+#define EPROTONOSUPPORT 94,4906
+#define EPROTOTYPE 95,4966
+#define EAFNOSUPPORT 96,5034
+#define ENOPROTOOPT 97,5114
+#define EADDRINUSE 98,5181
+#define EADDRNOTAVAIL 99,5241
+#define ENETDOWN 100,5310
+#define ENETUNREACH 101,5363
+#define EHOSTDOWN 102,5423
+#define EHOSTUNREACH 103,5473
+#define ECONNREFUSED 104,5530
+#define ETIMEDOUT 105,5586
+#define ECONNRESET 106,5644
+#define EMSGSIZE 107,5706
+#define ENOTSUP 108,5761
+
+../../include/kern/fcntl.h,850
+#define _KERN_FCNTL_H_31,1633
+#define O_RDONLY 43,1765
+#define O_WRONLY 44,1814
+#define O_RDWR 45,1864
+#define O_CREAT 47,1954
+#define O_EXCL 48,2021
+#define O_TRUNC 49,2098
+#define O_APPEND 50,2157
+#define O_NOCTTY 51,2236
+#define O_ACCMODE 54,2350
+#define LOCK_SH 61,2482
+#define LOCK_EX 62,2532
+#define LOCK_UN 63,2585
+#define LOCK_NB 64,2640
+#define F_DUPFD 71,2755
+#define F_GETFD 72,2820
+#define F_SETFD 73,2879
+#define F_GETFL 74,2938
+#define F_SETFL 75,3012
+#define F_GETOWN 76,3086
+#define F_SETOWN 77,3164
+#define F_GETLK 78,3242
+#define F_SETLK 79,3301
+#define F_SETLKW 80,3372
+#define FD_CLOEXEC 83,3476
+#define F_RDLCK 86,3575
+#define F_WRLCK 87,3625
+#define F_UNLCK 88,3678
+struct flock 91,3771
+	off_t l_start;92,3786
+	int l_whence;93,3831
+	int l_type;94,3894
+	off_t l_len;95,3944
+	pid_t l_pid;96,3999
+
+../../include/kern/ioctl.h,31
+#define _KERN_IOCTL_H_31,1639
+
+../../include/kern/iovec.h,221
+#define _KERN_IOVEC_H_31,1639
+struct iovec 38,1812
+                userptr_t  iov_ubase;59,2558
+                void      *iov_kbase;iov_kbase60,2624
+	void *iov_base;iov_base63,2709
+        size_t iov_len;65,2763
+
+../../include/kern/limits.h,347
+#define _KERN_LIMITS_H_31,1634
+#define __NAME_MAX 52,2302
+#define __PATH_MAX 55,2360
+#define __ARG_MAX 58,2427
+#define __PID_MIN 66,2612
+#define __PID_MAX 69,2672
+#define __PIPE_BUF 72,2781
+#define __PROCS_MAX 75,2849
+#define __NGROUPS_MAX 83,2993
+#define __LOGIN_NAME_MAX 86,3083
+#define __OPEN_MAX 97,3299
+#define __IOV_MAX 100,3405
+
+../../include/kern/reboot.h,113
+#define _KERN_REBOOT_H_31,1634
+#define RB_REBOOT 40,1789
+#define RB_HALT 41,1838
+#define RB_POWEROFF 42,1903
+
+../../include/kern/resource.h,1174
+#define _KERN_RESOURCE_H_31,1606
+#define PRIO_MIN	41,1749
+#define PRIO_MAX	42,1772
+#define PRIO_PROCESS	45,1831
+#define PRIO_PGRP	46,1854
+#define PRIO_USER	47,1874
+#define RUSAGE_SELF	50,1923
+#define RUSAGE_CHILDREN	51,1945
+struct rusage 53,1975
+	struct timeval ru_utime;54,1991
+	struct timeval ru_stime;55,2017
+	__size_t ru_maxrss;56,2043
+	__counter_t ru_ixrss;57,2104
+	__counter_t ru_idrss;58,2163
+	__counter_t ru_isrss;59,2222
+	__counter_t ru_minflt;60,2282
+	__counter_t ru_majflt;61,2337
+	__counter_t ru_nswap;62,2392
+	__counter_t ru_inblock;63,2450
+	__counter_t ru_oublock;64,2507
+	__counter_t ru_msgrcv;65,2567
+	__counter_t ru_msgsnd;66,2632
+	__counter_t ru_nsignals;67,2696
+	__counter_t ru_nvcsw;68,2754
+	__counter_t ru_nivcsw;69,2818
+#define RLIMIT_NPROC	74,2922
+#define RLIMIT_NOFILE	75,2979
+#define RLIMIT_CPU	76,3042
+#define RLIMIT_DATA	77,3090
+#define RLIMIT_STACK	78,3147
+#define RLIMIT_MEMLOCK	79,3200
+#define RLIMIT_RSS	80,3265
+#define RLIMIT_CORE	81,3309
+#define RLIMIT_FSIZE	82,3361
+#define __RLIMIT_NUM	83,3413
+struct rlimit 85,3461
+	__rlim_t rlim_cur;86,3477
+	__rlim_t rlim_max;87,3514
+#define RLIM_INFINITY	90,3555
+
+../../include/kern/seek.h,108
+#define _KERN_SEEK_H_31,1632
+#define SEEK_SET 42,1941
+#define SEEK_CUR 43,2011
+#define SEEK_END 44,2088
+
+../../include/kern/signal.h,1379
+#define _KERN_SIGNAL_H_38,1983
+#define SIGHUP	56,2339
+#define SIGINT	57,2370
+#define SIGQUIT	58,2409
+#define SIGILL	59,2454
+#define SIGTRAP	60,2498
+#define SIGABRT	61,2539
+#define SIGEMT	62,2577
+#define SIGFPE	63,2615
+#define SIGKILL	64,2664
+#define SIGBUS	65,2713
+#define SIGSEGV	66,2780
+#define SIGSYS	67,2825
+#define SIGPIPE	68,2866
+#define SIGALRM	69,2904
+#define SIGTERM	70,2946
+#define SIGURG	71,3009
+#define SIGSTOP	72,3056
+#define SIGTSTP	73,3114
+#define SIGCONT	74,3159
+#define SIGCHLD	75,3213
+#define SIGTTIN	76,3260
+#define SIGTTOU	77,3323
+#define SIGIO	78,3387
+#define SIGXCPU	79,3449
+#define SIGXFSZ	80,3508
+#define SIGVTALRM	81,3568
+#define SIGPROF	82,3628
+#define SIGWINCH	83,3670
+#define SIGINFO	84,3722
+#define SIGUSR1	85,3783
+#define SIGUSR2	86,3829
+#define SIGPWR	87,3875
+#define _NSIG	88,3914
+typedef __u32 sigset_t;92,3995
+#define SA_ONSTACK	95,4055
+#define SA_RESTART	96,4107
+#define SA_RESETHAND	97,4175
+#define SIG_BLOCK	100,4266
+#define SIG_UNBLOCK	101,4316
+#define SIG_SETMASK	102,4370
+typedef void (*__sigfunc)__sigfunc105,4475
+#define SIG_DFL	108,4548
+#define SIG_IGN	109,4606
+struct sigaction 114,4700
+	__sigfunc sa_handler;115,4719
+	sigset_t sa_mask;116,4742
+	unsigned sa_flags;117,4761
+struct sigaltstack 124,4845
+	void *ss_sp;ss_sp125,4866
+	size_t ss_size;126,4880
+	unsigned ss_flags;127,4897
+
+../../include/kern/socket.h,1019
+#define _KERN_SOCKET_H_31,1604
+#define SOCK_STREAM	43,1754
+#define SOCK_DGRAM	44,1789
+#define SOCK_RAW	45,1823
+#define AF_UNSPEC	48,1908
+#define AF_UNIX	49,1928
+#define AF_INET	50,1947
+#define AF_INET6	51,1966
+#define PF_UNSPEC	54,2063
+#define PF_UNIX	55,2091
+#define PF_INET	56,2116
+#define PF_INET6	57,2141
+struct sockaddr 73,2714
+   __u8	sa_len;74,2732
+   __u8 sa_family;75,2748
+#define _SS_SIZE	78,2771
+struct sockaddr_storage 79,2792
+   __u8 ss_len;80,2818
+   __u8 ss_family;81,2834
+   __u8 __ss_pad1;82,2853
+   __u8 __ss_pad2;83,2872
+   __u32 __ss_pad3;84,2891
+   __u64 __ss_pad4;85,2911
+   char __ss_pad5[__ss_pad586,2931
+struct msghdr 98,3103
+	void *msg_name;msg_name99,3119
+	socklen_t msg_namelen;100,3177
+	struct iovec *msg_iov;msg_iov101,3237
+	int msg_iovlen;102,3279
+	void *msg_control;msg_control103,3320
+	socklen_t msg_controllen;104,3375
+	int msg_flags;105,3433
+struct cmsghdr 108,3466
+	socklen_t cmsg_len;109,3483
+	int cmsg_level;110,3551
+	int cmsg_type;111,3611
+
+../../include/kern/stat.h,491
+#define _KERN_STAT_H_31,1632
+struct stat 42,1886
+	off_t st_size;44,1924
+	mode_t st_mode;45,1966
+	nlink_t st_nlink;46,2020
+	blkcnt_t st_blocks;47,2066
+	dev_t st_dev;50,2142
+	ino_t st_ino;51,2196
+	dev_t st_rdev;52,2266
+	time_t st_atime;55,2347
+	time_t st_ctime;56,2404
+	time_t st_mtime;57,2462
+	__u32 st_atimensec;58,2520
+	__u32 st_ctimensec;59,2581
+	__u32 st_mtimensec;60,2643
+	uid_t st_uid;63,2740
+	gid_t st_gid;64,2777
+	__u32 st_gen;67,2828
+	blksize_t st_blksize;68,2894
+
+../../include/kern/stattypes.h,243
+#define _KERN_STATTYPES_H_31,1637
+#define _S_IFMT 45,2045
+#define _S_IFREG 46,2098
+#define _S_IFDIR 47,2151
+#define _S_IFLNK 48,2192
+#define _S_IFIFO 49,2237
+#define _S_IFSOCK 50,2287
+#define _S_IFCHR 51,2325
+#define _S_IFBLK 52,2373
+
+../../include/kern/syscall.h,2546
+#define _KERN_SYSCALL_H_31,1635
+#define SYS_fork 50,2283
+#define SYS_vfork 51,2310
+#define SYS_execv 52,2337
+#define SYS__exit 53,2364
+#define SYS_waitpid 54,2391
+#define SYS_getpid 55,2418
+#define SYS_getppid 56,2445
+#define SYS_sbrk 58,2521
+#define SYS_mmap 59,2548
+#define SYS_munmap 60,2575
+#define SYS_mprotect 61,2602
+#define SYS_umask 69,2853
+#define SYS_issetugid 70,2881
+#define SYS_getresuid 71,2909
+#define SYS_setresuid 72,2937
+#define SYS_getresgid 73,2965
+#define SYS_setresgid 74,2993
+#define SYS_getgroups 75,3021
+#define SYS_setgroups 76,3049
+#define SYS___getlogin 77,3077
+#define SYS___setlogin 78,3105
+#define SYS_kill 80,3175
+#define SYS_sigaction 81,3203
+#define SYS_sigpending 82,3231
+#define SYS_sigprocmask 83,3259
+#define SYS_sigsuspend 84,3287
+#define SYS_sigreturn 85,3315
+#define SYS_open 105,4042
+#define SYS_pipe 106,4070
+#define SYS_dup 107,4098
+#define SYS_dup2 108,4126
+#define SYS_close 109,4154
+#define SYS_read 110,4182
+#define SYS_pread 111,4210
+#define SYS_getdirentry 114,4294
+#define SYS_write 115,4322
+#define SYS_pwrite 116,4350
+#define SYS_lseek 119,4434
+#define SYS_flock 120,4462
+#define SYS_ftruncate 121,4490
+#define SYS_fsync 122,4518
+#define SYS_fcntl 123,4546
+#define SYS_ioctl 124,4574
+#define SYS_select 125,4602
+#define SYS_poll 126,4630
+#define SYS_link 129,4714
+#define SYS_remove 130,4742
+#define SYS_mkdir 131,4770
+#define SYS_rmdir 132,4798
+#define SYS_mkfifo 133,4826
+#define SYS_rename 134,4854
+#define SYS_access 135,4882
+#define SYS_chdir 137,4962
+#define SYS_fchdir 138,4990
+#define SYS___getcwd 139,5018
+#define SYS_symlink 141,5095
+#define SYS_readlink 142,5123
+#define SYS_mount 144,5191
+#define SYS_unmount 145,5219
+#define SYS_stat 149,5304
+#define SYS_fstat 150,5332
+#define SYS_lstat 151,5360
+#define SYS_utimes 153,5433
+#define SYS_futimes 154,5461
+#define SYS_lutimes 155,5489
+#define SYS_chmod 157,5572
+#define SYS_chown 158,5600
+#define SYS_fchmod 159,5628
+#define SYS_fchown 160,5656
+#define SYS_lchmod 161,5684
+#define SYS_lchown 162,5712
+#define SYS_socket 172,6061
+#define SYS_bind 173,6089
+#define SYS_connect 174,6117
+#define SYS_listen 175,6146
+#define SYS_accept 176,6175
+#define SYS_shutdown 178,6233
+#define SYS_getsockname 179,6262
+#define SYS_getpeername 180,6291
+#define SYS_getsockopt 181,6320
+#define SYS_setsockopt 182,6349
+#define SYS___time 189,6546
+#define SYS___settime 190,6575
+#define SYS_nanosleep 191,6604
+#define SYS_sync 196,6736
+#define SYS_reboot 197,6765
+
+../../include/kern/sysexits.h,539
+#define	_SYSEXITS_H_63,2991
+#define EX_OK	122,5619
+#define EX__BASE	124,5666
+#define EX_USAGE	126,5723
+#define EX_DATAERR	127,5774
+#define EX_NOINPUT	128,5820
+#define EX_NOUSER	129,5866
+#define EX_NOHOST	130,5911
+#define EX_UNAVAILABLE	131,5956
+#define EX_SOFTWARE	132,6008
+#define EX_OSERR	133,6061
+#define EX_OSFILE	134,6119
+#define EX_CANTCREAT	135,6171
+#define EX_IOERR	136,6233
+#define EX_TEMPFAIL	137,6278
+#define EX_PROTOCOL	138,6346
+#define EX_NOPERM	139,6400
+#define EX_CONFIG	140,6445
+#define EX__MAX	142,6493
+
+../../include/kern/time.h,401
+#define _KERN_TIME_H_31,1602
+struct timeval 43,1815
+        __time_t tv_sec;44,1832
+        __i32 tv_usec;45,1878
+struct timespec 48,1933
+        __time_t tv_sec;49,1951
+        __i32 tv_nsec;50,1997
+#define ITIMER_REAL	59,2163
+#define ITIMER_VIRTUAL	60,2215
+#define ITIMER_PROF	61,2288
+struct itimerval 64,2382
+        struct timeval it_interval;65,2401
+	struct timeval it_value;66,2472
+
+../../include/kern/types.h,729
+#define _KERN_TYPES_H_31,1633
+typedef __u32 __blkcnt_t;64,3089
+typedef __u32 __blksize_t;65,3138
+typedef __u64 __counter_t;66,3192
+typedef __u32 __daddr_t;67,3239
+typedef __u32 __dev_t;68,3290
+typedef __u32 __fsid_t;69,3342
+typedef __i32 __gid_t;70,3389
+typedef __u32 __in_addr_t;71,3431
+typedef __u32 __in_port_t;72,3481
+typedef __u32 __ino_t;73,3535
+typedef __u32 __mode_t;74,3581
+typedef __u16 __nlink_t;75,3631
+typedef __i64 __off_t;76,3709
+typedef __i32 __pid_t;77,3761
+typedef __u64 __rlim_t;78,3805
+typedef __u8 __sa_family_t;79,3862
+typedef __i64 __time_t;80,3917
+typedef __i32 __uid_t;81,3966
+typedef int __nfds_t;83,4008
+typedef int __socklen_t;84,4062
+typedef __builtin_va_list __va_list;88,4163
+
+../../include/kern/unistd.h,124
+#define _KERN_UNISTD_H_31,1634
+#define STDIN_FILENO 34,1716
+#define STDOUT_FILENO 35,1766
+#define STDERR_FILENO 36,1817
+
+../../include/kern/wait.h,630
+#define _KERN_WAIT_H_31,1602
+#define WNOHANG 39,1703
+#define WUNTRACED 40,1745
+#define WAIT_ANY 43,1855
+#define WAIT_MYPGRP 44,1906
+#define _WWHAT(54,2232
+#define _WVAL(55,2298
+#define _MKWVAL(56,2354
+#define __WEXITED 59,2436
+#define __WSIGNALED 60,2501
+#define __WCORED 61,2564
+#define __WSTOPPED 62,2633
+#define WIFEXITED(65,2740
+#define WIFSIGNALED(66,2786
+#define WIFSTOPPED(67,2857
+#define WEXITSTATUS(68,2904
+#define WTERMSIG(69,2938
+#define WSTOPSIG(70,2972
+#define WCOREDUMP(71,3006
+#define _MKWAIT_EXIT(74,3123
+#define _MKWAIT_SIG(75,3170
+#define _MKWAIT_CORE(76,3219
+#define _MKWAIT_STOP(77,3265
+
+../../dev/generic/beep.h,131
+#define _GENERIC_BEEP_H_31,1641
+struct beep_softc 38,1779
+	void *bs_devdata;bs_devdata39,1799
+	void (*bs_beep)bs_beep40,1818
+
+../../dev/generic/console.h,429
+#define _GENERIC_CONSOLE_H_31,1644
+#define CONSOLE_INPUT_BUFFER_SIZE 40,1868
+struct con_softc 42,1906
+	void *cs_devdata;cs_devdata44,1962
+	void (*cs_send)cs_send45,1981
+	void (*cs_sendpolled)cs_sendpolled46,2022
+	struct semaphore *cs_rsem;cs_rsem49,2107
+	struct semaphore *cs_wsem;cs_wsem50,2135
+	unsigned char cs_gotchars[cs_gotchars51,2163
+	unsigned cs_gotchars_head;52,2218
+	unsigned cs_gotchars_tail;53,2279
+
+../../dev/generic/random.h,249
+#define _GENERIC_RANDOM_H_31,1643
+struct random_softc 36,1704
+	void *rs_devdata;rs_devdata38,1775
+	uint32_t (*rs_random)rs_random39,1794
+	uint32_t (*rs_randmax)rs_randmax40,1833
+	int (*rs_read)rs_read41,1873
+	struct device rs_dev;43,1923
+
+../../dev/generic/rtclock.h,147
+#define _GENERIC_RTCLOCK_H_31,1644
+struct rtclock_softc 38,1786
+	void *rtc_devdata;rtc_devdata39,1809
+	void (*rtc_gettime)rtc_gettime41,1872
+
+../../dev/lamebus/emu.h,339
+#define _LAMEBUS_EMU_H_31,1640
+#define EMU_MAXIO 34,1666
+#define EMU_ROOTHANDLE 35,1696
+struct emu_softc 43,1894
+	void *e_busdata;e_busdata45,1959
+	uint32_t e_buspos;46,1977
+	int e_unit;47,1997
+	struct lock *e_lock;e_lock50,2046
+	struct semaphore *e_sem;e_sem51,2068
+	void *e_iobuf;e_iobuf52,2094
+	uint32_t e_result;55,2151
+
+../../dev/lamebus/lamebus.h,771
+#define _LAMEBUS_H_31,1636
+#define LB_VENDOR_CS161 44,1791
+#define LBCS161_BUSCTL 47,1843
+#define LBCS161_TIMER 48,1874
+#define LBCS161_DISK 49,1905
+#define LBCS161_SERIAL 50,1936
+#define LBCS161_SCREEN 51,1967
+#define LBCS161_NET 52,1998
+#define LBCS161_EMUFS 53,2029
+#define LBCS161_TRACE 54,2060
+#define LBCS161_RANDOM 55,2091
+#define LB_CONTROLLER_SLOT 58,2171
+#define LB_NSLOTS 61,2226
+#define LB_CONFIG_SIZE 64,2306
+#define LB_CTLCPU_SIZE 67,2388
+#define LB_CTLCPU_OFFSET 70,2485
+#define LB_SLOT_SIZE 73,2557
+typedef void (*lb_irqfunc)lb_irqfunc76,2647
+struct lamebus_softc 81,2713
+	struct spinlock ls_lock;82,2736
+	uint32_t     ls_slotsinuse;85,2823
+	void        *ls_devdata[ls_devdata86,2852
+	lb_irqfunc   ls_irqfuncs[ls_irqfuncs87,2889
+
+../../dev/lamebus/lhd.h,352
+#define _LAMEBUS_LHD_H_31,1640
+#define LHD_SECTSIZE 38,1712
+struct lhd_softc 43,1810
+	void *lh_busdata;lh_busdata45,1875
+	uint32_t lh_buspos;46,1919
+	int lh_unit;47,1968
+	void *lh_buf;lh_buf53,2055
+	int lh_result;54,2108
+	struct semaphore *lh_clear;lh_clear55,2158
+	struct semaphore *lh_done;lh_done56,2209
+	struct device lh_dev;58,2238
+
+../../dev/lamebus/lrandom.h,125
+#define _LAMEBUS_LRANDOM_H_31,1644
+struct lrandom_softc 35,1686
+	void *lr_bus;lr_bus37,1758
+	uint32_t lr_buspos;38,1773
+
+../../dev/lamebus/lscreen.h,435
+#define _LAMEBUS_LSCREEN_H_31,1644
+struct lscreen_softc 36,1747
+	struct spinlock ls_lock;38,1808
+	unsigned ls_width,39,1872
+	unsigned ls_width, ls_height;39,1872
+	unsigned ls_cx,40,1918
+	unsigned ls_cx, ls_cy;40,1918
+	char *ls_screen;ls_screen41,1968
+	void *ls_busdata;ls_busdata44,2085
+	uint32_t ls_buspos;45,2121
+	void *ls_devdata;ls_devdata48,2223
+	void (*ls_start)ls_start49,2270
+	void (*ls_input)ls_input50,2329
+
+../../dev/lamebus/lser.h,302
+#define _LAMEBUS_LSER_H_31,1641
+struct lser_softc 35,1690
+	struct spinlock ls_lock;37,1748
+	volatile bool ls_wbusy;38,1817
+	void *ls_busdata;ls_busdata41,1933
+	uint32_t ls_buspos;42,1952
+	void *ls_devdata;ls_devdata45,2029
+	void (*ls_start)ls_start46,2048
+	void (*ls_input)ls_input47,2082
+
+../../dev/lamebus/ltimer.h,178
+#define _LAMEBUS_LTIMER_H_31,1643
+struct ltimer_softc 36,1727
+	int lt_hardclock;38,1787
+	int lt_timerclock;39,1854
+	void *lt_bus;lt_bus42,1973
+	uint32_t lt_buspos;43,2008
+
+../../dev/lamebus/ltrace.h,131
+#define _LAMEBUS_LTRACE_H_31,1643
+struct ltrace_softc 33,1671
+	void *lt_busdata;lt_busdata35,1747
+	uint32_t lt_buspos;36,1766
+
+../../arch/mips/include/current.h,124
+#define _MIPS_CURRENT_H_31,1599
+#undef __NEED_CURTHREAD80,3598
+#define __NEED_CURCPU81,3622
+#define INIT_CURCPU(84,3716
+
+../../arch/mips/include/elf.h,441
+#define _MIPS_ELF_H_31,1637
+#define EM_MACHINE 39,1764
+#define R_MIPS_NONE	42,1846
+#define R_MIPS_16	43,1885
+#define R_MIPS_32	44,1924
+#define R_MIPS_REL32	45,1963
+#define R_MIPS_26	46,2033
+#define R_MIPS_HI16	47,2098
+#define R_MIPS_LO16	48,2151
+#define R_MIPS_GPREL16	49,2204
+#define R_MIPS_LITERAL	50,2266
+#define R_MIPS_GOT16	51,2339
+#define R_MIPS_PC16	52,2407
+#define R_MIPS_CALL16	53,2465
+#define R_MIPS_GPREL32	54,2536
+
+../../arnh/mips/include/specialreg.h,985
+#define _MIPS_SPECIALREG_H_31,1644
+#define c0_index 37,1734
+#define c0_random 38,1797
+#define c0_entrylo 39,1860
+#define c0_context 42,2050
+#define c0_vaddr 45,2237
+#define c0_count 46,2313
+#define c0_entryhi 47,2382
+#define c0_compare 48,2457
+#define c0_status 49,2534
+#define c0_cause 50,2598
+#define c0_epc 51,2661
+#define c0_prid 52,2721
+#define CST_IEc 61,3047
+#define CST_KUc 62,3111
+#define CST_IEp 63,3168
+#define CST_KUp 64,3233
+#define CST_IEo 65,3291
+#define CST_KUo 66,3351
+#define CST_MODEMASK 67,3404
+#define CST_IRQMASK 68,3461
+#define CST_BEV 69,3539
+#define CCA_UTLB 74,3654
+#define CCA_CODE 75,3732
+#define CCA_IRQS 76,3792
+#define CCA_COPN 77,3859
+#define CCA_JD 78,3927
+#define CCA_CODESHIFT 80,4007
+#define CIN_P 85,4113
+#define CIN_INDEX 86,4186
+#define CIN_INDEXSHIFT 88,4246
+#define CTX_VSHIFT 105,4994
+#define CTX_PTBASE 106,5062
+#define CTX_PTBASESHIFT 108,5123
+#define EXADDR_UTLB	113,5233
+#define EXADDR_GENERAL	114,5264
+
+../../arnh/mips/include/spinlock.h,207
+#define _MIPS_SPINLOCK_H_31,1642
+typedef unsigned spinlock_data_t;37,1737
+#define SPINLOCK_DATA_INITIALIZER	40,1822
+spinlock_data_set(51,2191
+spinlock_data_get(58,2302
+spinlock_data_testandset(65,2400
+
+../../arch/mips/include/thread.h,187
+#define _MIPS_THREAD_H_31,1640
+typedef void (*badfaultfunc_t)badfaultfunc_t40,1729
+struct thread_machdep 42,1768
+	badfaultfunc_t tm_badfaultfunc;43,1792
+	jmp_buf tm_copyjmp;44,1861
+
+../../arch/mips/include/tlb.h,264
+#define _MIPS_TLB_H_31,1637
+#define TLBHI_VPAGE 80,3505
+#define TLBLO_PPAGE 84,3610
+#define TLBLO_NOCACHE 85,3643
+#define TLBLO_DIRTY 86,3676
+#define TLBLO_VALID 87,3709
+#define TLBHI_INVALID(95,3963
+#define TLBLO_INVALID(96,4020
+#define NUM_TLB 102,4107
+
+../../arnh/mips/include/trapframe.h,1311
+#define _MIPS_TRAPFRAME_H_31,1643
+struct trapframe 40,1824
+	uint32_t tf_vaddr;41,1843
+	uint32_t tf_status;42,1898
+	uint32_t tf_cause;43,1955
+	uint32_t tf_lo;44,2010
+	uint32_t tf_hi;45,2027
+	uint32_t tf_ra;46,2044
+	uint32_t tf_at;47,2086
+	uint32_t tf_v0;48,2132
+	uint32_t tf_v1;49,2178
+	uint32_t tf_a0;50,2207
+	uint32_t tf_a1;51,2224
+	uint32_t tf_a2;52,2241
+	uint32_t tf_a3;53,2258
+	uint32_t tf_t0;54,2275
+	uint32_t tf_t1;55,2292
+	uint32_t tf_t2;56,2309
+	uint32_t tf_t3;57,2326
+	uint32_t tf_t4;58,2343
+	uint32_t tf_t5;59,2360
+	uint32_t tf_t6;60,2377
+	uint32_t tf_t7;61,2394
+	uint32_t tf_s0;62,2411
+	uint32_t tf_s1;63,2428
+	uint32_t tf_s2;64,2445
+	uint32_t tf_s3;65,2462
+	uint32_t tf_s4;66,2479
+	uint32_t tf_s5;67,2496
+	uint32_t tf_s6;68,2513
+	uint32_t tf_s7;69,2530
+	uint32_t tf_t8;70,2547
+	uint32_t tf_t9;71,2564
+	uint32_t tf_k0;72,2581
+	uint32_t tf_k1;73,2638
+	uint32_t tf_gp;74,2668
+	uint32_t tf_sp;75,2685
+	uint32_t tf_s8;76,2702
+	uint32_t tf_epc;77,2719
+#define EX_IRQ 83,2806
+#define EX_MOD 84,2845
+#define EX_TLBL 85,2911
+#define EX_TLBS 86,2957
+#define EX_ADEL 87,3004
+#define EX_ADES 88,3055
+#define EX_IBE 89,3107
+#define EX_DBE 90,3167
+#define EX_SYS 91,3230
+#define EX_BP 92,3267
+#define EX_RI 93,3307
+#define EX_CPU 94,3367
+#define EX_OVF 95,3417
+
+../../arch/mips/include/types.h,93
+#define _MIPS_TYPES_H_31,1639
+typedef __u32 paddr_t;43,1983
+typedef __u32 vaddr_t;44,2006
+
+../../arch/mips/include/vm.h,380
+#define _MIPS_VM_H_31,1636
+#define PAGE_SIZE 38,1710
+#define PAGE_FRAME 39,1764
+#define MIPS_KUSEG 51,2170
+#define MIPS_KSEG0 52,2201
+#define MIPS_KSEG1 53,2232
+#define MIPS_KSEG2 54,2263
+#define PADDR_TO_KVADDR(68,2961
+#define USERSPACETOP 74,3121
+#define USERSTACK 84,3420
+struct tlbshootdown 111,4297
+	int ts_placeholder;115,4381
+#define TLBSHOOTDOWN_MAX 118,4406
+
+../../arch/mips/thread/switchframe.h,385
+#define _MIPS_SWITCHFRAME_H_31,1645
+struct switchframe 39,1808
+        uint32_t sf_s0;40,1829
+        uint32_t sf_s1;41,1853
+        uint32_t sf_s2;42,1877
+        uint32_t sf_s3;43,1901
+        uint32_t sf_s4;44,1925
+        uint32_t sf_s5;45,1949
+        uint32_t sf_s6;46,1973
+        uint32_t sf_s8;47,1997
+        uint32_t sf_gp;48,2021
+        uint32_t sf_ra;49,2045
+
+../../arnh/mips/include/kern/endian.h,66
+#define _KERN_MIPS_ENDIAN_H_31,1645
+#define _BYTE_ORDER 42,1969
+
+../../arch/mips/include/kern/regdefs.h,678
+#define _KERN_MIPS_REGDEFS_H_37,1785
+#define z0 40,1817
+#define AT 41,1863
+#define v0 42,1912
+#define v1 43,1945
+#define a0 44,1978
+#define a1 45,2014
+#define a2 46,2050
+#define a3 47,2086
+#define t0 48,2122
+#define t1 49,2173
+#define t2 50,2224
+#define t3 51,2275
+#define t4 52,2326
+#define t5 53,2377
+#define t6 54,2428
+#define t7 55,2479
+#define s0 56,2530
+#define s1 57,2577
+#define s2 58,2624
+#define s3 59,2671
+#define s4 60,2718
+#define s5 61,2765
+#define s6 62,2812
+#define s7 63,2859
+#define t8 64,2906
+#define t9 65,2957
+#define k0 66,3008
+#define k1 67,3052
+#define gp 68,3096
+#define sp 69,3136
+#define s8 70,3175
+#define ra 71,3238
+
+../../arnh/mips/include/kern/setjmp.h,101
+#define _MIPS_SETJMP_H_31,1640
+#define __JB_REGS 41,1822
+typedef uint32_t jmp_buf[jmp_buf44,1896
+
+../../arch/mips/include/kern/signal.h,64
+#define _KERN_MIPS_SIGNAL_H_32,1604
+struct sigcontext 41,1939
+
+../../arnh/mips/include/kern/types.h,643
+#define _KERN_MIPS_TYPES_H_31,1644
+typedef char      __i8;43,1921
+typedef short     __i16;44,1988
+typedef int       __i32;45,2056
+typedef long long __i64;46,2124
+typedef unsigned char      __u8;48,2193
+typedef unsigned short     __u16;49,2262
+typedef unsigned int       __u32;50,2332
+typedef unsigned long long __u64;51,2402
+typedef long __intptr_t;54,2504
+typedef unsigned long __uintptr_t;55,2579
+typedef unsigned __size_t;65,2991
+typedef int __ssize_t;66,3061
+typedef int __ptrdiff_t;67,3132
+typedef unsigned long __size_t;69,3211
+typedef long __ssize_t;70,3281
+typedef long __ptrdiff_t;71,3352
+#define __CHAR_BIT 75,3464
+
+../../arch/sys161/include/bus.h,161
+#define _SYS161_BUS_H_31,1639
+#define bus_write_register(43,1927
+#define bus_read_register(46,2032
+#define bus_map_area(49,2125
+#define LB_BASEADDR 57,2304
+
+../../arch/sys161/include/maxcpus.h,60
+#define _SYS161_MAXCPUS_H_31,1643
+#define MAXCPUS 42,2027
