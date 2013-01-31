@@ -52,9 +52,9 @@
  * Calls vfs_open on progname and thus may destroy it.
  */
 int
-runprogram(char *progname)
-{
-	struct vnode *v;
+runprogram(char *progname, char **args, int argc)
+{       kprintf(args[1]);
+        struct vnode *v;
 	vaddr_t entrypoint, stackptr;
 	int result;
 
@@ -96,7 +96,7 @@ runprogram(char *progname)
 	}
 
 	/* Warp to user mode. */
-	enter_new_process(0 /*argc*/, NULL /*userspace addr of argv*/,
+	enter_new_process(argc, NULL /*userspace addr of argv*/,
 			  stackptr, entrypoint);
 	
 	/* enter_new_process does not return. */

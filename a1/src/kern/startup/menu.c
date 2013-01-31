@@ -40,6 +40,7 @@
 #include <vfs.h>
 #include <syscall.h>
 #include <test.h>
+#include <copyinout.h>
 
 /*
  * In-kernel menu and command dispatcher.
@@ -139,9 +140,21 @@ cmd_progthread(void *ptr, unsigned long nargs)
 
 	strcpy(progname, args[0]);
 	strcpy(progname2,args[0]); /* demke: make extra copy for runprogram */
-	free_args(nargs, args);
+	// moved free_args from here to **
+        
+        char *newargs[nargs];
+        unsigned long j;
+        size_t *actual;
 
-	result = runprogram(progname2);
+        for(j=0;j<=nargs; j++){
+            void *addr = kmalloc(sizeof(args[j]));
+            copyoutstr(args[j], addr, sizeof(args[j]), actual);
+            newargs[j] = &addr;
+        }
+        
+	result = runprogram(progname, newargs, nargs); //progname2
+        // **
+        free_args(nargs, args);
 	if (result) {
 		kprintf("Running program %s failed: %s\n", progname,
 			strerror(result));
