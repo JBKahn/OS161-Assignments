@@ -44,6 +44,7 @@
 #include <vfs.h>
 #include <syscall.h>
 #include <test.h>
+#include <copyinout.h>
 
 /*
  * Load program "progname" and start running it in usermode.
@@ -53,10 +54,30 @@
  */
 int
 runprogram(char *progname, char **args, int argc)
-{       kprintf(args[1]);
+{       kprintf("hi\n");
         struct vnode *v;
 	vaddr_t entrypoint, stackptr;
 	int result;
+        
+        userptr_t *newargs[argc];
+        int j;
+        size_t *actual;
+
+        for(j=0;j<argc; j++){
+            userptr_t *addr = kmalloc(sizeof(args[j]));
+            copyoutstr(args[j], *addr, sizeof(args[j]) + 4 -(sizeof(args[j]) % 4), actual);
+            newargs[j] = addr;
+           
+            kprintf("%d", j);
+            kprintf(":");
+            kprintf((char *) &newargs[j]);
+            kprintf("\n");
+        }
+         kprintf("%d", (int) &actual);
+        
+        newargs[argc] = NULL;
+        
+       
 
 	/* Open the file. */
 	result = vfs_open(progname, O_RDONLY, 0, &v);
@@ -96,7 +117,7 @@ runprogram(char *progname, char **args, int argc)
 	}
 
 	/* Warp to user mode. */
-	enter_new_process(argc, NULL /*userspace addr of argv*/,
+	enter_new_process(argc, **newargs /*userspace addr of argv*/,
 			  stackptr, entrypoint);
 	
 	/* enter_new_process does not return. */

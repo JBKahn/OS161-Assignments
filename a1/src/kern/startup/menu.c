@@ -142,17 +142,9 @@ cmd_progthread(void *ptr, unsigned long nargs)
 	strcpy(progname2,args[0]); /* demke: make extra copy for runprogram */
 	// moved free_args from here to **
         
-        char *newargs[nargs];
-        unsigned long j;
-        size_t *actual;
 
-        for(j=0;j<=nargs; j++){
-            void *addr = kmalloc(sizeof(args[j]));
-            copyoutstr(args[j], addr, sizeof(args[j]), actual);
-            newargs[j] = &addr;
-        }
-        
-	result = runprogram(progname, newargs, nargs); //progname2
+     
+	result = runprogram(progname, args, nargs); //progname2
         // **
         free_args(nargs, args);
 	if (result) {
