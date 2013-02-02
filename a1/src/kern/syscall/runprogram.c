@@ -52,33 +52,17 @@
  *
  * Calls vfs_open on progname and thus may destroy it.
  */
-int
-runprogram(char *progname, char **args, int argc)
-{       kprintf("hi\n");
-        struct vnode *v;
+int 
+runprogram(char *progname, char **args)
+{       struct vnode *v;
 	vaddr_t entrypoint, stackptr;
 	int result;
+        int argc = 0;
         
-        userptr_t *newargs[argc];
-        int j;
-        size_t *actual;
-
-        for(j=0;j<argc; j++){
-            userptr_t *addr = kmalloc(sizeof(args[j]));
-            copyoutstr(args[j], *addr, sizeof(args[j]) + 4 -(sizeof(args[j]) % 4), actual);
-            newargs[j] = addr;
-           
-            kprintf("%d", j);
-            kprintf(":");
-            kprintf((char *) &newargs[j]);
-            kprintf("\n");
-        }
-         kprintf("%d", (int) &actual);
+        //Calculate the value of argc
+        while(args[argc] != NULL && strlen(args[argc]) != 0)
+            argc++;
         
-        newargs[argc] = NULL;
-        
-       
-
 	/* Open the file. */
 	result = vfs_open(progname, O_RDONLY, 0, &v);
 	if (result) {
@@ -115,9 +99,46 @@ runprogram(char *progname, char **args, int argc)
 		/* thread_exit destroys curthread->t_addrspace */
 		return result;
 	}
+        //Copy the arguments from args to argv so that we can pad them with
+        //zeros
+        int len, i,j;
+        char** argv = (char **)kmalloc(sizeof(args)*sizeof(char *));
+        
+        for (i = 0; i < argc; i++) {
+            // Since (len % 4) can be a maximum value of 3, it will not
+            // only correct the bytes to be divisable by 4, but it will
+            // add an extra space for the null terminating byte.
+            len = strlen(args[i]) + 4 - (len % 4);
+            argv[i] = (char *)kmalloc(len);
+            // Put '\0' in each of the spots.
+            for (j = 0; j < len; j++)
+                argv[i][j] = '\0';
+            memcpy(argv[i],args[i],strlen(args[i]));
+        }
+        
+        //Copy arguments from the kernel to the users stack.
+        size_t actual;
+        vaddr_t topstack[argc];
+        
+        // The stack is bottom up, so we start with the last value of argv
+        for (i = argc - 1; i >= 0; i--) {
+            len = strlen(argv[i]) + 4 - (len % 4);
+            stackptr -= len;
+            copyoutstr(argv[i], (userptr_t) stackptr, len, &actual);
+            topstack[argc-i-1] = stackptr;
+        }
+        stackptr -=4;
+        // pad this will 0's as well???
+        copyoutstr(NULL, (userptr_t) stackptr, 4, &actual);
+        for (i = 0; i < argc; i++) {
+            stackptr -= 4;
+            copyout(&topstack[i], (userptr_t) stackptr, sizeof(topstack[i]));
+        }
+        
+        
 
 	/* Warp to user mode. */
-	enter_new_process(argc, **newargs /*userspace addr of argv*/,
+	enter_new_process(argc, (userptr_t) stackptr /*userspace addr of argv*/,
 			  stackptr, entrypoint);
 	
 	/* enter_new_process does not return. */

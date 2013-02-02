@@ -140,12 +140,20 @@ cmd_progthread(void *ptr, unsigned long nargs)
 
 	strcpy(progname, args[0]);
 	strcpy(progname2,args[0]); /* demke: make extra copy for runprogram */
-	// moved free_args from here to **
         
+        // Add the terminating NULL
+        int i = 0;
+        while (args[i] != NULL) {
+            i++;
+            // This would imply we have entered user_space.
+            if ((vaddr_t) args[i] < 0x80000000)
+                break;
+        }
+        args[i] = NULL;
 
      
-	result = runprogram(progname, args, nargs); //progname2
-        // **
+	result = runprogram(progname, args); //progname2
+        // moved free args until after result.
         free_args(nargs, args);
 	if (result) {
 		kprintf("Running program %s failed: %s\n", progname,
