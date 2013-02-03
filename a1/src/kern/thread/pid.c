@@ -51,11 +51,12 @@
  * structure can be freed.
  */
 struct pidinfo {
-	pid_t pi_pid;			// process id of this thread
-	pid_t pi_ppid;			// process id of parent thread
-	volatile bool pi_exited;	// true if thread has exited
-	int pi_exitstatus;		// status (only valid if exited)
-	struct cv *pi_cv;		// use to wait for thread exit
+pid_t pi_pid;	// process id of this thread
+pid_t pi_ppid;	// process id of parent thread
+volatile bool pi_exited;	// true if thread has exited
+int pi_exitstatus;	// status (only valid if exited)
+struct cv *pi_cv;	// use to wait for thread exit
+int pi_joinable;	// the pid is joinable
 };
 
 
@@ -353,14 +354,37 @@ pid_exit(int status, bool dodetach)
  * exited, curthread waits unless the flag WNOHANG is sent. 
  *
  */
-int
-pid_join(pid_t targetpid, int *status, int flags)
+int pid_join(pid_t targetpid, int *status, int flags)
 {
-	(void)targetpid;
-	(void)status;
-	(void)flags;
-	
-	// Implement me.
-	KASSERT(false);
-	return EUNIMP;
+    flags = flags;//unused because reasons
+struct pidinfo *target = pi_get(targetpid);
+lock_acquire(pidlock);
+ 
+//Error checks
+if (target == NULL) {
+/* Checks if no thread could be found corresponding to that specified by target.*/
+lock_release(pidlock); /* release lock before returning */
+return ESRCH;
+}
+ 
+if (target->pi_joinable == false || target->pi_pid == INVALID_PID || target->pi_pid == BOOTUP_PID) {
+/* Checks if the thread corresponding to target has been detached or if target is INVALID_PID or BOOTUP_PID.*/
+lock_release(pidlock); /* release lock before returning */
+return EINVAL;
+}
+if (target->pi_pid != curthread->t_pid) {
+lock_release(pidlock); /* release lock before returning */
+return EDEADLK;
+}
+ 
+if (target->pi_exited == false) {
+cv_wait(target->pi_cv, pidlock);
+}
+ 
+*status = target->pi_exitstatus;
+ 
+pi_drop(target->pi_pid);
+ 
+lock_release(pidlock);
+return 0;
 }
