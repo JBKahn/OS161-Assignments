@@ -131,10 +131,6 @@ cmd_progthread(void *ptr, unsigned long nargs)
 
 	KASSERT(nargs >= 1);
 
-	if (nargs > 2) {
-		kprintf("Warning: argument passing from menu not supported\n");
-	}
-
 	/* Hope we fit. */
 	KASSERT(strlen(args[0]) < sizeof(progname));
 
@@ -152,7 +148,7 @@ cmd_progthread(void *ptr, unsigned long nargs)
         args[i] = NULL;
 
      
-	result = runprogram(progname, args); //progname2
+	result = runprogram(progname, args, (int) nargs); //progname2
         // moved free args until after result.
         free_args(nargs, args);
 	if (result) {

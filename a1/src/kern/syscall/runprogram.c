@@ -46,6 +46,12 @@
 #include <test.h>
 #include <copyinout.h>
 
+static void memset(void *p, unsigned char c, unsigned int len) {
+    unsigned char *p_c= (unsigned char *)p;
+    for (; --len; ++p_c)
+        *p_c = c;
+}
+
 /*
  * Load program "progname" and start running it in usermode.
  * Does not return except on error.
@@ -53,15 +59,10 @@
  * Calls vfs_open on progname and thus may destroy it.
  */
 int 
-runprogram(char *progname, char **args)
+runprogram(char *progname, char **args, int argc)
 {       struct vnode *v;
 	vaddr_t entrypoint, stackptr;
 	int result;
-        int argc = 0;
-        
-        //Calculate the value of argc
-        while(args[argc] != NULL && strlen(args[argc]) != 0)
-            argc++;
         
 	/* Open the file. */
 	result = vfs_open(progname, O_RDONLY, 0, &v);
@@ -108,7 +109,7 @@ runprogram(char *progname, char **args)
             // Since (len % 4) can be a maximum value of 3, it will not
             // only correct the bytes to be divisable by 4, but it will
             // add an extra space for the null terminating byte.
-            len = strlen(args[i]) + 4 - (len % 4);
+            len = strlen(args[i]) + 4 - (strlen(args[i]) % 4);
             argv[i] = (char *)kmalloc(len);
             // Put '\0' in each of the spots.
             for (j = 0; j < len; j++)
@@ -122,21 +123,19 @@ runprogram(char *progname, char **args)
         
         // The stack is bottom up, so we start with the last value of argv
         for (i = argc - 1; i >= 0; i--) {
-            len = strlen(argv[i]) + 4 - (len % 4);
+            len = strlen(argv[i]) + 4 - (strlen(argv[i]) % 4);
             stackptr -= len;
             copyoutstr(argv[i], (userptr_t) stackptr, len, &actual);
             topstack[argc-i-1] = stackptr;
         }
         stackptr -=4;
-        // pad this will 0's as well???
-        copyoutstr(NULL, (userptr_t) stackptr, 4, &actual);
+        // Set 4 bytes to null
+        memset((userptr_t) stackptr,0,4);
         for (i = 0; i < argc; i++) {
             stackptr -= 4;
             copyout(&topstack[i], (userptr_t) stackptr, sizeof(topstack[i]));
         }
         
-        
-
 	/* Warp to user mode. */
 	enter_new_process(argc, (userptr_t) stackptr /*userspace addr of argv*/,
 			  stackptr, entrypoint);
