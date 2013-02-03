@@ -312,14 +312,33 @@ pid_unalloc(pid_t theirpid)
  * it can be freed as soon as it exits. May only be called by the
  * parent thread.
  */
-int
-pid_detach(pid_t childpid)
+
+int pid_detach(pid_t childpid)
 {
-	(void)childpid;
-	
-	// Implement me
-	KASSERT(false);
-	return EUNIMP;
+struct pidinfo *pi_child = pi_get(childpid);
+lock_acquire(pidlock);
+ 
+// error checking
+if (pi_child == NULL) {
+lock_release(pidlock); /* released the lock before return */
+return ESRCH;
+}
+ 
+if (pi_child->pi_joinable != true || pi_child->pi_ppid != curthread->t_pid || pi_child->pi_ppid == INVALID_PID || pi_child->pi_ppid == BOOTUP_PID) {
+lock_release(pidlock); /* released the lock before return */
+return EINVAL;
+}
+ 
+/* Mark pi_child not joinable. */
+pi_child->pi_joinable = false;
+ 
+/* Check if pi_child has exited and if so, frees the memory and drops it from the pid table */
+if (pi_child->pi_exited == true) {	
+pi_drop(pi_child->pi_ppid);
+}
+ 
+lock_release(pidlock); /* released the lock before return */
+return 0;
 }
 
 /*
@@ -356,7 +375,7 @@ pid_exit(int status, bool dodetach)
  */
 int pid_join(pid_t targetpid, int *status, int flags)
 {
-    flags = flags;//unused because reasons
+    flags = flags;
 struct pidinfo *target = pi_get(targetpid);
 lock_acquire(pidlock);
  
