@@ -46,12 +46,6 @@
 #include <test.h>
 #include <copyinout.h>
 
-static void memset(void *p, unsigned char c, unsigned int len) {
-    unsigned char *p_c= (unsigned char *)p;
-    for (; --len; ++p_c)
-        *p_c = c;
-}
-
 /*
  * Load program "progname" and start running it in usermode.
  * Does not return except on error.
@@ -100,11 +94,12 @@ runprogram(char *progname, char **args, int argc)
 		/* thread_exit destroys curthread->t_addrspace */
 		return result;
 	}
-        //Copy the arguments from args to argv so that we can pad them with
-        //zeros
+        //Copy the arguments from args to argv to create a duplicate of
+        //the agrs array except with corrected lengths and padded with '\0's
         int len, i,j;
         char** argv = (char **)kmalloc(sizeof(args)*sizeof(char *));
         
+        // looping through the arguments to copy into the new array.
         for (i = 0; i < argc; i++) {
             // Since (len % 4) can be a maximum value of 3, it will not
             // only correct the bytes to be divisable by 4, but it will
@@ -114,23 +109,32 @@ runprogram(char *progname, char **args, int argc)
             // Put '\0' in each of the spots.
             for (j = 0; j < len; j++)
                 argv[i][j] = '\0';
+            // copy the arguments into argv and free them from args.
             memcpy(argv[i],args[i],strlen(args[i]));
+            kfree(args[i]);
         }
+        kfree(args);
         
         //Copy arguments from the kernel to the users stack.
         size_t actual;
         vaddr_t topstack[argc];
-        
-        // The stack is bottom up, so we start with the last value of argv
+        // Looping through the array to copy the arguments into the stack.
+        // The stack is bottom up, so we start with the last argument of argv
         for (i = argc - 1; i >= 0; i--) {
             len = strlen(argv[i]) + 4 - (strlen(argv[i]) % 4);
+            // Decrement the stack pointer to copy in the arguments.
             stackptr -= len;
+            // copy the arguments into the stack and free them from argv.
             copyoutstr(argv[i], (userptr_t) stackptr, len, &actual);
+            kfree(argv[i]);
+            // save the stack address of the arguments in the original order.
             topstack[argc-i-1] = stackptr;
         }
+        kfree(argv);
+        // decrement the stack pointer and add 4 null bytes of padding.
         stackptr -=4;
-        // Set 4 bytes to null
-        memset((userptr_t) stackptr,0,4);
+        copyoutstr(NULL, (userptr_t) stackptr, 4, &actual);
+        // writing the addresses of the arguments in the stack, into the stack.
         for (i = 0; i < argc; i++) {
             stackptr -= 4;
             copyout(&topstack[i], (userptr_t) stackptr, sizeof(topstack[i]));

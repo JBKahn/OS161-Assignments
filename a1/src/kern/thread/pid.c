@@ -101,6 +101,7 @@ pidinfo_create(pid_t pid, pid_t ppid)
 	pi->pi_ppid = ppid;
 	pi->pi_exited = false;
 	pi->pi_exitstatus = 0xbaad;  /* Recognizably invalid value */
+        pi->pi_joinable = true; /* All processes are joinable when created. */
 
 	return pi;
 }
