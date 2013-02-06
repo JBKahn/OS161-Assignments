@@ -11,6 +11,7 @@
 #include <pid.h>
 #include <machine/trapframe.h>
 #include <syscall.h>
+#include <copyinout.h>
 
 /*
  * sys_fork
@@ -51,12 +52,23 @@ sys_fork(struct trapframe *tf, pid_t *retval)
  * sys_getpid
  * Placeholder to remind you to implement this.
  */
-
+pid_t sys_getpid(void) {
+    return curthread->t_pid;
+}
 
 /*
  * sys_waitpid
  * Placeholder comment to remind you to implement this.
  */
+int sys_waitpid(pid_t pid, userptr_t status, int flags) {
+    int status_int, retval, result;
+    retval = pid_join(pid, &status_int, flags);
+    result = copyout(&status_int, status, sizeof (int));
+    if (result) {
+        return result;
+    }
+    return retval;
+}
 
 
 /*

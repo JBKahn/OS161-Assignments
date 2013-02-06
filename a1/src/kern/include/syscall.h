@@ -72,4 +72,10 @@ int sys_write(int fd, userptr_t buf, size_t size, int *retval);
  */
 void dumb_consoleIO_bootstrap(void);
 
+/*
+ * Prototypes for modified calls to sys_waitpid, sysgetpid and sys_kill
+ */
+int sys_waitpid(pid_t pid, userptr_t status, int options);
+pid_t sys_getpid(void);
+
 #endif /* _SYSCALL_H_ */
