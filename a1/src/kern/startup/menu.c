@@ -41,7 +41,8 @@
 #include <syscall.h>
 #include <test.h>
 #include <copyinout.h>
-
+#include <pid.h>
+//pid.h used so the menu to waits for the program to finish before prompting.
 /*
  * In-kernel menu and command dispatcher.
  */
@@ -170,6 +171,8 @@ common_prog(int nargs, char **args)
 {
 	int result;
 	char **args_copy;
+        pid_t programpid; // used to store the pid of the child program
+        int *status = kmalloc(sizeof(int)); // holds the exit status of the child program.
 #if OPT_SYNCHPROBS
 	kprintf("Warning: this probably won't work with a "
 		"synchronization-problems kernel.\n");
@@ -184,18 +187,23 @@ common_prog(int nargs, char **args)
 	}
 
 	/* demke: and now call thread_fork with the copy */
-	
 	result = thread_fork(args_copy[0] /* thread name */,
 			cmd_progthread /* thread function */,
 			args_copy /* thread arg */, nargs /* thread arg */,
-			NULL);
+			&programpid);
 	if (result) {
 		kprintf("thread_fork failed: %s\n", strerror(result));
 		/* demke: need to free copy of args if fork fails */
 		free_args(nargs, args_copy);
 		return result;
 	}
-
+        // any command that is followed by a "&" should be detached, 
+        // so that the menu thread does not wait for it.
+        if (strcmp(args_copy[nargs-1], "&") == 0)
+                pid_detach(programpid);
+        // Otherwise, the menu should wait till the child thread finishes
+        else
+                pid_join(programpid, status, 0);
 	return 0;
 }
 

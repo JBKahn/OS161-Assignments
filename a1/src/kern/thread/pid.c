@@ -319,12 +319,18 @@ int pid_detach(pid_t childpid) {
     struct pidinfo *pi_child = pi_get(childpid);
 
 
-    // error checking
+    // Return ESRCH if no thread could be found corresponding to the target pid,
+    // pi_child
     if (pi_child == NULL) {
         lock_release(pidlock); /* released the lock before return */
         return ESRCH;
     }
-
+    /* Return EINVAL if:
+     * i)The thread corresponding to pi_child has been detached.
+     * i.e. pi_joinable == false.
+     * ii) The current thread is not the parent of pi_child.
+     * iii) The pi_child is INVALID_PID.
+     * iv) The pi_child is BOOTUP_PID. */
     if (pi_child->pi_joinable != true || pi_child->pi_ppid != curthread->t_pid || pi_child->pi_ppid == INVALID_PID || pi_child->pi_ppid == BOOTUP_PID) {
         lock_release(pidlock); /* released the lock before return */
         return EINVAL;
@@ -333,7 +339,8 @@ int pid_detach(pid_t childpid) {
     /* Mark pi_child not joinable. */
     pi_child->pi_joinable = false;
 
-    /* Check if pi_child has exited and if so, frees the memory and drops it from the pid table */
+    /* Check if pi_child has exited and if so, frees the memory and drops it 
+     * from the pid table */
     if (pi_child->pi_exited == true) {
         pi_drop(pi_child->pi_ppid);
     }
@@ -356,30 +363,31 @@ pid_exit(int status, bool dodetach)
 {
 	struct pidinfo *my_pi;
 	
-	(void)dodetach; /* for compiler - delete when dodetach has real use */
-        
-	// Implement me. Existing code simply sets the exit status.
 	lock_acquire(pidlock);
 	my_pi = pi_get(curthread->t_pid);
 
 	KASSERT(my_pi != NULL);
 	my_pi->pi_exitstatus = status;
         my_pi->pi_exited = true;
-        // Wake up threads which are waiting for me to exit.
+        // Wake up threads that are waiting for the current thread's pid to 
+        // exit.
         if (my_pi->pi_joinable) 
             cv_signal(my_pi->pi_cv, pidlock);
-        // Looping through processes and if we are the parent, then we detatch them.
+        // Looping through processes and if we are the parent, we detatch them.
         if (dodetach) {
             int i;
             for (i=0; i<PROCS_MAX; i++)
                 if (pidinfo[i] != NULL && pidinfo[i]->pi_ppid == my_pi->pi_pid)
                         pid_detach(pidinfo[i]->pi_pid);
         }
+        // Checks if the current thread's pid has been detached, and if so its
+        // pid is set to INVALID_PID and it's dropped from the process list and
+        // freed.
         if (!my_pi->pi_joinable) {
             my_pi->pi_ppid = INVALID_PID;
             pi_drop(my_pi->pi_pid);
         }
-            
+
 	lock_release(pidlock);
 }
 
@@ -395,36 +403,45 @@ int pid_join(pid_t targetpid, int *status, int flags) {
     struct pidinfo *target = pi_get(targetpid);
 
 
-    //Error checks
+    // Return ESRCH if no thread could be found corresponding to the target pid,
+    // pi_child
     if (target == NULL) {
-        /* Checks if no thread could be found corresponding to that specified by target.*/
-        lock_release(pidlock); /* release lock before returning */
+        lock_release(pidlock); /* released the lock before return */
         return ESRCH;
     }
-
+    /* Return EINVAL if:
+     * i)The thread corresponding to pi_child has been detached.
+     * i.e. pi_joinable == false.
+     * ii) The pi_child is INVALID_PID.
+     * iii) The pi_child is BOOTUP_PID. */
     if (target->pi_joinable == false || target->pi_pid == INVALID_PID || target->pi_pid == BOOTUP_PID) {
         /* Checks if the thread corresponding to target has been detached or if target is INVALID_PID or BOOTUP_PID.*/
         lock_release(pidlock); /* release lock before returning */
         return EINVAL;
     }
+    // Return EDEADLK if the argument's pid refers to the calling thread's pid.
     if (target->pi_pid == curthread->t_pid) {
-        lock_release(pidlock); /* release lock before returning */
+        lock_release(pidlock); /* released the lock before return */
         return EDEADLK;
     }
-    if (flags == WNOHANG) {
-        lock_release(pidlock);
-        return 0;
-    }
-
+    // If the WHNOHANG flag is set, then the the current thread doesn't wait
+    // for the thread to exit and simply returns 0 if it has not exited,
+    // otherwise it waits for the thread to exit.
     if (target->pi_exited == false) {
+        if (flags == WNOHANG) {
+            lock_release(pidlock); /* released the lock before return */
+            return(0);
+        }
         cv_wait(target->pi_cv, pidlock);
-        KASSERT(target->pi_exited == true);
+        KASSERT(target->pi_exited == true); //Assertion used for debugging.
     }
-
+    
+    // Grab the status of the exited thread for use by the calling thread.
     *status = target->pi_exitstatus;
 
-    //pi_drop(target->pi_pid);
-
-    lock_release(pidlock);
+    lock_release(pidlock); /* released the lock before return */
+    // Detach the pid now.
+    // Then return that value to indicate the success of the call to pid_join.
+    // Should return 0.
     return pid_detach(target->pi_pid);
 }

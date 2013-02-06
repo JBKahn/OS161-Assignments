@@ -573,11 +573,16 @@ thread_fork(const char *name,
 	 *         thread structure.  This is safe to use even if the 
 	 *         child has already exited.
 	 */
-	if (ret != NULL) {
-		*ret = newthread->t_pid;
-	} else {
-            pid_detach(newthread->t_pid);
-        }
+        // The child's pid shoudl be returned so that the parent can keep
+        // track of it.
+	if (ret != NULL)
+                *ret = newthread->t_pid;
+        // The parent has indicated it doesn't want the child's pid so it
+        // is immediately detached since it is now impossible for it to join
+        // with the child.
+	else
+                pid_detach(newthread->t_pid);
+        
 
 	return 0;
 }
@@ -850,15 +855,19 @@ thread_exit(int exitcode)
 		 * come back we'll call as_activate on a half-destroyed
 		 * address space, which is usually messily fatal.
 		 */
+                // Calls pid_exit with the second parameter as false, as
+                // cur->t_addrspace was true and is thus running a user
+                // level process.
                 pid_exit(exitcode, false);
 		struct addrspace *as = cur->t_addrspace;
 		cur->t_addrspace = NULL;
 		as_activate(NULL);
 		as_destroy(as);
 	} else {
+                // Calls pid_exit with the second parameter as true, as it
+                // is a kernel level process i.e. cur->t_addrspace is NULL.
                 pid_exit(exitcode, true);
         }
-
 	/* Check the stack guard band. */
 	thread_checkstack(cur);
 
