@@ -75,7 +75,7 @@ void dumb_consoleIO_bootstrap(void);
 /*
  * Prototypes for modified calls to sys_waitpid, sysgetpid and sys_kill
  */
-int sys_waitpid(pid_t pid, userptr_t status, int options);
+int sys_waitpid(pid_t pid, userptr_t status, int flags, int* error);
 pid_t sys_getpid(void);
 
 #endif /* _SYSCALL_H_ */

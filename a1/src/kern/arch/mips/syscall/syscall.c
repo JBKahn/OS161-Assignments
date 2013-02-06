@@ -137,10 +137,13 @@ syscall(struct trapframe *tf)
             /* getpid returns the pid associated with the current thread and
              * its value is stored in the thread struct. */
             case SYS_getpid:
-                retval = curthread->t_pid;
+                err = 0;
+                retval = sys_getpid();
                 break;
 
             case SYS_waitpid:
+                err = 0;
+                retval = sys_waitpid(tf->tf_a0, (userptr_t) tf->tf_a1, tf->tf_a2, &err);
                 break;
                 
             case SYS_kill:

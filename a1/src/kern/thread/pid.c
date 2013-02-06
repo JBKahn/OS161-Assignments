@@ -342,7 +342,8 @@ int pid_detach(pid_t childpid) {
     /* Check if pi_child has exited and if so, frees the memory and drops it 
      * from the pid table */
     if (pi_child->pi_exited == true) {
-        pi_drop(pi_child->pi_ppid);
+        pi_child->pi_ppid = INVALID_PID; //making pi_drop happy
+        pi_drop(pi_child->pi_pid);
     }
 
     lock_release(pidlock); /* released the lock before return */
@@ -435,13 +436,14 @@ int pid_join(pid_t targetpid, int *status, int flags) {
         cv_wait(target->pi_cv, pidlock);
         KASSERT(target->pi_exited == true); //Assertion used for debugging.
     }
-    
+    kprintf("I'm fucking done");
     // Grab the status of the exited thread for use by the calling thread.
     *status = target->pi_exitstatus;
 
     lock_release(pidlock); /* released the lock before return */
-    // Detach the pid now.
-    // Then return that value to indicate the success of the call to pid_join.
-    // Should return 0.
-    return pid_detach(target->pi_pid);
+    pid_t retval = target->pi_pid;
+    pid_detach(target->pi_pid); // Detach the pid now.
+    
+    // The pid of the joined thead is returned.
+    return retval;
 }
