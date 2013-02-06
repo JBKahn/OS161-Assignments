@@ -575,7 +575,9 @@ thread_fork(const char *name,
 	 */
 	if (ret != NULL) {
 		*ret = newthread->t_pid;
-	}
+	} else {
+            pid_detach(newthread->t_pid);
+        }
 
 	return 0;
 }
@@ -831,16 +833,15 @@ void
 thread_exit(int exitcode)
 {
 	struct thread *cur;
-        (void)exitcode;  // suppress warning until code gets written
 
 	cur = curthread;
-
+        
 	/* VFS fields */
 	if (cur->t_cwd) {
 		VOP_DECREF(cur->t_cwd);
 		cur->t_cwd = NULL;
 	}
-
+        
 	/* VM fields */
 	if (cur->t_addrspace) {
 		/*
@@ -849,11 +850,14 @@ thread_exit(int exitcode)
 		 * come back we'll call as_activate on a half-destroyed
 		 * address space, which is usually messily fatal.
 		 */
+                pid_exit(exitcode, false);
 		struct addrspace *as = cur->t_addrspace;
 		cur->t_addrspace = NULL;
 		as_activate(NULL);
 		as_destroy(as);
-	}
+	} else {
+                pid_exit(exitcode, true);
+        }
 
 	/* Check the stack guard band. */
 	thread_checkstack(cur);
