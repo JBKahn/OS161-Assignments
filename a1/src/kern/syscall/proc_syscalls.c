@@ -12,6 +12,7 @@
 #include <machine/trapframe.h>
 #include <syscall.h>
 #include <copyinout.h>
+#include <signal.h>
 
 /*
  * sys_fork
@@ -84,11 +85,139 @@ int sys_waitpid(pid_t pid, userptr_t status, int flags, int* error) {
     return retval;
 }
 
-
 /*
  * sys_kill
  * Placeholder comment to remind you to implement this.
  */
 
-
-
+int
+sys_kill(pid_t targetpid, int signal, int* error) {
+    
+    /* Invalid signal given */
+    if  (signal > 31 || signal < 1) {
+        error =  (int *) EINVAL;
+        return -1;
+    }
+    // Handle all valid types of signals.
+    switch (signal) {
+        case (SIGHUP):
+            return pid_setkillsig(targetpid, signal, (int *) *error);
+            break;
+        case (SIGINT):
+            return pid_setkillsig(targetpid, signal, (int *) *error);
+            break;
+        case (SIGQUIT):
+            error = (int *) EUNIMP;
+            return -1;
+            break;
+        case (SIGILL):
+            error = (int *) EUNIMP;
+            return -1;
+            break;
+        case (SIGTRAP):
+            error = (int *) EUNIMP;
+            return -1;
+            break;
+        case (SIGABRT):
+            error = (int *) EUNIMP;
+            return -1;
+            break;
+        case (SIGEMT):
+            error = (int *) EUNIMP;
+            return -1;
+            break;
+        case (SIGFPE):
+            error = (int *) EUNIMP;
+            return -1;
+            break;
+        case (SIGKILL):
+            return pid_setkillsig(targetpid, signal, (int *) *error);
+            break;
+        case (SIGBUS):
+            error = (int *) EUNIMP;
+            return -1;
+            break;
+        case (SIGSEGV):
+            error = (int *) EUNIMP;
+            return -1;
+            break;
+        case (SIGSYS):
+            error = (int *) EUNIMP;
+            return -1;
+            break;
+        case (SIGPIPE):
+            error = (int *) EUNIMP;
+            return -1;
+            break;
+        case (SIGALRM):
+            error = (int *) EUNIMP;
+            return -1;
+            break;
+        case (SIGTERM):
+            return pid_setkillsig(targetpid, signal, (int *) *error);
+            break;
+        case (SIGURG):
+            error = (int *) EUNIMP;
+            return -1;
+            break;
+        case (SIGSTOP):
+            return pid_setkillsig(targetpid, signal, (int *) *error);
+            // lot to do
+            break;
+        case (SIGTSTP):
+            error = (int *) EUNIMP;
+            return -1;
+            break;
+        case (SIGCONT):
+            return pid_setkillsig(targetpid, signal, (int *) *error);
+            // lot to do
+            break;
+        case (SIGCHLD):
+            error = (int *) EUNIMP;
+            return -1;
+            break;
+        case (SIGTTIN):
+            error = (int *) EUNIMP;
+            return -1;
+            break;
+        case (SIGTTOU):
+            error = (int *) EUNIMP;
+            return -1;
+            break;
+        case (SIGIO):
+            error = (int *) EUNIMP;
+            return -1;
+            break;
+        case (SIGXCPU):
+            error = (int *) EUNIMP;
+            return -1;
+            break;
+        case (SIGXFSZ):
+            error = (int *) EUNIMP;
+            return -1;
+            break;
+        case (SIGVTALRM):
+            error = (int *) EUNIMP;
+            return -1;
+            break;
+        case (SIGPROF):
+            error = (int *) EUNIMP;
+            return -1;
+            break;
+        case (SIGWINCH):
+            return 0;
+            break;
+        case (SIGINFO):
+            return 0;
+            break;
+        case (SIGUSR1):
+            error = (int *) EUNIMP;
+            return -1;
+            break;
+        case (SIGUSR2):
+            error = (int *) EUNIMP;
+            return -1;
+            break;
+    }
+    return -1;
+}

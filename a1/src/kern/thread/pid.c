@@ -57,6 +57,7 @@ volatile bool pi_exited;	// true if thread has exited
 int pi_exitstatus;	// status (only valid if exited)
 struct cv *pi_cv;	// use to wait for thread exit
 int pi_joinable;	// the pid is joinable
+int pi_killsig;         // the kill signature given;
 };
 
 
@@ -102,6 +103,7 @@ pidinfo_create(pid_t pid, pid_t ppid)
 	pi->pi_exited = false;
 	pi->pi_exitstatus = 0xbaad;  /* Recognizably invalid value */
         pi->pi_joinable = true; /* All processes are joinable when created. */
+        pi->pi_killsig = 0;  /* No initial kill signal is set at creation. */
 
 	return pi;
 }
@@ -399,7 +401,6 @@ pid_exit(int status, bool dodetach)
  *
  */
 int pid_join(pid_t targetpid, int *status, int flags) {
-    flags = flags;
     lock_acquire(pidlock);
     struct pidinfo *target = pi_get(targetpid);
 
@@ -445,4 +446,42 @@ int pid_join(pid_t targetpid, int *status, int flags) {
     
     // The pid of the joined thead is returned.
     return retval;
+}
+
+/*
+ * pid_setkillsig - sets the pi_killsig in targetpid to signal.
+ */
+int pid_setkillsig(pid_t targetpid, int signal, int *error) {
+    lock_acquire(pidlock);
+    struct pidinfo *target = pi_get(targetpid);
+    
+    error = 0;
+    if (target == NULL) {
+        lock_release(pidlock); /* released the lock before return */
+        error = (int *) EINVAL;
+        return -1;
+    }
+    
+    target->pi_killsig = signal;
+    lock_release(pidlock); /* released the lock before return */
+    return 0;
+}
+
+/*
+ * pid_getkillsig - gets the pi_killsig from targetpid and stores it in signal.
+ */
+int pid_getkillsig(pid_t targetpid, int *signal, int *error) {
+    lock_acquire(pidlock);
+    struct pidinfo *target = pi_get(targetpid);
+    
+    error = 0;
+    if (target == NULL) {
+        lock_release(pidlock); /* released the lock before return */
+        error = (int *) EINVAL;
+        return -1;
+    }
+    
+    *signal = target->pi_killsig;
+    lock_release(pidlock); /* released the lock before return */
+    return 0;
 }

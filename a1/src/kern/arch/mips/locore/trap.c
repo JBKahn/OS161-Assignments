@@ -39,6 +39,7 @@
 #include <vm.h>
 #include <mainbus.h>
 #include <syscall.h>
+#include <pid.h>
 
 
 /* in exception.S */
@@ -128,6 +129,8 @@ mips_trap(struct trapframe *tf)
 	uint32_t code;
 	bool isutlb, iskern;
 	int spl;
+        int current_killsig;
+        int error;
 
 	/* The trap frame is supposed to be 37 registers long. */
 	KASSERT(sizeof(struct trapframe)==(37*4));
@@ -314,6 +317,14 @@ mips_trap(struct trapframe *tf)
 	panic("I can't handle this... I think I'll just die now...\n");
 
  done:
+        /*get the kill signal so that we know if we should close the thread.*/
+        
+ 	pid_getkillsig(curthread->t_pid, &current_killsig, &error);
+
+ 	/*if current_killsig is not 0, we should call thread_kill*/
+ 	if (current_killsig) {
+ 		thread_exit(current_killsig);
+ 	}
 	/*
 	 * Turn interrupts off on the processor, without affecting the
 	 * stored interrupt state.

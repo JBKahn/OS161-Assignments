@@ -134,8 +134,6 @@ syscall(struct trapframe *tf)
 		    err = sys_fork(tf, &retval);
 		    break;
 
-            /* getpid returns the pid associated with the current thread and
-             * its value is stored in the thread struct. */
             case SYS_getpid:
                 err = 0;
                 retval = sys_getpid();
@@ -147,6 +145,7 @@ syscall(struct trapframe *tf)
                 break;
                 
             case SYS_kill:
+                retval = sys_kill((pid_t)tf->tf_a0, tf->tf_a1, &err);
                 break;
                 
 	    /* Even more system calls will go here */

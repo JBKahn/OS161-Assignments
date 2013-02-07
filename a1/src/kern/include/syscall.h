@@ -77,5 +77,6 @@ void dumb_consoleIO_bootstrap(void);
  */
 int sys_waitpid(pid_t pid, userptr_t status, int flags, int* error);
 pid_t sys_getpid(void);
+int sys_kill(pid_t targetpid, int signal, int* error);
 
 #endif /* _SYSCALL_H_ */

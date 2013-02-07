@@ -1,4 +1,4 @@
-/*
+    /*
  * Copyright (c) 2000, 2001, 2002, 2003, 2004, 2005, 2008, 2009
  *	The President and Fellows of Harvard College.
  *
@@ -70,5 +70,13 @@ void pid_exit(int status, bool dodetach);
  */
 int pid_join(pid_t targetpid, int *status, int flags);
 
+/*
+ * pid_getkillsig - gets the pi_killsig from targetpid and stores it in signal.
+ */
+int pid_getkillsig(pid_t targetpid, int *signal, int *error);
 
+/*
+ * pid_setkillsig - sets the pi_killsig in targetpid to signal.
+ */
+int pid_setkillsig(pid_t targetpid, int signal, int *error);
 #endif /* _PID_H_ */
