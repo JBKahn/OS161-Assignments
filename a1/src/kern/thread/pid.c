@@ -42,6 +42,9 @@
 #include <current.h>
 #include <synch.h>
 #include <pid.h>
+#include <signal.h>
+#include <thread.h>
+#include <threadprivate.h>
 
 /*
  * Structure for holding PID and return data for a thread.
@@ -429,14 +432,14 @@ int pid_join(pid_t targetpid, int *status, int flags) {
     // If the WHNOHANG flag is set, then the the current thread doesn't wait
     // for the thread to exit and simply returns 0 if it has not exited,
     // otherwise it waits for the thread to exit.
-    if (target->pi_exited == false) {
+    while (target->pi_exited == false) {
         if (flags == WNOHANG) {
             lock_release(pidlock); /* released the lock before return */
             return(0);
         }
         cv_wait(target->pi_cv, pidlock);
-        KASSERT(target->pi_exited == true); //Assertion used for debugging.
     }
+    KASSERT(target->pi_exited == true); //Assertion used for debugging.
     // Grab the status of the exited thread for use by the calling thread.
     *status = target->pi_exitstatus;
     pid_t retval = target->pi_pid;
@@ -461,8 +464,18 @@ int pid_setkillsig(pid_t targetpid, int signal, int *error) {
         error = (int *) EINVAL;
         return -1;
     }
-    
-    target->pi_killsig = signal;
+    if (signal == SIGSTOP) {
+        target->pi_killsig = SIGSTOP;
+        lock_release(pidlock);
+        sigstop_sigcont(targetpid);
+        return 0;
+    }
+    if (target->pi_killsig == SIGSTOP && signal == SIGCONT) {
+        target->pi_killsig = signal;
+        cv_signal(target->pi_cv, pidlock);
+    } else {
+        target->pi_killsig = signal;
+    }
     lock_release(pidlock); /* released the lock before return */
     return 0;
 }
@@ -484,4 +497,16 @@ int pid_getkillsig(pid_t targetpid, int *signal, int *error) {
     *signal = target->pi_killsig;
     lock_release(pidlock); /* released the lock before return */
     return 0;
+}
+
+void sigstop_sigcont(int pid) {
+        lock_acquire(pidlock);
+        struct pidinfo *target = pi_get(pid);
+        
+        if (target != NULL && target->pi_killsig == SIGSTOP) {
+            while (target->pi_killsig != SIGCONT) {
+                cv_wait(target->pi_cv, pidlock);
+            }
+        }
+        lock_release(pidlock);
 }

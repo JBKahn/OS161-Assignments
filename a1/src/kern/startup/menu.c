@@ -46,6 +46,7 @@
 /*
  * In-kernel menu and command dispatcher.
  */
+#include <limits.h>
 
 #define _PATH_SHELL "/bin/sh"
 
@@ -131,6 +132,12 @@ cmd_progthread(void *ptr, unsigned long nargs)
 	int result;
 
 	KASSERT(nargs >= 1);
+        
+        if (nargs > NARG_MAX) {
+		kprintf("Running program with too many arguments: %s\n",
+			strerror(E2BIG));
+                return;
+        }
 
 	/* Hope we fit. */
 	KASSERT(strlen(args[0]) < sizeof(progname));

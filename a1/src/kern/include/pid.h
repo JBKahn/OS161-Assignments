@@ -79,4 +79,9 @@ int pid_getkillsig(pid_t targetpid, int *signal, int *error);
  * pid_setkillsig - sets the pi_killsig in targetpid to signal.
  */
 int pid_setkillsig(pid_t targetpid, int signal, int *error);
+
+/*
+ * handles SIGSTOP and SIGCONT
+ */
+void sigstop_sigcont(int pid);
 #endif /* _PID_H_ */
