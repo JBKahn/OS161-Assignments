@@ -145,6 +145,7 @@ syscall(struct trapframe *tf)
                 break;
                 
             case SYS_kill:
+                err = 0;
                 retval = sys_kill((pid_t)tf->tf_a0, tf->tf_a1, &err);
                 break;
                 

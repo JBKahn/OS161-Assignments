@@ -88,7 +88,7 @@ testsig_die(int signum, const char *signame)
 	} else {
 		warnx("waitpid succeeded (signal %s, status %d, rawstatus %d).",signame,WEXITSTATUS(status),status);
 		if (WIFSIGNALED(status)) {
-			warnx("\t status indicates exit due to signal.");
+			warnx("\t status %d indicates exit due to signal.");
 		} else {
 			warnx("\t status %d does NOT indicate exit due to signal.");
 		}
