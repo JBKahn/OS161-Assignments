@@ -464,7 +464,6 @@ thread_make_runnable(struct thread *target, bool already_have_lock) {
         spinlock_release(&targetcpu->c_runqueue_lock);
     }
 }
-
 /*
  * Create a new thread based on an existing one.
  *
@@ -560,14 +559,18 @@ thread_fork(const char *name,
      */
     // The child's pid shoudl be returned so that the parent can keep
     // track of it.
-    if (ret != NULL)
+    if (ret != NULL) {
         *ret = newthread->t_pid;
         // The parent has indicated it doesn't want the child's pid so it
         // is immediately detached since it is now impossible for it to join
         // with the child.
-    else
-        pid_detach(newthread->t_pid);
-
+    } else {
+        result = pid_detach(newthread->t_pid);
+        if (result != 0) {
+            kprintf("pid_detach failed: %s\n", strerror(result));
+            return result;
+        }
+    }
 
     return 0;
 }
