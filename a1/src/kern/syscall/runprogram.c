@@ -134,6 +134,7 @@ runprogram(char *progname, char **args, int argc) {
         // copy the arguments into the stack and free them from argv.
         result = copyoutstr(argv[i], (userptr_t) stackptr, len, &actual);
         if(result != 0){
+            kprintf("copyoutstr failed: %s\n", strerror(result));
             return result;
         }
         kfree(argv[i]);
@@ -146,6 +147,7 @@ runprogram(char *progname, char **args, int argc) {
     stackptr -= 4;
     copyoutstr(NULL, (userptr_t) stackptr, 4, &actual);
     if(result != 0){
+            kprintf("copyoutstr failed: %s\n", strerror(result));
             return result;
     }
     
@@ -154,6 +156,7 @@ runprogram(char *progname, char **args, int argc) {
         stackptr -= 4;
         result = copyout(&topstack[i], (userptr_t) stackptr, sizeof (topstack[i]));
         if(result != 0){
+            kprintf("copyout failed: %s\n", strerror(result));
             return result;
         }
     }
