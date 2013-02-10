@@ -477,12 +477,16 @@ int pid_setkillsig(pid_t targetpid, int signal, int *error) {
         return -1;
     }
     if (signal == SIGSTOP) {
-        target->pi_killsig = SIGSTOP;
+        if (target->pi_killsig != SIGSTOP) {
+            target->pi_killsig = SIGSTOP;
+            lock_release(pidlock);
+            sigstop_sigcont(targetpid);
+            return 0;
+        }
         lock_release(pidlock);
-        sigstop_sigcont(targetpid);
         return 0;
     }
-    if (target->pi_killsig == SIGSTOP && signal == SIGCONT) {
+    if (target->pi_killsig == SIGSTOP) {
         target->pi_killsig = signal;
         cv_signal(target->pi_cv, pidlock);
     } else {
@@ -516,7 +520,7 @@ void sigstop_sigcont(int pid) {
         struct pidinfo *target = pi_get(pid);
         
         if (target != NULL && target->pi_killsig == SIGSTOP) {
-            while (target->pi_killsig != SIGCONT) {
+            while (target->pi_killsig && target->pi_killsig == SIGSTOP) {
                 cv_wait(target->pi_cv, pidlock);
             }
         }
