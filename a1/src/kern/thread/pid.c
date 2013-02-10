@@ -368,6 +368,7 @@ void
 pid_exit(int status, bool dodetach)
 {
 	struct pidinfo *my_pi;
+        int result;
 	
 	lock_acquire(pidlock);
 	my_pi = pi_get(curthread->t_pid);
@@ -382,9 +383,14 @@ pid_exit(int status, bool dodetach)
         // Looping through processes and if we are the parent, we detatch them.
         if (dodetach) {
             int i;
-            for (i=0; i<PROCS_MAX; i++)
-                if (pidinfo[i] != NULL && pidinfo[i]->pi_ppid == my_pi->pi_pid)
-                        pid_detach(pidinfo[i]->pi_pid);
+        for (i = 0; i < PROCS_MAX; i++)
+            if (pidinfo[i] != NULL && pidinfo[i]->pi_ppid == my_pi->pi_pid) {
+                result = pid_detach(pidinfo[i]->pi_pid);
+                if (result != 0) {
+                    kprintf("pid_detach failed: %s\n", strerror(result));
+                }
+
+            }
         }
         // Checks if the current thread's pid has been detached, and if so its
         // pid is set to INVALID_PID and it's dropped from the process list and
@@ -404,6 +410,7 @@ pid_exit(int status, bool dodetach)
  *
  */
 int pid_join(pid_t targetpid, int *status, int flags) {
+    int result;
     lock_acquire(pidlock);
     struct pidinfo *target = pi_get(targetpid);
 
@@ -445,7 +452,11 @@ int pid_join(pid_t targetpid, int *status, int flags) {
     pid_t retval = target->pi_pid;
     lock_release(pidlock); /* released the lock before return */
     
-    pid_detach(target->pi_pid); // Detach the pid now.
+    result = pid_detach(target->pi_pid); // Detach the pid now.
+    if (result != 0) {
+        kprintf("pid_detach failed: %s\n", strerror(result));
+        return result;
+    }
     
     // The pid of the joined thead is returned.
     return retval;
