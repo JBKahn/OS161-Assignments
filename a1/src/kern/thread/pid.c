@@ -441,6 +441,7 @@ int pid_join(pid_t targetpid, int *status, int flags) {
     // otherwise it waits for the thread to exit.
     while (target->pi_exited == false) {
         if (flags == WNOHANG) {
+            *status = (int)0xabababab;
             lock_release(pidlock); /* released the lock before return */
             return(0);
         }
@@ -449,7 +450,7 @@ int pid_join(pid_t targetpid, int *status, int flags) {
     KASSERT(target->pi_exited == true); //Assertion used for debugging.
     // Grab the status of the exited thread for use by the calling thread.
     *status = target->pi_exitstatus;
-    pid_t retval = target->pi_pid;
+    int retval = target->pi_pid;
     lock_release(pidlock); /* released the lock before return */
     
     result = pid_detach(target->pi_pid); // Detach the pid now.

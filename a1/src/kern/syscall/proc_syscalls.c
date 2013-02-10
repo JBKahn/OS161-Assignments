@@ -77,8 +77,10 @@ int sys_waitpid(pid_t pid, userptr_t status, int flags, int* error) {
     }
     // ESRCH and ECHILD type error situations are handled by pid_join.
     retval = pid_join(pid, &status_int, flags);
-    if (retval < 0)
-        retval = -retval;
+    if (retval < 0) {
+        *error = -retval;
+        return -1;
+    }
     result = copyout(&status_int, status, sizeof (int));
     if (result) {
         *error = result;
