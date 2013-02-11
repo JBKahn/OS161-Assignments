@@ -84,7 +84,7 @@ int sys_waitpid(pid_t pid, userptr_t status, int flags, int* error) {
         *error = -retval;
         return -1;
     }
-    //
+    // Check for errors in copyout
     result = copyout(&status_int, status, sizeof (int));
     if (result) {
         *error = result;
@@ -107,7 +107,7 @@ sys_kill(pid_t targetpid, int signal, int* error) {
         error =  (int *) EINVAL;
         return -1;
     }
-    // Handle all valid types of signals.
+    // Handle all valid types of signals using a switch statement.
     switch (signal) {
         case (SIGHUP):
             return pid_setkillsig(targetpid, signal, (int *) *error);
@@ -171,7 +171,6 @@ sys_kill(pid_t targetpid, int signal, int* error) {
             break;
         case (SIGSTOP):
             return pid_setkillsig(targetpid, signal, (int *) *error);
-            // lot to do
             break;
         case (SIGTSTP):
             error = (int *) EUNIMP;
@@ -179,7 +178,6 @@ sys_kill(pid_t targetpid, int signal, int* error) {
             break;
         case (SIGCONT):
             return pid_setkillsig(targetpid, signal, (int *) *error);
-            // lot to do
             break;
         case (SIGCHLD):
             error = (int *) EUNIMP;

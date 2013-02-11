@@ -557,7 +557,7 @@ thread_fork(const char *name,
      *         thread structure.  This is safe to use even if the 
      *         child has already exited.
      */
-    // The child's pid shoudl be returned so that the parent can keep
+    // The child's pid should be returned so that the parent can keep
     // track of it.
     if (ret != NULL) {
         *ret = newthread->t_pid;

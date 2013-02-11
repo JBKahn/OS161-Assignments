@@ -81,7 +81,8 @@ int pid_getkillsig(pid_t targetpid, int *signal, int *error);
 int pid_setkillsig(pid_t targetpid, int signal, int *error);
 
 /*
- * handles SIGSTOP and SIGCONT
+ * pid_sigstop_sigcont - sleeps threads when they receive a SIGSTOP signal until
+ * they recieve a SIGCONT or other kill signal.
  */
-void sigstop_sigcont(int pid);
+void pid_sigstop_sigcont(int pid);
 #endif /* _PID_H_ */

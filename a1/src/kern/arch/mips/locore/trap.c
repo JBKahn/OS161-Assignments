@@ -322,7 +322,9 @@ mips_trap(struct trapframe *tf)
         
  	pid_getkillsig(curthread->t_pid, &current_killsig, &error);
 
- 	/*if current_killsig is not 0, we should call thread_kill*/
+ 	/*if current_killsig is not 0, SIGSTOP, or SIGCONT, then we should call 
+         * thread_kill
+         */
  	if (current_killsig && current_killsig != SIGCONT && current_killsig != SIGSTOP)
             thread_exit(current_killsig);
 	/*
