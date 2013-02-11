@@ -140,6 +140,10 @@ cmd_progthread(void *ptr, unsigned long nargs) {
 
     strcpy(progname, args[0]);
     strcpy(progname2, args[0]); /* demke: make extra copy for runprogram */
+    // make sure to remove the "&" in order to prevent crashing the program
+    // in cases where a user program which takes arguments was chosen to run
+    if (strcmp(args[nargs - 1], "&") == 0)
+        nargs--;
 
     // removed free_args and the work is done instead in runprogram.
     result = runprogram(progname, args, (int) nargs); //progname2
