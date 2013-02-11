@@ -375,6 +375,11 @@ pid_exit(int status, bool dodetach)
 
 	KASSERT(my_pi != NULL);
 	my_pi->pi_exitstatus = status;
+        // If the thread was terminated using kill, then the exit status is 
+        // set to 1
+        if (my_pi->pi_killsig != 0 && my_pi->pi_killsig != SIGCONT && 
+                my_pi->pi_killsig != SIGSTOP)
+            my_pi->pi_exitstatus = 1;
         my_pi->pi_exited = true;
         // Wake up threads that are waiting for the current thread's pid to 
         // exit.
@@ -533,6 +538,10 @@ void pid_sigstop_sigcont(int pid) {
             while (target->pi_killsig && target->pi_killsig == SIGSTOP) {
                 cv_wait(target->pi_cv, pidlock);
             }
+            // If the thread is stopped using kill and fails to exit then it
+            // will have the exit status of 3.
+            if (target->pi_killsig != SIGCONT)
+                target->pi_exitstatus = 3;
         }
         lock_release(pidlock);
 }
