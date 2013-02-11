@@ -51,7 +51,7 @@ sys_fork(struct trapframe *tf, pid_t *retval)
 
 /*
  * sys_getpid
- * Placeholder to remind you to implement this.
+ * returns the pid of the current process
  */
 pid_t sys_getpid(void) {
     return curthread->t_pid;
@@ -59,7 +59,10 @@ pid_t sys_getpid(void) {
 
 /*
  * sys_waitpid
- * Placeholder comment to remind you to implement this.
+ * Tries to get the exit status of pid by calling pid_join().
+ * On success, copies out the status and returns the retval.
+ *
+ * 
  */
 int sys_waitpid(pid_t pid, userptr_t status, int flags, int* error) {
     int status_int, retval, result;
@@ -81,6 +84,7 @@ int sys_waitpid(pid_t pid, userptr_t status, int flags, int* error) {
         *error = -retval;
         return -1;
     }
+    //
     result = copyout(&status_int, status, sizeof (int));
     if (result) {
         *error = result;
@@ -91,7 +95,8 @@ int sys_waitpid(pid_t pid, userptr_t status, int flags, int* error) {
 
 /*
  * sys_kill
- * Placeholder comment to remind you to implement this.
+ * Handles all valid (and implemented) signals
+ * by passing to pid_setkillsig().
  */
 
 int

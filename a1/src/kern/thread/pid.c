@@ -476,6 +476,9 @@ int pid_setkillsig(pid_t targetpid, int signal, int *error) {
         error = (int *) EINVAL;
         return -1;
     }
+    
+    //calls sigstop_sigcont, which stops a thread while
+    //the threads killsig is SIGSTOP
     if (signal == SIGSTOP) {
         if (target->pi_killsig != SIGSTOP) {
             target->pi_killsig = SIGSTOP;
@@ -486,6 +489,8 @@ int pid_setkillsig(pid_t targetpid, int signal, int *error) {
         lock_release(pidlock);
         return 0;
     }
+    
+    
     if (target->pi_killsig == SIGSTOP) {
         target->pi_killsig = signal;
         cv_signal(target->pi_cv, pidlock);
@@ -514,7 +519,11 @@ int pid_getkillsig(pid_t targetpid, int *signal, int *error) {
     lock_release(pidlock); /* released the lock before return */
     return 0;
 }
-
+/*
+ * Stops thread pid from when SIGSTOP is given until a new
+ * signal is given, using cv_wait()
+ * 
+ */
 void sigstop_sigcont(int pid) {
         lock_acquire(pidlock);
         struct pidinfo *target = pi_get(pid);
