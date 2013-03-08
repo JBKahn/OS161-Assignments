@@ -358,12 +358,21 @@ mipstlb_getslot(void)
  * Repeatedly generates a random index into the coremap until the 
  * selected page is not pinned and does not belong to the kernel.
  */
+
 static
 uint32_t 
 page_replace(void)
 {
-    // Complete this function.
-	return 0;
+	/* Generate random index until an unpinned, unkernel is found. */
+	uint32_t index = random() % num_coremap_entries;
+	int i;
+	while (coremap[where].cm_kernel || coremap[index].cm_pinned) {
+		index = random() % num_coremap_entries;
+		i++;
+		if (i > 20000)
+			panic("page_replace: Can't find unpinned or non-kernel page.\n");
+	}
+	return index;
 }
 
 #else /* not OPT_RANDPAGE */
@@ -379,8 +388,16 @@ static
 uint32_t
 page_replace(void)
 {
-	// Complete this function.
-	return 0;
+	// Should it be ++ or -- unsure when coded (Joseph) and is 20000 good??
+	last_core_map_evicted = (last_core_map_evicted - 1) % num_coremap_entries;
+	int i;
+	while (coremap[last_core_map_evicted].cm_kernel || coremap[last_core_map_evicted].cm_pinned) {
+		last_core_map_evicted = (last_core_map_evicted - 1) % num_coremap_entries;
+		i++;
+		if (i > 20000)
+			panic("page_replace: Can't find unpinned or non-kernel page.\n");
+	}
+	return last_core_map_evicted;
 }
 
 #endif /* OPT_RANDPAGE */
