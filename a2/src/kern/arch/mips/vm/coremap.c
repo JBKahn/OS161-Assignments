@@ -365,7 +365,7 @@ page_replace(void)
 {
 	/* Generate random index until an unpinned, unkernel is found. */
 	uint32_t index = random() % num_coremap_entries;
-	int i;
+	int i = 0;
 	while (coremap[where].cm_kernel || coremap[index].cm_pinned) {
 		index = random() % num_coremap_entries;
 		i++;
@@ -390,7 +390,7 @@ page_replace(void)
 {
 	// Should it be ++ or -- unsure when coded (Joseph) and is 20000 good??
 	last_core_map_evicted = (last_core_map_evicted - 1) % num_coremap_entries;
-	int i;
+	int i = 0;
 	while (coremap[last_core_map_evicted].cm_kernel || coremap[last_core_map_evicted].cm_pinned) {
 		last_core_map_evicted = (last_core_map_evicted - 1) % num_coremap_entries;
 		i++;
