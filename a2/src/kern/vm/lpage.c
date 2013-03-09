@@ -459,7 +459,6 @@ lpage_fault(struct lpage *lp, struct addrspace *as, int faulttype, vaddr_t va)
 	mmu_map(as, va, pa, faulttype);
 
 	lpage_unlock(lp);
-	coremap_unpin(pa);
 
 	return 0;
 }
@@ -494,6 +493,4 @@ lpage_evict(struct lpage *lp)
 	if (pa & LPF_DIRTY) {
 		swap_pageout(pa & PAGE_FRAME, swa);
 	}
-
-	//Unsure if need to do something with the TLB, as per discussion. Consider this possibiltiy.
 }
