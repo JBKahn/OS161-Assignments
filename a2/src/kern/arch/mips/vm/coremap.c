@@ -388,15 +388,15 @@ static
 uint32_t
 page_replace(void)
 {
-	last_core_map_evicted = (last_core_map_evicted - 1) % num_coremap_entries;
+	last_evicted_coremap = (last_evicted_coremap - 1) % num_coremap_entries;
 	int i = 0;
-	while (coremap[last_core_map_evicted].cm_kernel || coremap[last_core_map_evicted].cm_pinned) {
-		last_core_map_evicted = (last_core_map_evicted - 1) % num_coremap_entries;
+	while (coremap[last_evicted_coremap].cm_kernel || coremap[last_core_map_evicted].cm_pinned) {
+		last_evicted_coremap = (last_evicted_coremap - 1) % num_coremap_entries;
 		i++;
 		if (i > num_coremap_entries)
 			panic("page_replace: Can't find unpinned or non-kernel page.\n");
 	}
-	return last_core_map_evicted;
+	return last_evicted_coremap;
 }
 
 #endif /* OPT_RANDPAGE */
