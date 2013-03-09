@@ -121,34 +121,36 @@ copy_args(int nargs, char **args)
  */
 static
 void
-cmd_progthread(void *ptr, unsigned long nargs)
-{
-	char **args = ptr;
-	char progname[128];
-	char progname2[128];
-	int result;
+cmd_progthread(void *ptr, unsigned long nargs) {
+    char **args = ptr;
+    char progname[128];
+    char progname2[128];
+    int result;
 
-	KASSERT(nargs >= 1);
+    KASSERT(nargs >= 1);
 
-	if (nargs > 2) {
-		kprintf("Warning: argument passing from menu not supported\n");
-	}
+    if (nargs > NARG_MAX) {
+        kprintf("Running program with too many arguments: %s\n",
+                strerror(E2BIG));
+        return;
+    }
 
-	/* Hope we fit. */
-	KASSERT(strlen(args[0]) < sizeof(progname));
+    /* Hope we fit. */
+    KASSERT(strlen(args[0]) < sizeof (progname));
 
-	strcpy(progname, args[0]);
-	strcpy(progname2,args[0]); /* demke: make extra copy for runprogram */
-	free_args(nargs, args);
+    strcpy(progname, args[0]);
+    strcpy(progname2, args[0]); /* demke: make extra copy for runprogram */
 
-	result = runprogram(progname2);
-	if (result) {
-		kprintf("Running program %s failed: %s\n", progname,
-			strerror(result));
-		return;
-	}
+    // removed free_args and the work is done instead in runprogram.
+    result = runprogram(progname, args, (int) nargs); //progname2
 
-	/* NOTREACHED: runprogram only returns on error. */
+    if (result) {
+        kprintf("Running program %s failed: %s\n", progname,
+                strerror(result));
+        return;
+    }
+
+    /* NOTREACHED: runprogram only returns on error. */
 }
 
 /*
