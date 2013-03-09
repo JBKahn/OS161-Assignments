@@ -475,5 +475,25 @@ lpage_fault(struct lpage *lp, struct addrspace *as, int faulttype, vaddr_t va)
 void
 lpage_evict(struct lpage *lp)
 {
-	(void)lp;	// suppress compiler warning until code gets written
+	paddr_t pa;
+	off_t swa;
+
+	KASSERT(lp != NULL);
+	lpage_lock(lp);
+
+	pa = lp->lp_paddr;
+	KASSERT(pa != INVALID_PADDR);
+	swa = lp->lp_swapaddr;
+	KASSERT(swa != INVALID_SWAPADDR);
+
+	/* Mark page to indicate that it is no longer in physical memory. */
+	lp->lp_paddr = INVALID_PADDR;
+	lpage_unlock(lp);
+
+	/* If page is dirty, write it to swap. */
+	if (pa & LPF_DIRTY) {
+		swap_pageout(pa & PAGE_FRAME, swa);
+	}
+
+	//Unsure if need to do something with the TLB, as per discussion. Consider this possibiltiy.
 }
