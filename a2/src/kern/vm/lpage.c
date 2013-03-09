@@ -419,11 +419,49 @@ lpage_zerofill(struct lpage **lpret)
 int
 lpage_fault(struct lpage *lp, struct addrspace *as, int faulttype, vaddr_t va)
 {
-	(void)lp;	// suppress compiler warning until code gets written
-	(void)as;	// suppress compiler warning until code gets written
-	(void)faulttype;// suppress compiler warning until code gets written
-	(void)va;	// suppress compiler warning until code gets written
-	return EUNIMP;	// suppress compiler warning until code gets written
+	paddr_t pa;
+	off_t swa;
+	
+	/* Lock lpage and pin physical page. */
+	lpage_lock_and_pin(lp);
+	pa = lp->lp_paddr & PAGE_FRAME;
+
+	/* pa not in physical memory. */
+	if (pa == INVALID_PADDR) { 
+		swa = lp->lp_swapaddr;
+		lpage_unlock(lp);
+
+		/* Obtain user page frame. */
+		pa = coremap_allocuser(lp);
+		if (pa == INVALID_PADDR) {
+			coremap_unpin(lp->lp_paddr & PAGE_FRAME);
+			return ENOMEM;
+		}
+		KASSERT(coremap_pageispinned(pa));
+		lock_acquire(global_paging_lock);
+
+		/* Swap page into physical memory from the disk. */
+		swap_pagein(pa, swa);
+		lpage_lock(lp);
+		lock_release(global_paging_lock);
+
+		/* Assert nobody else did the pagein. */
+		KASSERT((lp->lp_paddr & PAGE_FRAME) == INVALID_PADDR);
+		lp->lp_paddr = pa;
+	}
+
+	/* If faulttype, mark page dirty. */
+	if (faulttype) {
+		LP_SET(lp, LPF_DIRTY);
+	}
+
+	KASSERT(coremap_pageispinned(pa));
+	mmu_map(as, va, pa, faulttype);
+
+	lpage_unlock(lp);
+	coremap_unpin(pa);
+
+	return 0;
 }
 
 /*
