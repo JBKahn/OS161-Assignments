@@ -109,6 +109,7 @@ static struct spinlock coremap_spinlock = SPINLOCK_INITIALIZER;
 static struct wchan *coremap_pinchan;
 static struct wchan *coremap_shootchan;
 
+static uint32_t last_core_map_evicted; //keep track of the last page evicted
 static uint32_t num_coremap_entries;
 static uint32_t num_coremap_kernel;	/* pages allocated to the kernel */
 static uint32_t num_coremap_user;	/* pages allocated to user progs */
@@ -388,15 +389,15 @@ static
 uint32_t
 page_replace(void)
 {
-	last_evicted_coremap = (last_evicted_coremap - 1) % num_coremap_entries;
-	int i = 0;
-	while (coremap[last_evicted_coremap].cm_kernel || coremap[last_core_map_evicted].cm_pinned) {
-		last_evicted_coremap = (last_evicted_coremap - 1) % num_coremap_entries;
+	last_core_map_evicted = (last_core_map_evicted - 1) % num_coremap_entries;
+	uint32_t i = 0;
+	while (coremap[last_core_map_evicted].cm_kernel || coremap[last_core_map_evicted].cm_pinned) {
+		last_core_map_evicted = (last_core_map_evicted - 1) % num_coremap_entries;
 		i++;
 		if (i > num_coremap_entries)
 			panic("page_replace: Can't find unpinned or non-kernel page.\n");
 	}
-	return last_evicted_coremap;
+	return last_core_map_evicted;
 }
 
 #endif /* OPT_RANDPAGE */
@@ -474,6 +475,7 @@ coremap_bootstrap(void)
 	 * Now, set things up to reflect the range of memory we're
 	 * managing. Note that we skip the pages the coremap is using.
 	 */
+	last_core_map_evicted = 0;
 	base_coremap_page = first / PAGE_SIZE;
 	num_coremap_entries = (last / PAGE_SIZE) - base_coremap_page;
 	num_coremap_kernel = 0;
