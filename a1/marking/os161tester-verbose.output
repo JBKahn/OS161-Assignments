@@ -1,0 +1,663 @@
+Tester path is /h/u1/demke/369/course-36913s/assignments/a1/marking/os161-tester
+Running tests for Assignment 1
+---------------------------------------------------------
+Running: /h/u1/demke/369/course-36913s/assignments/a1/marking/os161-tester/csc369-testing-scripts/asst1-01-argtest.py kernel
+Testing arg passing, pgm name only: 
+SENDING: p testbin/argtest
+EXPECTING: argc\: 1
+FOUND: argc: 1
+EXPECTING: argv\[0\]\: testbin/argtest
+FOUND: argv[0]: testbin/argtest
+EXPECTING: argv\[1\]\: \[NULL\]
+FOUND: argv[1]: [NULL]
+PASS
+Testing arg passing, one arg a: 
+SENDING: p testbin/argtest a
+EXPECTING: argc\: 2
+FOUND: argc: 2
+EXPECTING: argv\[0\]\: testbin/argtest
+FOUND: argv[0]: testbin/argtest
+EXPECTING: argv\[1\]\: a
+FOUND: argv[1]: a
+EXPECTING: argv\[2\]\: \[NULL\]
+FOUND: argv[2]: [NULL]
+PASS
+Testing arg passing, one arg ab: 
+SENDING: p testbin/argtest ab
+EXPECTING: argc\: 2
+FOUND: argc: 2
+EXPECTING: argv\[0\]\: testbin/argtest
+FOUND: argv[0]: testbin/argtest
+EXPECTING: argv\[1\]\: ab
+FOUND: argv[1]: ab
+EXPECTING: argv\[2\]\: \[NULL\]
+FOUND: argv[2]: [NULL]
+PASS
+Testing arg passing, one arg abc: 
+SENDING: p testbin/argtest abc
+EXPECTING: argc\: 2
+FOUND: argc: 2
+EXPECTING: argv\[0\]\: testbin/argtest
+FOUND: argv[0]: testbin/argtest
+EXPECTING: argv\[1\]\: abc
+FOUND: argv[1]: abc
+EXPECTING: argv\[2\]\: \[NULL\]
+FOUND: argv[2]: [NULL]
+PASS
+Testing arg passing, one arg abcd: 
+SENDING: p testbin/argtest abcd
+EXPECTING: argc\: 2
+FOUND: argc: 2
+EXPECTING: argv\[0\]\: testbin/argtest
+FOUND: argv[0]: testbin/argtest
+EXPECTING: argv\[1\]\: abcd
+FOUND: argv[1]: abcd
+EXPECTING: argv\[2\]\: \[NULL\]
+FOUND: argv[2]: [NULL]
+PASS
+Testing arg passing, two args a and b: 
+SENDING: p testbin/argtest a b
+EXPECTING: argc\: 3
+FOUND: argc: 3
+EXPECTING: argv\[0\]\: testbin/argtest
+FOUND: argv[0]: testbin/argtest
+EXPECTING: argv\[1\]\: a
+FOUND: argv[1]: a
+EXPECTING: argv\[2\]\: b
+FOUND: argv[2]: b
+EXPECTING: argv\[3\]\: \[NULL\]
+FOUND: argv[3]: [NULL]
+PASS
+Testing arg passing, two args ab and c: 
+SENDING: p testbin/argtest ab c
+EXPECTING: argc\: 3
+FOUND: argc: 3
+EXPECTING: argv\[0\]\: testbin/argtest
+FOUND: argv[0]: testbin/argtest
+EXPECTING: argv\[1\]\: ab
+FOUND: argv[1]: ab
+EXPECTING: argv\[2\]\: c
+FOUND: argv[2]: c
+EXPECTING: argv\[3\]\: \[NULL\]
+FOUND: argv[3]: [NULL]
+PASS
+Testing arg passing, two args ab and cd: 
+SENDING: p testbin/argtest ab cd
+EXPECTING: argc\: 3
+FOUND: argc: 3
+EXPECTING: argv\[0\]\: testbin/argtest
+FOUND: argv[0]: testbin/argtest
+EXPECTING: argv\[1\]\: ab
+FOUND: argv[1]: ab
+EXPECTING: argv\[2\]\: cd
+FOUND: argv[2]: cd
+EXPECTING: argv\[3\]\: \[NULL\]
+FOUND: argv[3]: [NULL]
+PASS
+Testing arg passing, two args abc and defg: 
+SENDING: p testbin/argtest abc defg
+EXPECTING: argc\: 3
+FOUND: argc: 3
+EXPECTING: argv\[0\]\: testbin/argtest
+FOUND: argv[0]: testbin/argtest
+EXPECTING: argv\[1\]\: abc
+FOUND: argv[1]: abc
+EXPECTING: argv\[2\]\: defg
+FOUND: argv[2]: defg
+EXPECTING: argv\[3\]\: \[NULL\]
+FOUND: argv[3]: [NULL]
+PASS
+Testing arg passing, three args a, b and c: 
+SENDING: p testbin/argtest a b c
+EXPECTING: argc\: 4
+FOUND: argc: 4
+EXPECTING: argv\[0\]\: testbin/argtest
+FOUND: argv[0]: testbin/argtest
+EXPECTING: argv\[1\]\: a
+FOUND: argv[1]: a
+EXPECTING: argv\[2\]\: b
+FOUND: argv[2]: b
+EXPECTING: argv\[3\]\: c
+FOUND: argv[3]: c
+EXPECTING: argv\[4\]\: \[NULL\]
+FOUND: argv[4]: [NULL]
+PASS
+Testing arg passing, three args abcd, efgh and ijkl: 
+SENDING: p testbin/argtest abcd efgh ijkl
+EXPECTING: argc\: 4
+FOUND: argc: 4
+EXPECTING: argv\[0\]\: testbin/argtest
+FOUND: argv[0]: testbin/argtest
+EXPECTING: argv\[1\]\: abcd
+FOUND: argv[1]: abcd
+EXPECTING: argv\[2\]\: efgh
+FOUND: argv[2]: efgh
+EXPECTING: argv\[3\]\: ijkl
+FOUND: argv[3]: ijkl
+EXPECTING: argv\[4\]\: \[NULL\]
+FOUND: argv[4]: [NULL]
+PASS
+Testing arg passing, four args a, b, c and d: 
+SENDING: p testbin/argtest a b c d
+EXPECTING: argc\: 5
+FOUND: argc: 5
+EXPECTING: argv\[0\]\: testbin/argtest
+FOUND: argv[0]: testbin/argtest
+EXPECTING: argv\[1\]\: a
+FOUND: argv[1]: a
+EXPECTING: argv\[2\]\: b
+FOUND: argv[2]: b
+EXPECTING: argv\[3\]\: c
+FOUND: argv[3]: c
+EXPECTING: argv\[4\]\: d
+FOUND: argv[4]: d
+EXPECTING: argv\[5\]\: \[NULL\]
+FOUND: argv[5]: [NULL]
+PASS
+Testing arg passing, four args abcd, efgh, ijkl and mnopqrstuvwxyz: 
+SENDING: p testbin/argtest abcd efgh ijkl mnopqrstuvwxyz
+EXPECTING: argc\: 5
+FOUND: argc: 5
+EXPECTING: argv\[0\]\: testbin/argtest
+FOUND: argv[0]: testbin/argtest
+EXPECTING: argv\[1\]\: abcd
+FOUND: argv[1]: abcd
+EXPECTING: argv\[2\]\: efgh
+FOUND: argv[2]: efgh
+EXPECTING: argv\[3\]\: ijkl
+FOUND: argv[3]: ijkl
+EXPECTING: argv\[4\]\: mnopqrstuvwxyz
+FOUND: argv[4]: mnopqrstuvwxyz
+EXPECTING: argv\[5\]\: \[NULL\]
+FOUND: argv[5]: [NULL]
+PASS
+---------------------------------------------------------
+Running: /h/u1/demke/369/course-36913s/assignments/a1/marking/os161-tester/csc369-testing-scripts/asst1-02-addtest.py kernel
+Testing arg passing, two args 1 and 2: 
+SENDING: p testbin/add 1 2
+EXPECTING: Answer\: 3
+FOUND: Answer: 3
+PASS
+Testing arg passing, two args 1 and 23: 
+SENDING: p testbin/add 1 23
+EXPECTING: Answer\: 24
+FOUND: Answer: 24
+PASS
+Testing arg passing, two args 1 and 234: 
+SENDING: p testbin/add 1 234
+EXPECTING: Answer\: 235
+FOUND: Answer: 235
+PASS
+Testing arg passing, two args 12 and 2345: 
+SENDING: p testbin/add 12 2345
+EXPECTING: Answer\: 2357
+FOUND: Answer: 2357
+PASS
+---------------------------------------------------------
+Running: /h/u1/demke/369/course-36913s/assignments/a1/marking/os161-tester/csc369-testing-scripts/asst1-03-amp.py kernel
+Testing no ampersand in menu cmd: 
+SENDING: p markbin/infinite
+EXPECTING: ['161 kernel \\[\\? for menu\\]\\:']
+TIMEOUT ERROR
+PASS
+Testing ampersand in menu cmd: 
+SENDING: p markbin/infinite &
+EXPECTING: ['161 kernel \\[\\? for menu\\]\\:']
+FOUND: 161 kernel [? for menu]:
+PASS
+---------------------------------------------------------
+Running: /h/u1/demke/369/course-36913s/assignments/a1/marking/os161-tester/csc369-testing-scripts/asst1-04-wt.py kernel
+Testing builtin waittest, wt 1, output must be manually inspected: 
+SENDING: wt 1
+EXPECTING: ['Wait test done.']
+wt 1
+Starting wait test...test num=1
+
+Set 1 (wait should generally succeed)
+-------------------------------------
+Spawned pid 2
+Spawned pid 3
+Spawned pid 4
+Spawned pid 5
+Spawned pid 6
+Spawned pid 7
+Spawned pid 8
+Spawned pid 9
+waitfirstthread 0 started...
+waitfirstthread 1 started...
+waitfirstthread 2 started...
+waitfirstthread 3 started...
+waitfirstthread 4 started...
+waitfirstthread 5 started...
+waitfirstthread 6 started...
+waitfirstthread 7 started...
+Waiting on pid 2...
+waitfirstthread 0 exiting.
+waitfirstthread 1 exiting.
+Pid 2 exit status: 0
+Waiting on pid 3...
+Pid 3 exit status: 4
+Waiting on pid 4...
+waitfirstthread 2 exiting.
+Pid 4 exit status: 8
+Waiting on pid 5...
+waitfirstthread 3 exiting.
+Pid 5 exit status: 12
+Waiting on pid 6...
+waitfirstthread 4 exiting.
+Pid 6 exit status: 16
+Waiting on pid 7...
+waitfirstthread 5 exiting.
+Pid 7 exit status: 20
+Waiting on pid 8...
+waitfirstthread 6 exiting.
+Pid 8 exit status: 24
+Waiting on pid 9...
+waitfirstthread 7 exiting.
+Pid 9 exit status: 28
+
+
+FOUND: Wait test done.
+SURVIVED
+Testing builtin waittest, wt 2, output must be manually inspected: 
+SENDING: wt 2
+EXPECTING: ['Wait test done.']
+wt 2
+Starting wait test...test num=2
+
+Set 2 (wait should always succeed)
+----------------------------------
+Spawned pid 2
+Spawned pid 3
+Spawned pid 4
+Spawned pid 5
+Spawned pid 6
+Spawned pid 7
+Spawned pid 8
+Spawned pid 9
+Waiting for pid 2 to V()...
+exitfirstthread 4 started...
+exitfirstthread 2 started...
+exitfirstthread 5 started...
+exitfirstthread 1 started...
+exitfirstthread 6 started...
+exitfirstthread 3 started...
+exitfirstthread 7 started...
+exitfirstthread 0 started...
+exitfirstthread 1 exiting.
+exitfirstthread 0 exiting.
+exitfirstthread 2 exiting.
+Appears that pid 2 P()'d
+Waiting on pid 2...
+Pid 2 exit status: 0
+Waiting for pid 3 to V()...
+Appears that pid 3 P()'d
+Waiting on pid 3...
+Pid 3 exit status: 4
+Waiting for pid 4 to V()...
+Appears that pid 4 P()'d
+Waiting on pid 4...
+Pid 4 exit status: 8
+Waiting for pid 5 to V()...
+exitfirstthread 3 exiting.
+exitfirstthread 4 exiting.
+Appears that pid 5 P()'d
+Waiting on pid 5...
+Pid 5 exit status: 12
+Waiting for pid 6 to V()...
+Appears that pid 6 P()'d
+Waiting on pid 6...
+Pid 6 exit status: 16
+Waiting for pid 7 to V()...
+exitfirstthread 6 exiting.
+exitfirstthread 5 exiting.
+Appears that pid 7 P()'d
+Waiting on pid 7...
+Pid 7 exit status: 20
+Waiting for pid 8 to V()...
+Appears that pid 8 P()'d
+Waiting on pid 8...
+Pid 8 exit status: 24
+Waiting for pid 9 to V()...
+exitfirstthread 7 exiting.
+Appears that pid 9 P()'d
+Waiting on pid 9...
+Pid 9 exit status: 28
+
+
+FOUND: Wait test done.
+SURVIVED
+Testing builtin waittest, wt 3, output must be manually inspected: 
+SENDING: wt 3
+EXPECTING: ['Wait test done.']
+wt 3
+Starting wait test...test num=3
+
+Set 3 (wait should never succeed)
+---------------------------------
+Spawned pid 2
+Spawned pid 3
+Spawned pid 4
+Spawned pid 5
+Spawned pid 6
+Spawned pid 7
+Spawned pid 8
+Spawned pid 9
+Waiting for pid 2 to V()...
+exitfirstthread 4 started...
+exitfirstthread 2 started...
+exitfirstthread 5 started...
+exitfirstthread 1 started...
+exitfirstthread 6 started...
+exitfirstthread 3 started...
+exitfirstthread 7 started...
+exitfirstthread 0 started...
+exitfirstthread 1 exiting.
+exitfirstthread 0 exiting.
+exitfirstthread 2 exiting.
+Appears that pid 2 P()'d
+Waiting on pid 2...
+Pid 2 waitpid error No such process (15)!
+Waiting for pid 3 to V()...
+Appears that pid 3 P()'d
+Waiting on pid 3...
+Pid 3 waitpid error No such process (15)!
+Waiting for pid 4 to V()...
+Appears that pid 4 P()'d
+Waiting on pid 4...
+Pid 4 waitpid error No such process (15)!
+Waiting for pid 5 to V()...
+exitfirstthread 3 exiting.
+exitfirstthread 4 exiting.
+exitfirstthread 5 exiting.
+Appears that pid 5 P()'d
+Waiting on pid 5...
+Pid 5 waitpid error No such process (15)!
+Waiting for pid 6 to V()...
+Appears that pid 6 P()'d
+Waiting on pid 6...
+Pid 6 waitpid error No such process (15)!
+Waiting for pid 7 to V()...
+Appears that pid 7 P()'d
+Waiting on pid 7...
+Pid 7 waitpid error No such process (15)!
+Waiting for pid 8 to V()...
+exitfirstthread 6 exiting.
+exitfirstthread 7 exiting.
+Appears that pid 8 P()'d
+Waiting on pid 8...
+Pid 8 waitpid error No such process (15)!
+Waiting for pid 9 to V()...
+Appears that pid 9 P()'d
+Waiting on pid 9...
+Pid 9 waitpid error No such process (15)!
+
+
+FOUND: Wait test done.
+SURVIVED
+Testing builtin waittest, wt 4, output must be manually inspected: 
+SENDING: wt 4
+EXPECTING: ['Wait test done.']
+wt 4
+Starting wait test...test num=4
+
+Set 4 wait for non-child (wait should always succeed)
+---------------------------------
+Spawned pid 2
+Spawned pid 3
+Spawned pid 4
+Spawned pid 5
+Spawned pid 6
+Spawned pid 7
+Sib 1 joining with 2
+Sib 3 joining with 4
+waitfirstthread 0 started...
+Sib 4 joining with 5
+Sib 2 joining with 3
+Sib 5 joining with 6
+Spawned pid 8
+Spawned pid 9
+Sib 6 joining with 7
+waitfirstthread 0 exiting.
+Sib 7 joining with 8
+pid_detach failed: Invalid argument
+Sib 1 got exit status 0 from 2
+pid_detach failed: Invalid argument
+Sib 2 got exit status 1 from 3
+pid_detach failed: Invalid argument
+Sib 3 got exit status 2 from 4
+pid_detach failed: Invalid argument
+Sib 4 got exit status 3 from 5
+pid_detach failed: Invalid argument
+Sib 5 got exit status 4 from 6
+pid_detach failed: Invalid argument
+Sib 6 got exit status 5 from 7
+pid_detach failed: Invalid argument
+Sib 7 got exit status 6 from 8
+Pid 9 exit status: 7
+
+
+FOUND: Wait test done.
+SURVIVED
+Testing builtin waittest, wt 5, output must be manually inspected: 
+SENDING: wt 5
+EXPECTING: ['Wait test done.']
+wt 5
+Starting wait test...test num=5
+
+Set 5 multiple joiners (wait should always succeed)
+---------------------------------
+Spawned pid 2
+waitfirstthread 42 started...
+Spawned pid 3
+Spawned pid 4
+Spawned pid 5
+Spawned pid 6
+Spawned pid 7
+Spawned pid 8
+Spawned pid 9
+Sib 4 joining with 2
+Sib 1 joining with 2
+Sib 5 joining with 2
+Sib 3 joining with 2
+Sib 6 joining with 2
+Sib 2 joining with 2
+Sib 7 joining with 2
+waitfirstthread 42 exiting.
+pid_detach failed: Invalid argument
+Sib 4 got exit status 42 from 2
+
+TIMEOUT ERROR
+FAILED SURVIVAL
+---------------------------------------------------------
+Running: /h/u1/demke/369/course-36913s/assignments/a1/marking/os161-tester/csc369-testing-scripts/asst1-05-badwait.py kernel
+Testing bad waitpid calls: 
+SENDING: p testbin/badcall
+SENDING: b
+EXPECTING: ['Choose\\:']
+ b
+panic: Assertion failed: pid>=0, at ../../thread/pid.c:165 (pi_get)
+sys161: 107374182445878150 cycles (14142738 run, 107374182431735412 global-idle)
+sys161:   cpu0: 14040833 kern, 101905 user, 0 idle)
+sys161: 2278 irqs 1180 exns 0r/0w disk 19r/1686w console 10r/0w/3m emufs 0r/0w net
+sys161: Elapsed real time: 1.816027 seconds (5.91259e+10 mhz)
+sys161: Elapsed virtual time: 1.835126017 seconds (25 mhz)
+
+END OF FILE ERROR
+FAILED SURVIVAL
+---------------------------------------------------------
+Running: /h/u1/demke/369/course-36913s/assignments/a1/marking/os161-tester/csc369-testing-scripts/asst1-06-waittest.py kernel
+Testing waitpid using testbin/waittest: 
+SENDING: p markbin/waittest
+EXPECTING: ['unexpected result from waitpid .*\r\n', 'waitpid returned status .*\r\n']
+p markbin/waittest
+markbin/waittest: Starting.
+markbin/waittest: Creating long-running child.  Parent should have to wait.
+markbin/waittest: child starting loop.
+markbin/waittest: child exiting with 10.
+markbin/waittest: 
+FOUND: waitpid returned status 10 (raw 40).
+
+EXPECTING: ['unexpected result from waitpid .*\r\n', 'waitpid returned status .*\r\n']
+markbin/waittest: Creating short-running child.  Parent should not have to wait.
+markbin/waittest: child starting loop.
+markbin/waittest: child exiting with 20.
+markbin/waittest: Parent calling waitpid, expect child already exited.
+markbin/waittest: 
+FOUND: waitpid returned status 20 (raw 80).
+
+EXPECTING: ['unexpected result from waitpid .*\r\n', 'waitpid returned 0 with status changed to 0x.*\r\n', 'waitpid returned 0 with status unchanged.']
+markbin/waittest: Creating long-running child.  Parent should not have to wait (WNOHANG).
+markbin/waittest: waitpid returned 0 with statusmarkbin/waittest: child starting loop. unchanged.: Operation succeeded
+
+markbin/waittest: child exiting with 30.
+markbin/waittest: waitpid returned status 30 (raw 120).
+markbin/waittest: Complete.
+Operation took 2.816540720 seconds
+OS/161 kernel [? for menu]: 
+TIMEOUT ERROR
+FAIL
+---------------------------------------------------------
+Running: /h/u1/demke/369/course-36913s/assignments/a1/marking/os161-tester/csc369-testing-scripts/asst1-07-badkill.py kernel
+Testing bad kill calls: 
+SENDING: p testbin/badcall
+SENDING: }
+EXPECTING: ['Choose\\:']
+ }
+testbin/badcall: FAILURE: kill for pid -8: Operation succeeded
+testbin/badcall: FAILURE: kill for pid -1: Operation succeeded
+testbin/badcall: FAILURE: nonexistent pid: Operation succeeded
+testbin/badcall: FAILURE: kill with -1 signal: Operation succeeded
+testbin/badcall: FAILURE: kill with signal num (32) too high: Operation succeeded
+testbin/badcall: FAILURE: kill with signal num (100) too high: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 3: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 4: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 5: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 6: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 7: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 8: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 10: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 11: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 12: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 13: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 14: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 16: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 18: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 20: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 21: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 22: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 23: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 24: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 25: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 26: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 27: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 30: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 31: Operation succeeded
+testbin/badcall: FAILURE: kill with valid pid, signal 0: Operation succeeded
+testbin/badcall: passed: kill with valid pid, signal SIGKILL returned 0
+
+FOUND: Choose:
+SURVIVED
+---------------------------------------------------------
+Running: /h/u1/demke/369/course-36913s/assignments/a1/marking/os161-tester/csc369-testing-scripts/asst1-08-fullkill.py kernel
+Testing kill and waitpid using markbin/kt-die: 
+SENDING: p markbin/kt-die
+EXPECTING: ['kill failed.*\r\n', 'Child \\d+ sent SIGKILL.']
+p markbin/kt-die
+markbin/kt-die: Starting.
+markbin/kt-die: Child 3 created.
+markbin/kt-die: 
+FOUND: Child 3 sent SIGKILL.
+EXPECTING: ['waitpid failed \\(signal SIGKILL\\)', 'waitpid succeeded \\(signal SIGKILL, .*\r\n']
+
+markbin/kt-die: 
+FOUND: waitpid succeeded (signal SIGKILL, status 0, rawstatus 1).
+
+EXPECTING: ['kill failed.*\r\n', 'Child \\d+ sent SIGHUP.']
+markbin/kt-die: 	 status indicates exit due to signal.
+markbin/kt-die: Child 4 created.
+markbin/kt-die: 
+FOUND: Child 4 sent SIGHUP.
+EXPECTING: ['waitpid failed \\(signal SIGHUP\\)', 'waitpid succeeded \\(signal SIGHUP, .*\r\n']
+
+markbin/kt-die: 
+FOUND: waitpid succeeded (signal SIGHUP, status 0, rawstatus 1).
+
+EXPECTING: ['kill failed.*\r\n', 'Child \\d+ sent SIGINT.']
+markbin/kt-die: 	 status indicates exit due to signal.
+markbin/kt-die: Child 5 created.
+markbin/kt-die: 
+FOUND: Child 5 sent SIGINT.
+EXPECTING: ['waitpid failed \\(signal SIGINT\\)', 'waitpid succeeded \\(signal SIGINT, .*\r\n']
+
+markbin/kt-die: 
+FOUND: waitpid succeeded (signal SIGINT, status 0, rawstatus 1).
+
+EXPECTING: ['kill failed.*\r\n', 'Child \\d+ sent SIGTERM.']
+markbin/kt-die: 	 status indicates exit due to signal.
+markbin/kt-die: Child 6 created.
+markbin/kt-die: 
+FOUND: Child 6 sent SIGTERM.
+EXPECTING: ['waitpid failed \\(signal SIGTERM\\)', 'waitpid succeeded \\(signal SIGTERM, .*\r\n']
+
+markbin/kt-die: 
+FOUND: waitpid succeeded (signal SIGTERM, status 0, rawstatus 1).
+
+EXPECTING: Complete.
+FOUND: Complete.
+PASS
+Testing kill and waitpid using markbin/kt-ignore: 
+SENDING: p markbin/kt-ignore
+EXPECTING: ['kill failed.*\r\n', 'Child \\d+ sent SIGWINCH.']
+p markbin/kt-ignore
+markbin/kt-ignore: Starting.
+markbin/kt-ignore: Child 3 created.
+markbin/kt-ignore: 
+FOUND: Child 3 sent SIGWINCH.
+EXPECTING: ['waitpid with WNOHANG failed.*\r\n', 'Success\\: signal SIGWINCH appears to be ignored.']
+
+markbin/kt-ignore: 
+FOUND: Success: signal SIGWINCH appears to be ignored.
+EXPECTING: ['kill failed.*\r\n', 'Child \\d+ sent SIGINFO.']
+
+markbin/kt-ignore: Sending SIGKILL to Child 3 to clean up...
+markbin/kt-ignore: 	retrieved 1 status from pid 3
+
+markbin/kt-ignore: Child 4 created.
+markbin/kt-ignore: 
+FOUND: Child 4 sent SIGINFO.
+EXPECTING: ['waitpid with WNOHANG failed.*\r\n', 'Success\\: signal SIGINFO appears to be ignored.']
+
+markbin/kt-ignore: 
+FOUND: Success: signal SIGINFO appears to be ignored.
+EXPECTING: Complete.
+FOUND: Complete.
+PASS
+Testing kill and waitpid using markbin/kt-stop: 
+SENDING: p markbin/kt-stop
+EXPECTING: ['6666666666666666666666']
+p markbin/kt-stop
+markbin/kt-stop: Starting.
+markbin/kt-stop: circular stop and continue test, parent has pid 2.
+333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333markbin/kt-stop: Child 4, parent 3333333333333333333333333332, trying to kill 3.
+33333333333333333333333333333333333333333333333333333333333333333333333333333333markbin/kt-stop: Child 5, parent 2, trying to kill 4.
+markbin/kt-stop: Child 6, parent333333333333333333333333333 2, trying to kill 5.
+33333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333markbin/kt-stop: child 3 done, exiting.
+markbin/kt-stop: Continuing child 5.
+
+FOUND: 6666666666666666666666
+EXPECTING: ['Continuing child 5']
+666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666markbin/kt-stop: child 6 done, exiting.
+markbin/kt-stop: Continuing child 4.
+5555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555markbin/kt-stop: child 5 done, exiting.
+markbin/kt-stop: Continuing child 3.
+markbin/kt-stop: Getting exitstatus fro444444444444444444444444444m 3.
+markbin/kt-stop: Getting 444444444444444444444444444exitstatus from 4.
+4444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444markbin/kt-stop: child 4 done, exiting.
+markbin/kt-stop: Getting exitstatus from 5.
+markbin/kt-stop: Getting exitstatus from 6.
+markbin/kt-stop: Complete.
+Operation took 5.592675160 seconds
+OS/161 kernel [? for menu]: 
+TIMEOUT ERROR
+FAIL
