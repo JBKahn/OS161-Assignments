@@ -28,30 +28,132 @@
  */
 
 /*
- * Program to test argument passing: it displays the argc and all
- * of argv, and then exits.
+ * triple.c
  *
- * Intended for the basic system calls assignment. This may help
- * debugging the argument handling of execv().
+ * 	Runs three copies of some subprogram.
  */
 
 #include <stdio.h>
+#include <unistd.h>
+#include <err.h>
+#include <string.h>
+#define Dim 	72	/* sum total of the arrays doesn't fit in 
+			 * physical memory 
+			 */
+#define RIGHT  8772192		/* correct answer */
 
-int
-main(int argc, char *argv[])
-{
-	const char *tmp;
-	int i;
+int A[Dim][Dim];
+int B[Dim][Dim];
+int C[Dim][Dim];
+int T[Dim][Dim][Dim];
 
-	printf("argc: %d\n", argc);
+int palinderm(void);
 
-	for (i=0; i<=argc; i++) {
-		tmp = argv[i];
-		if (tmp==NULL) {
-			tmp = "[NULL]";
-		}
-		printf("argv[%d]: %s\n", i, tmp);
+static
+pid_t
+spawnv(const char *prog, char **argv)
+{       prog=0;
+argv=0;
+	pid_t pid = fork();
+	switch (pid) {
+	    case -1:
+		err(1, "fork");
+	    case 0:
+		/* child */
+                palinderm();
+	    default:
+		/* parent */
+		break;
 	}
+	return pid;
+}
 
+static
+int
+dowait(int index, int pid)
+{
+	int status;
+
+	if (waitpid(pid, &status, 0)<0) {
+		warn("waitpid for copy #%d (pid %d)", index, pid);
+		return 1;
+	}
+	else if (WIFSIGNALED(status)) {
+		warnx("copy #%d (pid %d): signal %d", index, pid,
+		      WTERMSIG(status));
+		return 1;
+	}
+	else if (WEXITSTATUS(status) != 0) {
+		warnx("copy #%d (pid %d): exit %d", index, pid,
+		      WEXITSTATUS(status));
+		return 1;
+	}
 	return 0;
 }
+
+int
+main()
+{
+	pid_t pids[3];
+	int i, failures = 0;
+	char *args[2];
+
+	/* set up the argv */
+	args[0]=(char *)NULL;
+	args[1]=NULL;
+
+	warnx("Starting: running three copies of %s...", NULL);
+
+	for (i=0; i<3; i++) {
+		pids[i]=spawnv(args[0], args);
+	}
+
+	for (i=0; i<3; i++) {
+		failures += dowait(i, pids[i]);
+	}
+
+	if (failures > 0) {
+		warnx("%d failures", failures);
+	}
+	else {
+		warnx("Congratulations! You passed.");
+	}
+        return 0;
+}
+
+int
+palinderm()
+{
+    int i, j, k, r;
+
+    for (i = 0; i < Dim; i++)		/* first initialize the matrices */
+	for (j = 0; j < Dim; j++) {
+	     A[i][j] = i;
+	     B[i][j] = j;
+	     C[i][j] = 0;
+	}
+
+    for (i = 0; i < Dim; i++)		/* then multiply them together */
+	for (j = 0; j < Dim; j++)
+            for (k = 0; k < Dim; k++)
+		T[i][j][k] = A[i][k] * B[k][j];
+
+    for (i = 0; i < Dim; i++)
+	for (j = 0; j < Dim; j++)
+            for (k = 0; k < Dim; k++)
+		C[i][j] += T[i][j][k];
+
+    r = 0;
+    for (i = 0; i < Dim; i++)
+	    r += C[i][i];
+
+    printf("matmult finished.\n");
+    printf("answer is: %d (should be %d)\n", r, RIGHT);
+    if (r != RIGHT) {
+	    printf("FAILED\n");
+	    return 1;
+    }
+    printf("Passed.\n");
+    return 0;
+}
+
