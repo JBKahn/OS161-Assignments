@@ -1778,3 +1778,52 @@ sfs_getroot(struct fs *fs)
 
 	return &sv->sv_v;
 }
+
+/*
+ * sfs_getdirentry
+ */
+static
+int
+sfs_getdirentry(struct vnode *v, struct uio *uio)
+{
+	struct sfs_vnode *sv = v->vn_data;
+	struct sfs_dir dir;
+
+	vfs_biglock_acquire();
+	/* Ensure it is being called on a directory. */
+	if(sv->sv_i.sfi_type != SFS_TYPE_DIR){
+		vfs_biglock_release();
+		return ENOTDIR;
+	}
+
+
+	int nentries = sfs_dir_nentries(sv);
+
+
+	int slot = uio->uio_offset;
+    /* Check to see if slot requested is out of range */
+    if(slot >= nentries){
+    	vfs_biglock_release();
+    	return 0;
+    }
+	/* Try to read it. */
+    int error = sfs_readdir(sv, &dir, slot);
+    if(error){
+    	vfs_biglock_release();
+    	return error;
+    }
+
+    if(dir.sfd_ino == SFS_NOINO)
+    	return -1;
+
+  	char name[SFS_NAMELEN];
+  	strcpy(name, dir.sfd_name);
+
+  	vfs_biglock_release();
+
+  	error = uiomove(name, (size_t)strlen(name) * sizeof(char), uio);
+  	if(error)
+    	return error;
+
+  	return 0;
+}

@@ -115,18 +115,39 @@ sys_close(int fd)
 	return file_close(fd);
 }
 
-/* 
+/*
  * sys_dup2
- * 
+ * dup2 clones the file handle oldfd onto the file handle
+ * newfd. If newfd names an open file, that file is closed.
+ *
  */
 int
 sys_dup2(int oldfd, int newfd, int *retval)
 {
-        (void)oldfd;
-        (void)newfd;
-        (void)retval;
-
-	return EUNIMP;
+	/* Check fd ranges */
+	if ((newfd < 0) || (newfd >= __OPEN_MAX) || (oldfd < 0) || (oldfd >= __OPEN_MAX)) {
+		*retval = EBADF;
+		return -1;
+	}
+	/* Is the old fd real */
+	if ((curthread->t_filetable->oft[oldfd] == NULL)) {
+		*retval = EBADF;
+		return -1;
+	}
+	/* Trivial case of them already being the same, no work to do. */
+	if (oldfd == newfd) {
+		*retval = newfd;
+		return 0;
+	}
+	*retval = newfd;
+	/* If newfd names an open file, that file is closed, as per man page */
+	if (curthread->t_filetable->oft[newfd] != NULL)
+		sys_close(newfd);
+	/* Redirect newfd to oldfd */
+	curthread->t_filetable->oft[newfd] = curthread->t_filetable->oft[oldfd];
+	/* Update ref count */
+	curthread->t_filetable->oft[newfd]->refcount++;
+	return 0;
 }
 
 /*
@@ -154,33 +175,27 @@ sys_read(int fd, userptr_t buf, size_t size, int *retval)
 	struct iovec user_iov;
 	int result;
 	int offset = 0;
-
-	/* Make sure we were able to init the cons_vnode */
-	if (cons_vnode == NULL) {
-	  return ENODEV;
-	}
+	struct file *toread;
 
 	/* better be a valid file descriptor */
-	/* Right now, only stdin (0), stdout (1) and stderr (2)
-	 * are supported, and they can't be redirected to a file
-	 */
-	if (fd < 0 || fd > 2) {
-	  return EBADF;
-	}
+	if (fd < 0 || fd >= __OPEN_MAX)
+	    return EBADF;
 
+	toread = curthread->t_filetable->oft[fd];
+	/* Is this an open file? If not, we can't read. */
+	if ((toread == NULL) || (toread->refcount == 0))
+		return EBADF;
 	/* set up a uio with the buffer, its size, and the current offset */
-	mk_useruio(&user_iov, &user_uio, buf, size, offset, UIO_READ);
+	mk_useruio(&user_iov, &user_uio, buf, size,  toread->posinfile, UIO_READ);
 
 	/* does the read */
-	result = VOP_READ(cons_vnode, &user_uio);
-	if (result) {
+	result = VOP_READ(toread->vn, &user_uio);
+	if (result)
 		return result;
-	}
 
-	/*
-	 * The amount read is the size of the buffer originally, minus
-	 * how much is left in it.
-	 */
+	/* VOP read should have set uio_offset correctly so we can use that value.*/
+	toread->filepos = user_uio.uio_offset;
+	/* Size of buffer minus the size remaining in the buffer = size written.*/
 	*retval = size - user_uio.uio_resid;
 
 	return 0;
@@ -191,8 +206,8 @@ sys_read(int fd, userptr_t buf, size_t size, int *retval)
  * calls VOP_WRITE.
  *
  * A3: This is the "dumb" implementation of sys_write:
- * it only deals with file descriptors 1 and 2, and 
- * assumes they are permanently associated with the 
+ * it only deals with file descriptors 1 and 2, and
+ * assumes they are permanently associated with the
  * console vnode (which must have been previously initialized).
  *
  * In your implementation, you should use the file descriptor
@@ -206,41 +221,37 @@ sys_read(int fd, userptr_t buf, size_t size, int *retval)
  */
 
 int
-sys_write(int fd, userptr_t buf, size_t len, int *retval) 
+sys_write(int fd, userptr_t buf, size_t len, int *retval)
 {
-        struct uio user_uio;
-        struct iovec user_iov;
-        int result;
-        int offset = 0;
+	struct uio user_uio;
+	struct iovec user_iov;
+	int result;
+	int offset = 0;
+	struct file *towrite;
 
-        /* Make sure we were able to init the cons_vnode */
-        if (cons_vnode == NULL) {
-          return ENODEV;
-        }
+	/* better be a valid file descriptor */
+	if (fd < 0 || fd >= __OPEN_MAX)
+	    return EBADF;
 
-        /* Right now, only stdin (0), stdout (1) and stderr (2)
-         * are supported, and they can't be redirected to a file
-         */
-        if (fd < 0 || fd > 2) {
-          return EBADF;
-        }
+	towrite = curthread->t_filetable->oft[fd];
+	/* Is this an open file? If not, we can't read. */
+	if ((towrite == NULL) || (towrite->refcount == 0))
+		return EBADF;
 
-        /* set up a uio with the buffer, its size, and the current offset */
-        mk_useruio(&user_iov, &user_uio, buf, len, offset, UIO_WRITE);
+    /* set up a uio with the buffer, its size, and the current offset */
+    mk_useruio(&user_iov, &user_uio, buf, len, towrite->filepos, UIO_WRITE);
 
-        /* does the write */
-        result = VOP_WRITE(cons_vnode, &user_uio);
-        if (result) {
-                return result;
-        }
+    /* does the write */
+    result = VOP_WRITE(towrite->vn, &user_uio);
+    if (result)
+        return result;
 
-        /*
-         * the amount written is the size of the buffer originally,
-         * minus how much is left in it.
-         */
-        *retval = len - user_uio.uio_resid;
+	/* VOP read should have set uio_offset correctly so we can use that value.*/
+	towrite->filepos = user_uio.uio_offset;
+	/* Size of buffer minus the size remaining in the buffer = size written.*/
+    *retval = len - user_uio.uio_resid;
 
-        return 0;
+    return 0;
 }
 
 /*
@@ -250,12 +261,44 @@ sys_write(int fd, userptr_t buf, size_t len, int *retval)
 int
 sys_lseek(int fd, off_t offset, int whence, off_t *retval)
 {
-        (void)fd;
-        (void)offset;
-        (void)whence;
-        (void)retval;
+	struct file *filetoseek;
+	if (fd < 0 || fd >= __OPEN_MAX)
+		return EBADF; /* Check fd range */
 
-	return EUNIMP;
+	filetoseek = curthread->t_filetable->oft[fd];
+
+	/* Is this an open file? If not, we can't read. */
+	if ((filetoseek == NULL) || (filetoseek->refcount == 0))
+		return EBADF;
+
+	/* Calculate new offset. */
+	int newoffset;
+	if (whence == SEEK_SET) {
+		/* the file offset shall be set to offset bytes. */
+		newoffset = offset;
+	} else if (whence == SEEK_CUR) {
+		/* the file offset shall be set to its current location plus offset. */
+		newoffset = filetoseek->filepos + offset;
+	} else if (whence == SEEK_END) {
+		struct stat st;
+		int err;
+		err = VOP_STAT(filetoseek->vn, &st);
+		if (err)
+			return err;
+		/* the file offset shall be set to the size of the file plus offset. */
+		newoffset = st.st_size + offset;
+	/* Bad argument passed */
+	} else {
+		return EINVAL;
+	}
+
+	 /* Check if seeking to the specified position within the file is legal. */
+	err = VOP_TRYSEEK(filetoseek->vn, newoffset);
+	if (err)
+		return err;
+
+	*retval = newoffset;
+	return 0;
 }
 
 
@@ -268,23 +311,61 @@ sys_lseek(int fd, off_t offset, int whence, off_t *retval)
 int
 sys_chdir(userptr_t path)
 {
-        (void)path;
+	struct vnode *new_dir;
+	int error;
+	char *fullpath;
 
-	return EUNIMP;
+	if ((fullpath = (char *)kmalloc(__PATH_MAX)) == NULL)
+		return ENOMEM;
+
+	/* Copy path into fullpath. */
+	error = copyinstr(path, fullpath, __PATH_MAX, NULL);
+	if (error) {
+		kfree(fullpath);
+		return error;
+	}
+
+	/* Get the vnode for the new path/directory. */
+	error = vfs_lookup(fullpath, &new_dir);
+	if (error)
+		return error;
+
+	/* Set the new current working directory. */
+	error = vfs_setcurdir(new_dir);
+	if (error)
+		return error;
+
+	return 0;
 }
 
 /*
  * sys___getcwd
- * 
+ *
  */
 int
 sys___getcwd(userptr_t buf, size_t buflen, int *retval)
 {
-        (void)buf;
-        (void)buflen;
-        (void)retval;
+	struct vnode *cwd_vn = curthread->t_cwd;
+	struct uio user_uio;
+	struct iovec user_iov;
 
-	return EUNIMP;
+	/* Error is there is no current working directory. */
+	if (cwd_vn == NULL) {
+		return ENOENT;
+	}
+
+	/* make uio with the buffer and the size of the cwd. */
+	mk_useruio(&user_iov, &user_uio, buf, buflen, 0, UIO_READ);
+
+	/* Compute pathname relative to filesystem root of the file and copy to the specified uio */
+	int error = VOP_NAMEFILE(cwd_vn, &user_uio);
+	if (error)
+		return error;
+
+	/* Size of buffer minus the size remaining in the buffer = size written.*/
+	*retval = buflen - user_uio.uio_resid;
+
+	return 0;
 }
 
 /*
@@ -293,10 +374,28 @@ sys___getcwd(userptr_t buf, size_t buflen, int *retval)
 int
 sys_fstat(int fd, userptr_t statptr)
 {
-        (void)fd;
-        (void)statptr;
+	struct file *statfile;
+	struct stat statbuf;
 
-	return EUNIMP;
+	if (fd < 0 || fd >= __OPEN_MAX)
+		 return EBADF;
+
+	statfile = curthread->t_filetable->oft[fd];
+	/* Is this an open file? If not, we can't stat it. */
+	if ((statfile == NULL) || (statfile->refcount == 0))
+		return EBADF;
+
+	/* Put stats in statbuf. */
+	int error = VOP_STAT(statfile->vn, &statbuf);
+	if (error)
+		return error;
+
+	/* Copyout statbuf to statptr. */
+	error = copyout(&statbuf, statptr, sizeof statbuf);
+	if (error)
+		return error;
+
+	return 0;
 }
 
 /*
@@ -305,16 +404,31 @@ sys_fstat(int fd, userptr_t statptr)
 int
 sys_getdirentry(int fd, userptr_t buf, size_t buflen, int *retval)
 {
-        (void)fd;
-        (void)buf;
-	(void)buflen;
-        (void)retval;
+	struct uio user_uio;
+	struct iovec user_iov;
+	struct file *getdir;
 
-	return EUNIMP;
+	if (fd < 0 || fd >= __OPEN_MAX)
+		 return EBADF;
+
+	getdir = curthread->t_filetable->oft[fd];
+
+	/* Is this an open file? There's not much we can do if it isn't. */
+	if ((statfile == NULL) || (statfile->refcount == 0))
+		return EBADF;
+
+	/* Set up a uio*/
+	mk_useruio(&user_iov, &user_uio, buf, buflen, 0, UIO_READ);
+
+	/* Get the directory */
+	int error = VOP_GETDIRENTRY(getdir->vn, &user_uio);
+	if (error)
+		return error;
+
+	/* Size of buffer minus the size remaining in the buffer = size written.*/
+	*retval = buflen - user_uio.uio_resid;
+
+	return 0;
 }
 
 /* END A3 SETUP */
-
-
-
-

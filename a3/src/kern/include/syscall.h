@@ -75,7 +75,7 @@ void dumb_consoleIO_bootstrap(void);
 /* BEGIN A3 SETUP */
 /* Note that sys_read and sys_write are prototyped above,
  * as part of the A2 starter code.
- */ 
+ */
 int sys_open(userptr_t filename, int flags, int mode, int *retval);
 int sys_close(int fd);
 int sys_dup2(int oldfd, int newfd, int *retval);

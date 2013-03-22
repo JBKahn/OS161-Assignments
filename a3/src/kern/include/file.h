@@ -24,7 +24,7 @@ struct file {
 /*
  * GOFT - global open file table.
  */
-struct file goft[__GBL_OPEN_MAX];
+struct file goft[__OPEN_MAX];
 
 /*
  * filetable struct
