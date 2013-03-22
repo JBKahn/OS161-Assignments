@@ -48,6 +48,7 @@
 /* At bottom of file */
 static int sfs_loadvnode(struct sfs_fs *sfs, uint32_t ino, int type,
 			 struct sfs_vnode **ret);
+static int sfs_getdirentry(struct vnode *v, struct uio *uio);
 
 ////////////////////////////////////////////////////////////
 //
@@ -1799,7 +1800,7 @@ sfs_getdirentry(struct vnode *v, struct uio *uio)
 
 	int nentries = sfs_dir_nentries(sv);
 
-
+	int error;
 	int slot = uio->uio_offset;
 	for (;;slot ++) {
 	    /* Check to see if slot requested is out of range */
@@ -1808,7 +1809,7 @@ sfs_getdirentry(struct vnode *v, struct uio *uio)
 	    	return 0;
 	    }
 		/* Try to read it. */
-	    int error = sfs_readdir(sv, &dir, slot);
+	    error = sfs_readdir(sv, &dir, slot);
 	    if(error){
 	    	vfs_biglock_release();
 	    	return error;
