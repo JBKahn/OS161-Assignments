@@ -19,20 +19,39 @@
  * opens a file, places it in the filetable, sets RETFD to the file
  * descriptor. the pointer arguments must be kernel pointers.
  * NOTE -- the passed in filename must be a mutable string.
- * 
- * A3: As per the OS/161 man page for open(), you do not need 
+ *
+ * A3: As per the OS/161 man page for open(), you do not need
  * to do anything with the "mode" argument.
  */
 int
 file_open(char *filename, int flags, int mode, int *retfd)
 {
-	(void)filename;
-	(void)flags;
-	(void)retfd;
-	(void)mode;
+	struct vnode *vn = NULL;
+	int openerr = vfs_open(filename, flags, mode, &vn);
+	if (openerr)
+		return openerr; // File open failed
 
+	/* Find free slot in global open file table. */
+	int i;
+	for (i = 0; goft[i].refcount > 0; i++) {
+		if (i > (__GBL_OPEN_MAX))
+			return ENFILE;
+	}
 
-	return EUNIMP;
+	goft[i].filepos = 0;
+	goft[i].refcount = 1;
+	goft[i].vn = vn;
+	goft[i].mode = flags;
+
+	/* Find a free slot in the process open file table. */
+	int j = 0;
+	for (j = 0; curthread->t_filetable->oft[j] != NULL; j++) {
+		if (j > __OPEN_MAX)
+			return EMFILE;
+	}
+	curthread->t_filetable->oft[j] = &goft[i];
+	*retfd = j;
+	return 0;
 }
 
 
@@ -45,22 +64,35 @@ file_open(char *filename, int flags, int mode, int *retfd)
 int
 file_close(int fd)
 {
-        (void)fd;
+	if ((fd < 0) || (fd > __OPEN_MAX))
+		return EBADF; // File despriptor out of bounds
 
-	return EUNIMP;
+	struct file *gof = curthread->t_filetable->oft[fd];
+	if ((gof == NULL) || (gof->refcount == 0))
+		return EBADF; // fill is closed.
+
+	gof->refcount--;
+	/* When the ref coutn is 0, we can close it. */
+	if (gof->refcount == 0) {
+		gof->mode = 0;
+		gof->filepos = 0;
+		vfs_close(gof->vn);
+	}
+	curthread->t_filetable->oft[fd] = NULL;
+	return 0;
 }
 
 /*** filetable functions ***/
 
-/* 
+/*
  * filetable_init
- * pretty straightforward -- allocate the space, set up 
+ * pretty straightforward -- allocate the space, set up
  * first 3 file descriptors for stdin, stdout and stderr,
  * and initialize all other entries to NULL.
- * 
+ *
  * Should set curthread->t_filetable to point to the
  * newly-initialized filetable.
- * 
+ *
  * Should return non-zero error code on failure.  Currently
  * does nothing but returns success so that loading a user
  * program will succeed even if you haven't written the
@@ -70,8 +102,25 @@ file_close(int fd)
 int
 filetable_init(void)
 {
+	struct filetable *openfiletable;
+	openfiletable = kmalloc(sizeof(struct filetable));
+	if (openfiletable == NULL)
+		return ENOMEM;
+
+	/* Set values to NULL */
+	int i;
+	for (i = 0; i < __OPEN_MAX; i++)
+		openfiletable->oft[i] = NULL;
+
+	/* STDIN, STDOUT, and STDERR */
+	openfiletable->oft[0] = &goft[0];
+	openfiletable->oft[1] = &goft[1];
+	openfiletable->oft[2] = &goft[1];
+
+	/* Assign newly-initialized filetable to current thread. */
+	curthread->t_filetable = openfiletable;
 	return 0;
-}	
+}
 
 /*
  * filetable_destroy
@@ -82,14 +131,30 @@ filetable_init(void)
 void
 filetable_destroy(struct filetable *ft)
 {
-        (void)ft;
-}	
+	struct file *ofd;
+	/* Close each file in filetable. */
+	int i;
+	for (i = 0; i < __OPEN_MAX; i++) {
+		ofd = ft->oft[i];
+		/* If fd is closed then skip it. */
+		if ((ofd == NULL) || (ofd->refcount == 0))
+			continue;
+		ofd->refcount--;
+		/* When the ref coutn is 0, we can close it. */
+		if (ofd->refcount == 0) {
+			ofd->mode = 0;
+			ofd->filepos = 0;
+			vfs_close(ofd->vn);
+		}
+	}
+	kfree(ft); /* Free memory */
+}
 
 
-/* 
+/*
  * You should add additional filetable utility functions here as needed
  * to support the system calls.  For example, given a file descriptor
- * you will want some sort of lookup function that will check if the fd is 
+ * you will want some sort of lookup function that will check if the fd is
  * valid and return the associated vnode (and possibly other information like
  * the current file position) associated with that open file.
  */

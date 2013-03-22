@@ -44,6 +44,7 @@
 #include <vfs.h>
 #include <syscall.h>
 #include <test.h>
+#include <file.h>
 
 /*
  * Load program "progname" and start running it in usermode.
@@ -76,6 +77,9 @@ runprogram(char *progname)
 
 	/* Activate it. */
 	as_activate(curthread->t_addrspace);
+
+	/* Initialize the open file table. */
+	filetable_init();
 
 	/* Load the executable. */
 	result = load_elf(v, &entrypoint);

@@ -554,10 +554,26 @@ thread_fork(const char *name,
  			return ENOMEM;
 		}
 	}
-	
+
 	/*
 	 * Now we clone various fields from the parent thread.
 	 */
+
+	/* Copy the process table*/
+	if (curthread->t_filetable != NULL) {
+		struct filetable *openftable;
+		openftable = kmalloc(sizeof(struct filetable));
+		if (openftable == NULL)
+			return ENOMEM;
+		int i;
+		for (i = 0; i < __OPEN_MAX; i++) {
+			if (curthread->t_filetable->oft[i] != NULL) {
+				openftable->oft[i] = curthread->t_filetable->oft[i];
+				openftable->oft[i]->refcount++;
+			}
+		}
+		newthread->t_filetable = openftable;
+	}
 
 	/* Thread subsystem fields */
 	newthread->t_cpu = curthread->t_cpu;

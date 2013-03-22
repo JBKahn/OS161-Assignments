@@ -12,13 +12,28 @@
 struct vnode;
 
 /*
+ * file struct representing an open file.
+ */
+struct file {
+	struct vnode *vn;
+	int posinfile;
+	int refcount;
+	int mode;
+};
+
+/*
+ * GOFT - global open file table.
+ */
+struct file goft[__GBL_OPEN_MAX];
+
+/*
  * filetable struct
- * just an array, nice and simple.  
+ * just an array, nice and simple.
  * It is up to you to design what goes into the array.  The current
  * array of ints is just intended to make the compiler happy.
  */
 struct filetable {
-	int changeme[__OPEN_MAX]; /* dummy type */
+	struct file *oft[__OPEN_MAX];
 };
 
 /* these all have an implicit arg of the curthread's filetable */
