@@ -22,6 +22,7 @@
 #include <copyinout.h>
 #include <synch.h>
 #include <file.h>
+#include <kern/seek.h>
 
 /* This special-case global variable for the console vnode should be deleted 
  * when you have a proper open file table implementation.
@@ -174,7 +175,6 @@ sys_read(int fd, userptr_t buf, size_t size, int *retval)
 	struct uio user_uio;
 	struct iovec user_iov;
 	int result;
-	int offset = 0;
 	struct file *toread;
 
 	/* better be a valid file descriptor */
@@ -194,7 +194,7 @@ sys_read(int fd, userptr_t buf, size_t size, int *retval)
 		return result;
 
 	/* VOP read should have set uio_offset correctly so we can use that value.*/
-	toread->filepos = user_uio.uio_offset;
+	toread->posinfile = user_uio.uio_offset;
 	/* Size of buffer minus the size remaining in the buffer = size written.*/
 	*retval = size - user_uio.uio_resid;
 
@@ -226,7 +226,6 @@ sys_write(int fd, userptr_t buf, size_t len, int *retval)
 	struct uio user_uio;
 	struct iovec user_iov;
 	int result;
-	int offset = 0;
 	struct file *towrite;
 
 	/* better be a valid file descriptor */
@@ -239,7 +238,7 @@ sys_write(int fd, userptr_t buf, size_t len, int *retval)
 		return EBADF;
 
     /* set up a uio with the buffer, its size, and the current offset */
-    mk_useruio(&user_iov, &user_uio, buf, len, towrite->filepos, UIO_WRITE);
+    mk_useruio(&user_iov, &user_uio, buf, len, towrite->posinfile, UIO_WRITE);
 
     /* does the write */
     result = VOP_WRITE(towrite->vn, &user_uio);
@@ -247,7 +246,7 @@ sys_write(int fd, userptr_t buf, size_t len, int *retval)
         return result;
 
 	/* VOP read should have set uio_offset correctly so we can use that value.*/
-	towrite->filepos = user_uio.uio_offset;
+	towrite->posinfile = user_uio.uio_offset;
 	/* Size of buffer minus the size remaining in the buffer = size written.*/
     *retval = len - user_uio.uio_resid;
 
@@ -261,6 +260,7 @@ sys_write(int fd, userptr_t buf, size_t len, int *retval)
 int
 sys_lseek(int fd, off_t offset, int whence, off_t *retval)
 {
+	int err;
 	struct file *filetoseek;
 	if (fd < 0 || fd >= __OPEN_MAX)
 		return EBADF; /* Check fd range */
@@ -278,10 +278,9 @@ sys_lseek(int fd, off_t offset, int whence, off_t *retval)
 		newoffset = offset;
 	} else if (whence == SEEK_CUR) {
 		/* the file offset shall be set to its current location plus offset. */
-		newoffset = filetoseek->filepos + offset;
+		newoffset = filetoseek->posinfile + offset;
 	} else if (whence == SEEK_END) {
 		struct stat st;
-		int err;
 		err = VOP_STAT(filetoseek->vn, &st);
 		if (err)
 			return err;
@@ -414,7 +413,7 @@ sys_getdirentry(int fd, userptr_t buf, size_t buflen, int *retval)
 	getdir = curthread->t_filetable->oft[fd];
 
 	/* Is this an open file? There's not much we can do if it isn't. */
-	if ((statfile == NULL) || (statfile->refcount == 0))
+	if ((getdir == NULL) || (getdir->refcount == 0))
 		return EBADF;
 
 	/* Set up a uio*/

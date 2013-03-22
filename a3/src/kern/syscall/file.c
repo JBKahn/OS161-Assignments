@@ -11,6 +11,9 @@
 #include <kern/unistd.h>
 #include <file.h>
 #include <syscall.h>
+#include <current.h>
+#include <lib.h>
+#include <vfs.h>
 
 /*** openfile functions ***/
 
@@ -34,11 +37,11 @@ file_open(char *filename, int flags, int mode, int *retfd)
 	/* Find free slot in global open file table. */
 	int i;
 	for (i = 0; goft[i].refcount > 0; i++) {
-		if (i > (__GBL_OPEN_MAX))
+		if (i > (__OPEN_MAX))
 			return ENFILE;
 	}
 
-	goft[i].filepos = 0;
+	goft[i].posinfile = 0;
 	goft[i].refcount = 1;
 	goft[i].vn = vn;
 	goft[i].mode = flags;
@@ -75,7 +78,7 @@ file_close(int fd)
 	/* When the ref coutn is 0, we can close it. */
 	if (gof->refcount == 0) {
 		gof->mode = 0;
-		gof->filepos = 0;
+		gof->posinfile = 0;
 		vfs_close(gof->vn);
 	}
 	curthread->t_filetable->oft[fd] = NULL;
@@ -143,7 +146,7 @@ filetable_destroy(struct filetable *ft)
 		/* When the ref coutn is 0, we can close it. */
 		if (ofd->refcount == 0) {
 			ofd->mode = 0;
-			ofd->filepos = 0;
+			ofd->posinfile = 0;
 			vfs_close(ofd->vn);
 		}
 	}

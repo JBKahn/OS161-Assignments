@@ -1619,7 +1619,7 @@ static const struct vnode_ops sfs_dirops = {
 	
 	ISDIR,   /* read */
 	ISDIR,   /* readlink */
-	UNIMP,   /* getdirentry */
+	sfs_getdirentry,   /* getdirentry */
 	ISDIR,   /* write */
 	sfs_ioctl,
 	sfs_stat,
@@ -1801,20 +1801,22 @@ sfs_getdirentry(struct vnode *v, struct uio *uio)
 
 
 	int slot = uio->uio_offset;
-    /* Check to see if slot requested is out of range */
-    if(slot >= nentries){
-    	vfs_biglock_release();
-    	return 0;
-    }
-	/* Try to read it. */
-    int error = sfs_readdir(sv, &dir, slot);
-    if(error){
-    	vfs_biglock_release();
-    	return error;
-    }
+	for (;;slot ++) {
+	    /* Check to see if slot requested is out of range */
+	    if(slot >= nentries){
+	    	vfs_biglock_release();
+	    	return 0;
+	    }
+		/* Try to read it. */
+	    int error = sfs_readdir(sv, &dir, slot);
+	    if(error){
+	    	vfs_biglock_release();
+	    	return error;
+	    }
 
-    if(dir.sfd_ino == SFS_NOINO)
-    	return -1;
+	    if(dir.sfd_ino != SFS_NOINO)
+	    	break;
+	}
 
   	char name[SFS_NAMELEN];
   	strcpy(name, dir.sfd_name);
@@ -1824,6 +1826,8 @@ sfs_getdirentry(struct vnode *v, struct uio *uio)
   	error = uiomove(name, (size_t)strlen(name) * sizeof(char), uio);
   	if(error)
     	return error;
+    //update offset field as per vnode.h
+    uio->uio_offset = slot;
 
   	return 0;
 }
