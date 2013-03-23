@@ -135,7 +135,7 @@ boot(void)
 	 * come before additional cpus are brought online.
 	 */
 	pid_bootstrap(); 
-	dumb_consoleIO_bootstrap(); /* And initialize for user console IO */
+	//dumb_consoleIO_bootstrap(); /* And initialize for user console IO */
 
 	thread_start_cpus();
 

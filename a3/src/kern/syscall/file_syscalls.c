@@ -196,10 +196,10 @@ sys_read(int fd, userptr_t buf, size_t size, int *retval)
 	/* set up a uio with the buffer, its size, and the current offset */
 	spinlock_acquire(curthread->t_filetable->ft_spinlock);
 	struct vnode *filevn =  curthread->t_filetable->vn[fd];
-	off_t pos = curthread->t_filetable->posinfile[fd];
+	off_t *pos = curthread->t_filetable->posinfile[fd];
 	spinlock_release(curthread->t_filetable->ft_spinlock);
 
-	mk_useruio(&user_iov, &user_uio, buf, size, pos, UIO_READ);
+	mk_useruio(&user_iov, &user_uio, buf, size, *pos, UIO_READ);
 
 	/* does the read */
 	int error = VOP_READ(filevn, &user_uio);
@@ -252,11 +252,11 @@ sys_write(int fd, userptr_t buf, size_t len, int *retval)
 
     /* set up a uio with the buffer, its size, and the current offset */
     spinlock_acquire(curthread->t_filetable->ft_spinlock);
-    struct vnode filevn = curthread->t_filetable->vn[fd];
-	off_t pos = curthread->t_filetable->posinfile[fd];
+    struct vnode *filevn = curthread->t_filetable->vn[fd];
+	off_t *pos = curthread->t_filetable->posinfile[fd];
     spinlock_release(curthread->t_filetable->ft_spinlock);
 
-    mk_useruio(&user_iov, &user_uio, buf, len, pos, UIO_WRITE);
+    mk_useruio(&user_iov, &user_uio, buf, len, *pos, UIO_WRITE);
 
     /* does the write */
     int error = VOP_WRITE(filevn, &user_uio);
@@ -313,7 +313,7 @@ sys_lseek(int fd, off_t offset, int whence, off_t *retval)
 	if (err)
 		return err;
 	spinlock_acquire(curthread->t_filetable->ft_spinlock);
-	*(curthread->t_filetable->posinfile[fd]) = result_pos;
+	*(curthread->t_filetable->posinfile[fd]) = newoffset;
 	spinlock_release(curthread->t_filetable->ft_spinlock);
 
 	*retval = newoffset;
@@ -342,7 +342,7 @@ sys_chdir(userptr_t path)
 		return ENOMEM;
 
 	/* Copy path into fullpath. */
-	int error = copyinstr(path, fullpath, __PATH_MAX, NULL);
+	error = copyinstr(path, fullpath, __PATH_MAX, NULL);
 	if (error) {
 		kfree(fullpath);
 		return error;
@@ -445,8 +445,8 @@ sys_getdirentry(int fd, userptr_t buf, size_t buflen, int *retval)
 	}
 
 	/* Set up a uio*/
-	off_t pos = curthread->t_filetable->posinfile[fd];
-	mk_useruio(&user_iov, &user_uio, buf, buflen, pos, UIO_READ);
+	off_t *pos = curthread->t_filetable->posinfile[fd];
+	mk_useruio(&user_iov, &user_uio, buf, buflen, *pos, UIO_READ);
 
 	/* Get the directory */
 	int error = VOP_GETDIRENTRY(curthread->t_filetable->vn[fd], &user_uio);
@@ -455,7 +455,7 @@ sys_getdirentry(int fd, userptr_t buf, size_t buflen, int *retval)
 		return error;
 	}
 	/* Update directory offset*/
-	*(curthread->t_filetable->f_offset[fd]) = uio.uio_offset;
+	*(curthread->t_filetable->posinfile[fd]) = user_uio.uio_offset;
 	spinlock_release(curthread->t_filetable->ft_spinlock);
 	/* Size of buffer minus the size remaining in the buffer = size written.*/
 	*retval = buflen - user_uio.uio_resid;

@@ -36,6 +36,9 @@ int file_open(char *filename, int flags, int mode, int *retfd);
 /* closes a file */
 int file_close(int fd);
 
+int
+filetable_checkfd(int fd);
+
 /* A3: You should add additional functions that operate on
  * the filetable to help implement some of the filetable-related
  * system calls.

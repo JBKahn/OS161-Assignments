@@ -31,14 +31,18 @@ file_open(char *filename, int flags, int mode, int *retfd)
 {
 	char fname[__PATH_MAX];
 	strcpy(fname, filename);
-	struct vnode *newvn = NULL;
+	struct vnode *newvn;
+
+	if(curthread->t_filetable->filecount == __OPEN_MAX)
+		return ENFILE;
+
 	int openerr = vfs_open(fname, flags, mode, &newvn);
 	if (openerr)
 		return openerr; // File open failed
 
-	/* Find free slot in global open file table. */
+	/* Find free slot in open file table. */
 	int i;
-	for (i = 0; *((curthread->t_filetable)->refcount[i]) > 0; i++) {
+	for (i = 0; curthread->t_filetable->vn[i] != NULL; i++) {
 		if (i > (__OPEN_MAX))
 			return ENFILE;
 	}
@@ -63,7 +67,6 @@ file_open(char *filename, int flags, int mode, int *retfd)
 	return 0;
 }
 
-
 /* 
  * file_close
  * Called when a process closes a file descriptor.  Think about how you plan
@@ -85,12 +88,12 @@ file_close(int fd)
 	/* When the ref coutn is 0, we can close it. */
 	if ((curthread->t_filetable)->refcount[fd] == 0) {
 		kfree(curthread->t_filetable->posinfile[fd]);
-		kfree(curthread->t_filetable->ref_count[fd]);
+		kfree(curthread->t_filetable->refcount[fd]);
 		spinlock_release(curthread->t_filetable->ft_spinlock);
 		vfs_close(oldvn);
 		spinlock_acquire(curthread->t_filetable->ft_spinlock);
 	} else {
-		*(curthread->t_filetable->ref_count[fd])--;
+		*(curthread->t_filetable->refcount[fd]) = *(curthread->t_filetable->refcount[fd]) - 1;
 	}
 	curthread->t_filetable->vn[fd] = NULL;
 	curthread->t_filetable->filecount--;
@@ -118,7 +121,7 @@ file_close(int fd)
 int
 filetable_init(void)
 {
-	struct vnode *cons_vnode=NULL; 
+	struct vnode *cons_vnode=NULL;
 	curthread->t_filetable = kmalloc(sizeof(struct filetable));
 	if (curthread->t_filetable == NULL)
 		return ENOMEM;
@@ -126,20 +129,20 @@ filetable_init(void)
 	/* Set values to NULL */
 	curthread->t_filetable->filecount = 0;
 	int i;
-	for (i = 0; i < __OPEN_MAX; i++)
+	for (i = 0; i < __OPEN_MAX; i++) {
 		curthread->t_filetable->vn[i] = NULL;
+		curthread->t_filetable->refcount[i] = NULL;
+		curthread->t_filetable->posinfile[i] = NULL;
+	}
 
-	curthread->t_filetable->ft_spinlock = (struct spinlock *)kmalloc(sizeof(struct spinlock));
-	// if null ENOMEM
-	spinlock_init(curthread->t_filetable->ft_spinlock);
-	int j;
-	char path[5]
-	strcpy(path, "con:");
-  	int result = vfs_open(path, O_RDWR, 0, &cons_vnode);
-  	if (result)
-  		return ENODEV;
   	/* STDIN, STDOUT, and STDERR */
-	for (j = 0; j < 3; j++) {
+	for (i = 0; i < 3; i++) {
+		char path[5];
+		strcpy(path, "con:");
+	  	int result = vfs_open(path, O_RDWR, 0, &cons_vnode);
+	  	curthread->t_filetable->vn[i] = cons_vnode;
+	  	if (result)
+  			return ENODEV;
 		int *refc = (int *)kmalloc(sizeof(int));
 		if (refc == NULL)
 			return ENOMEM;
@@ -151,8 +154,12 @@ filetable_init(void)
 			return ENOMEM;
 		*pos= 0;
 		curthread->t_filetable->posinfile[i] = pos;
-		curthread->t_filetable->vn[i] = cons_vnode;
+		cons_vnode = NULL;
 	}
+	curthread->t_filetable->ft_spinlock = (struct spinlock *)kmalloc(sizeof(struct spinlock));
+	if(curthread->t_filetable->ft_spinlock == NULL)
+		return ENOMEM;
+	spinlock_init(curthread->t_filetable->ft_spinlock);
 	return 0;
 }
 
@@ -172,13 +179,13 @@ filetable_destroy(struct filetable *ft)
 		/* If fd is closed then skip it. */
 		if (ft->vn[i] == NULL)
 			continue;
-		if (ft->ref_count[i] > 0 )
+		if (*(ft->refcount[i]) > (off_t)0 )	
 			ft->refcount[i]--;
 		/* When the ref coutn is 0, we can close it. */
 		if (ft->refcount[i] == 0) {
 			vfs_close(ft->vn[i]);
 			kfree(ft->posinfile[i]);
-			kfree(ft->ref_count[i]);
+			kfree(ft->refcount[i]);
 		}
 	}
 	spinlock_release(ft->ft_spinlock);
@@ -199,3 +206,15 @@ filetable_destroy(struct filetable *ft)
 
 
 /* END A3 SETUP */
+int
+filetable_checkfd(int fd){
+	if((fd < 0) || (fd > __OPEN_MAX - 1)){
+		DEBUG(DB_VFS, "filetable_checkfd: Bad file descriptor, %d\n", fd);
+		return EBADF;
+	}
+	if(curthread->t_filetable->vn[fd] == NULL){
+		DEBUG(DB_VFS, "filetable_checkfd: Given file descriptor is not in thread's file table, %d\n", fd);
+		return EBADF;
+	}
+	return 0;
+}

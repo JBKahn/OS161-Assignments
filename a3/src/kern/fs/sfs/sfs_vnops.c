@@ -1811,7 +1811,7 @@ sfs_getdirentry(struct vnode *v, struct uio *uio)
 	    	break;
 	}
 
-  	error = uiomove(dir.sfd_name, (size_t)strlen(name) * sizeof(char), uio);
+  	error = uiomove(dir.sfd_name, SFS_NAMELEN, uio);
   	if(error)
     	return error;
     //update offset field as per vnode.h

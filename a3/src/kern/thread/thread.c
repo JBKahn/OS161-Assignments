@@ -571,10 +571,10 @@ thread_fork(const char *name,
 		int i;
 		for (i = 0; i < __OPEN_MAX; i++) {
 			if(curthread->t_filetable->vn[i] != NULL){
-				*(curthread->t_filetable->ref_count[i])++;
+				*(curthread->t_filetable->refcount[i]) = *(curthread->t_filetable->refcount[i]) + 1;
 				newthread->t_filetable->vn[i] = curthread->t_filetable->vn[i];
 				newthread->t_filetable->posinfile[i] = curthread->t_filetable->posinfile[i];
-				newthread->t_filetable->ref_count[i] = curthread->t_filetable->ref_count[i];
+				newthread->t_filetable->refcount[i] = curthread->t_filetable->refcount[i];
 			}
 		}
 		newthread->t_filetable->filecount = curthread->t_filetable->filecount;
