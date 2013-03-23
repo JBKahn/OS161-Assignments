@@ -909,6 +909,10 @@ thread_exit(int exitcode)
 		as_destroy(as);
 	}
 
+	if (curthread->t_filetable) {
+		filetable_destroy(curthread->t_filetable);
+    curthread->t_filetable = NULL;	
+
 	/* Check the stack guard band. */
 	thread_checkstack(cur);
 

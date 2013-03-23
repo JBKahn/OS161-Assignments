@@ -78,6 +78,7 @@ runprogram(char *progname)
 	/* Activate it. */
 	as_activate(curthread->t_addrspace);
 
+    /* Inititialize filetable */
     filetable_init();
 
 	/* Load the executable. */
