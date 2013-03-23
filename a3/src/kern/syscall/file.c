@@ -206,15 +206,3 @@ filetable_destroy(struct filetable *ft)
 
 
 /* END A3 SETUP */
-int
-filetable_checkfd(int fd){
-	if((fd < 0) || (fd > __OPEN_MAX - 1)){
-		DEBUG(DB_VFS, "filetable_checkfd: Bad file descriptor, %d\n", fd);
-		return EBADF;
-	}
-	if(curthread->t_filetable->vn[fd] == NULL){
-		DEBUG(DB_VFS, "filetable_checkfd: Given file descriptor is not in thread's file table, %d\n", fd);
-		return EBADF;
-	}
-	return 0;
-}
