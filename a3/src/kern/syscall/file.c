@@ -29,8 +29,10 @@
 int
 file_open(char *filename, int flags, int mode, int *retfd)
 {
+	char fname[__PATH_MAX];
+	strcpy(fname, filename);
 	struct vnode *newvn = NULL;
-	int openerr = vfs_open(filename, flags, mode, &newvn);
+	int openerr = vfs_open(fname, flags, mode, &newvn);
 	if (openerr)
 		return openerr; // File open failed
 
@@ -41,16 +43,21 @@ file_open(char *filename, int flags, int mode, int *retfd)
 			return ENFILE;
 	}
 
+	curthread->t_filetable->vn[i] = newvn;
+	curthread->t_filetable->filecount++;
+
+
 	int *newref = (int *)kmalloc(sizeof(int));
-	*newref= 1;
+	if (newref == NULL)
+		return ENOMEM;
+	*newref= 0;
 	curthread->t_filetable->refcount[i] = newref;
 
 	off_t *newpos = (off_t *)kmalloc(sizeof(off_t));
+	if (newpos == NULL)
+		return ENOMEM;
 	*newpos= 0;
 	curthread->t_filetable->posinfile[i] = newpos;
-
-	curthread->t_filetable->vn[i] = newvn;
-	curthread->t_filetable->filecount++;
 
 	*retfd = i;
 	return 0;
@@ -68,18 +75,26 @@ file_close(int fd)
 {
 	if ((fd < 0) || (fd > __OPEN_MAX))
 		return EBADF; // File despriptor out of bounds
-
+	spinlock_acquire(curthread->t_filetable->ft_spinlock);
 	struct vnode *oldvn = curthread->t_filetable->vn[fd];
-	if ((oldvn == NULL) || (curthread->t_filetable->refcount[fd] == 0))
+	if ((oldvn == NULL) || (curthread->t_filetable->refcount[fd] == 0)) {
+		spinlock_release(curthread->t_filetable->ft_spinlock);
 		return EBADF; // fill is closed.
-
+	}
 	curthread->t_filetable->refcount[fd]--;
 	/* When the ref coutn is 0, we can close it. */
 	if ((curthread->t_filetable)->refcount[fd] == 0) {
-		*(curthread->t_filetable->posinfile[fd]) = 0;
+		kfree(curthread->t_filetable->posinfile[fd]);
+		kfree(curthread->t_filetable->ref_count[fd]);
+		spinlock_release(curthread->t_filetable->ft_spinlock);
 		vfs_close(oldvn);
+		spinlock_acquire(curthread->t_filetable->ft_spinlock);
+	} else {
+		*(curthread->t_filetable->ref_count[fd])--;
 	}
 	curthread->t_filetable->vn[fd] = NULL;
+	curthread->t_filetable->filecount--;
+	spinlock_release(curthread->t_filetable->ft_spinlock);
 	return 0;
 }
 
@@ -109,6 +124,7 @@ filetable_init(void)
 		return ENOMEM;
 
 	/* Set values to NULL */
+	curthread->t_filetable->filecount = 0;
 	int i;
 	for (i = 0; i < __OPEN_MAX; i++)
 		curthread->t_filetable->vn[i] = NULL;
@@ -116,40 +132,27 @@ filetable_init(void)
 	curthread->t_filetable->ft_spinlock = (struct spinlock *)kmalloc(sizeof(struct spinlock));
 	// if null ENOMEM
 	spinlock_init(curthread->t_filetable->ft_spinlock);
-	char path[5];
-  	strcpy(path, "con:");
+	int j;
+	char path[5]
+	strcpy(path, "con:");
   	int result = vfs_open(path, O_RDWR, 0, &cons_vnode);
   	if (result)
-  		return result;
+  		return ENODEV;
+  	/* STDIN, STDOUT, and STDERR */
+	for (j = 0; j < 3; j++) {
+		int *refc = (int *)kmalloc(sizeof(int));
+		if (refc == NULL)
+			return ENOMEM;
+		*refc= 1;
+		curthread->t_filetable->refcount[i] = refc;
 
-	/* STDIN, STDOUT, and STDERR */
-  	curthread->t_filetable->filecount = 3;
-
-	int *refc = (int *)kmalloc(sizeof(int));
-	int *refc1 = (int *)kmalloc(sizeof(int));
-	int *refc2 = (int *)kmalloc(sizeof(int));
-	*refc= 1;
-	*refc1 = 1;
-	*refc2 = 1;
-	curthread->t_filetable->refcount[0] = refc;
-	curthread->t_filetable->refcount[1] = refc1;
-	curthread->t_filetable->refcount[2] = refc2;
-
-	off_t *p1 = (off_t *)kmalloc(sizeof(off_t));
-	off_t *p2 = (off_t *)kmalloc(sizeof(off_t));
-	off_t *p3 = (off_t *)kmalloc(sizeof(off_t));
-	*p1= 0;
-	*p2 = 0;
-	*p3 = 0;
-	curthread->t_filetable->posinfile[0] = p1;
-	curthread->t_filetable->posinfile[1] = p2;
-	curthread->t_filetable->posinfile[2] = p3;
-
-	curthread->t_filetable->vn[0] = cons_vnode;
-	curthread->t_filetable->vn[1] = cons_vnode;
-	curthread->t_filetable->vn[2] = cons_vnode;
-
-	/* Assign newly-initialized filetable to current thread. */
+		off_t *pos = (off_t *)kmalloc(sizeof(off_t));
+		if (pos == NULL)
+			return ENOMEM;
+		*pos= 0;
+		curthread->t_filetable->posinfile[i] = pos;
+		curthread->t_filetable->vn[i] = cons_vnode;
+	}
 	return 0;
 }
 
@@ -164,18 +167,24 @@ filetable_destroy(struct filetable *ft)
 {
 	/* Close each file in filetable. */
 	int i;
+	spinlock_acquire(ft->ft_spinlock);
 	for (i = 0; i < __OPEN_MAX; i++) {
 		/* If fd is closed then skip it. */
-		if ((ft->vn[i] == NULL) || (*(ft->refcount[i]) == 0))
+		if (ft->vn[i] == NULL)
 			continue;
-		ft->refcount[i]--;
+		if (ft->ref_count[i] > 0 )
+			ft->refcount[i]--;
 		/* When the ref coutn is 0, we can close it. */
 		if (ft->refcount[i] == 0) {
-			*(ft->posinfile[i]) = 0;
 			vfs_close(ft->vn[i]);
+			kfree(ft->posinfile[i]);
+			kfree(ft->ref_count[i]);
 		}
 	}
+	spinlock_release(ft->ft_spinlock);
+	spinlock_cleanup(ft->ft_spinlock);
 	kfree(ft); /* Free memory */
+	return;
 }
 
 

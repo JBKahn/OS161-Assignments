@@ -125,29 +125,39 @@ sys_close(int fd)
 int
 sys_dup2(int oldfd, int newfd, int *retval)
 {
+	spinlock_acquire(curthread->t_filetable->ft_spinlock);
 	/* Check fd ranges */
 	if ((newfd < 0) || (newfd >= __OPEN_MAX) || (oldfd < 0) || (oldfd >= __OPEN_MAX)) {
-		*retval = EBADF;
-		return -1;
+		spinlock_release(curthread->t_filetable->ft_spinlock);
+		return EBADF;
 	}
 	/* Is the old fd real */
 	if ((curthread->t_filetable->vn[oldfd] == NULL)) {
-		*retval = EBADF;
-		return -1;
+		spinlock_release(curthread->t_filetable->ft_spinlock);
+		return EBADF;
 	}
 	/* Trivial case of them already being the same, no work to do. */
 	if (oldfd == newfd) {
+		spinlock_release(curthread->t_filetable->ft_spinlock);
 		*retval = newfd;
 		return 0;
 	}
 	*retval = newfd;
 	/* If newfd names an open file, that file is closed, as per man page */
-	if (curthread->t_filetable->vn[newfd] != NULL)
-		sys_close(newfd);
+	if (curthread->t_filetable->vn[newfd] != NULL) {
+		spinlock_release(curthread->t_filetable->ft_spinlock);
+		int error = file_close(newfd);
+		if (error)
+			return error;
+		spinlock_acquire(curthread->t_filetable->ft_spinlock);
+	}
 	/* Redirect newfd to oldfd */
 	curthread->t_filetable->vn[newfd] = curthread->t_filetable->vn[oldfd];
+	curthread->t_filetable->posinfile[newfd] = curthread->t_filetable->posinfile[oldfd];
 	/* Update ref count */
-	curthread->t_filetable->refcount[newfd]++;
+	curthread->t_filetable->refcount[oldfd]++;
+	curthread->t_filetable->refcount[newfd] = curthread->t_filetable->refcount[oldfd];
+	spinlock_release(curthread->t_filetable->ft_spinlock);
 	return 0;
 }
 
@@ -175,7 +185,6 @@ sys_read(int fd, userptr_t buf, size_t size, int *retval)
 {
 	struct uio user_uio;
 	struct iovec user_iov;
-	int result;
 
 	/* better be a valid file descriptor */
 	if (fd < 0 || fd >= __OPEN_MAX)
@@ -185,15 +194,21 @@ sys_read(int fd, userptr_t buf, size_t size, int *retval)
 	if ((curthread->t_filetable->vn[fd] == NULL) || (curthread->t_filetable->refcount[fd] == 0))
 		return EBADF;
 	/* set up a uio with the buffer, its size, and the current offset */
-	mk_useruio(&user_iov, &user_uio, buf, size,  *curthread->t_filetable->posinfile[fd], UIO_READ);
+	spinlock_acquire(curthread->t_filetable->ft_spinlock);
+	struct vnode *filevn =  curthread->t_filetable->vn[fd];
+	off_t pos = curthread->t_filetable->posinfile[fd];
+	spinlock_release(curthread->t_filetable->ft_spinlock);
+
+	mk_useruio(&user_iov, &user_uio, buf, size, pos, UIO_READ);
 
 	/* does the read */
-	result = VOP_READ(curthread->t_filetable->vn[fd], &user_uio);
-	if (result)
-		return result;
-
+	int error = VOP_READ(filevn, &user_uio);
+	if (error)
+		return error;
 	/* VOP read should have set uio_offset correctly so we can use that value.*/
+	spinlock_acquire(curthread->t_filetable->ft_spinlock);
 	*(curthread->t_filetable->posinfile[fd]) = user_uio.uio_offset;
+	spinlock_release(curthread->t_filetable->ft_spinlock);
 	/* Size of buffer minus the size remaining in the buffer = size written.*/
 	*retval = size - user_uio.uio_resid;
 
@@ -226,7 +241,6 @@ sys_write(int fd, userptr_t buf, size_t len, int *retval)
 {
 	struct uio user_uio;
 	struct iovec user_iov;
-	int result;
 
 	/* better be a valid file descriptor */
 	if (fd < 0 || fd >= __OPEN_MAX)
@@ -237,15 +251,22 @@ sys_write(int fd, userptr_t buf, size_t len, int *retval)
 		return EBADF;
 
     /* set up a uio with the buffer, its size, and the current offset */
-    mk_useruio(&user_iov, &user_uio, buf, len, *curthread->t_filetable->posinfile[fd], UIO_WRITE);
+    spinlock_acquire(curthread->t_filetable->ft_spinlock);
+    struct vnode filevn = curthread->t_filetable->vn[fd];
+	off_t pos = curthread->t_filetable->posinfile[fd];
+    spinlock_release(curthread->t_filetable->ft_spinlock);
+
+    mk_useruio(&user_iov, &user_uio, buf, len, pos, UIO_WRITE);
 
     /* does the write */
-    result = VOP_WRITE(curthread->t_filetable->vn[fd], &user_uio);
-    if (result)
-        return result;
+    int error = VOP_WRITE(filevn, &user_uio);
+    if (error)
+        return error;
 
 	/* VOP read should have set uio_offset correctly so we can use that value.*/
+	spinlock_acquire(curthread->t_filetable->ft_spinlock);
 	*curthread->t_filetable->posinfile[fd] = user_uio.uio_offset;
+	spinlock_release(curthread->t_filetable->ft_spinlock);
 	/* Size of buffer minus the size remaining in the buffer = size written.*/
     *retval = len - user_uio.uio_resid;
 
@@ -268,7 +289,7 @@ sys_lseek(int fd, off_t offset, int whence, off_t *retval)
 		return EBADF;
 
 	/* Calculate new offset. */
-	int newoffset;
+	off_t newoffset;
 	if (whence == SEEK_SET) {
 		/* the file offset shall be set to offset bytes. */
 		newoffset = offset;
@@ -291,6 +312,9 @@ sys_lseek(int fd, off_t offset, int whence, off_t *retval)
 	err = VOP_TRYSEEK(curthread->t_filetable->vn[fd], newoffset);
 	if (err)
 		return err;
+	spinlock_acquire(curthread->t_filetable->ft_spinlock);
+	*(curthread->t_filetable->posinfile[fd]) = result_pos;
+	spinlock_release(curthread->t_filetable->ft_spinlock);
 
 	*retval = newoffset;
 	return 0;
@@ -311,11 +335,14 @@ sys_chdir(userptr_t path)
 	int error;
 	char *fullpath;
 
+	if(path == NULL)
+		return EFAULT;
+
 	if ((fullpath = (char *)kmalloc(__PATH_MAX)) == NULL)
 		return ENOMEM;
 
 	/* Copy path into fullpath. */
-	error = copyinstr(path, fullpath, __PATH_MAX, NULL);
+	int error = copyinstr(path, fullpath, __PATH_MAX, NULL);
 	if (error) {
 		kfree(fullpath);
 		return error;
@@ -330,6 +357,7 @@ sys_chdir(userptr_t path)
 	error = vfs_setcurdir(new_dir);
 	if (error)
 		return error;
+	kfree(fullpath);
 
 	return 0;
 }
@@ -346,15 +374,13 @@ sys___getcwd(userptr_t buf, size_t buflen, int *retval)
 	struct iovec user_iov;
 
 	/* Error is there is no current working directory. */
-	if (cwd_vn == NULL) {
+	if (cwd_vn == NULL)
 		return ENOENT;
-	}
 
 	/* make uio with the buffer and the size of the cwd. */
 	mk_useruio(&user_iov, &user_uio, buf, buflen, 0, UIO_READ);
 
-	/* Compute pathname relative to filesystem root of the file and copy to the specified uio */
-	int error = VOP_NAMEFILE(cwd_vn, &user_uio);
+	int error = vfs_getcwd(&user_uio);
 	if (error)
 		return error;
 
@@ -371,6 +397,9 @@ int
 sys_fstat(int fd, userptr_t statptr)
 {
 	struct stat statbuf;
+
+	if(statptr == NULL)
+		return EFAULT;
 
 	if (fd < 0 || fd >= __OPEN_MAX)
 		 return EBADF;
@@ -401,21 +430,33 @@ sys_getdirentry(int fd, userptr_t buf, size_t buflen, int *retval)
 	struct uio user_uio;
 	struct iovec user_iov;
 
+	if(buf == NULL)
+		return EFAULT;
+
 	if (fd < 0 || fd >= __OPEN_MAX)
 		 return EBADF;
 
+	spinlock_acquire(curthread->t_filetable->ft_spinlock);
+
 	/* Is this an open file? There's not much we can do if it isn't. */
-	if ((curthread->t_filetable->vn[fd] == NULL) || (curthread->t_filetable->refcount[fd] == 0))
+	if ((curthread->t_filetable->vn[fd] == NULL) || (curthread->t_filetable->refcount[fd] == 0)) {
+		spinlock_release(curthread->t_filetable->ft_spinlock);
 		return EBADF;
+	}
 
 	/* Set up a uio*/
-	mk_useruio(&user_iov, &user_uio, buf, buflen, 0, UIO_READ);
+	off_t pos = curthread->t_filetable->posinfile[fd];
+	mk_useruio(&user_iov, &user_uio, buf, buflen, pos, UIO_READ);
 
 	/* Get the directory */
 	int error = VOP_GETDIRENTRY(curthread->t_filetable->vn[fd], &user_uio);
-	if (error)
+	if (error) {
+		spinlock_release(curthread->t_filetable->ft_spinlock);
 		return error;
-
+	}
+	/* Update directory offset*/
+	*(curthread->t_filetable->f_offset[fd]) = uio.uio_offset;
+	spinlock_release(curthread->t_filetable->ft_spinlock);
 	/* Size of buffer minus the size remaining in the buffer = size written.*/
 	*retval = buflen - user_uio.uio_resid;
 

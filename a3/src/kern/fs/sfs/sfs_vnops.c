@@ -1790,45 +1790,32 @@ sfs_getdirentry(struct vnode *v, struct uio *uio)
 	struct sfs_vnode *sv = v->vn_data;
 	struct sfs_dir dir;
 
-	vfs_biglock_acquire();
 	/* Ensure it is being called on a directory. */
-	if(sv->sv_i.sfi_type != SFS_TYPE_DIR){
-		vfs_biglock_release();
+	if(sv->sv_i.sfi_type != SFS_TYPE_DIR)
 		return ENOTDIR;
-	}
 
-
-	int nentries = sfs_dir_nentries(sv);
+	int numentries = sfs_dir_nentries(sv);
 
 	int error;
-	int slot = uio->uio_offset;
+	int slot = (int)uio->uio_offset / (int)(sizeof(struct sfs_dir));
 	for (;;slot ++) {
 	    /* Check to see if slot requested is out of range */
-	    if(slot >= nentries){
-	    	vfs_biglock_release();
+	    if(slot >= numentries)
 	    	return 0;
-	    }
 		/* Try to read it. */
 	    error = sfs_readdir(sv, &dir, slot);
-	    if(error){
-	    	vfs_biglock_release();
+	    if(error)
 	    	return error;
-	    }
 
 	    if(dir.sfd_ino != SFS_NOINO)
 	    	break;
 	}
 
-  	char name[SFS_NAMELEN];
-  	strcpy(name, dir.sfd_name);
-
-  	vfs_biglock_release();
-
-  	error = uiomove(name, (size_t)strlen(name) * sizeof(char), uio);
+  	error = uiomove(dir.sfd_name, (size_t)strlen(name) * sizeof(char), uio);
   	if(error)
     	return error;
     //update offset field as per vnode.h
-    uio->uio_offset = slot;
+    uio->uio_offset = (off_t)slot * sizeof(struct sfs_dir);
 
   	return 0;
 }

@@ -559,6 +559,31 @@ thread_fork(const char *name,
 	 * Now we clone various fields from the parent thread.
 	 */
 
+	/* Filetable copying */
+
+	//immediately share spinlock so that we can lock the filetable
+	//this way any changes can not be made until child process is on it's way
+	if(curthread->t_filetable != NULL){
+		newthread->t_filetable = (struct filetable *)kmalloc(sizeof(struct filetable));
+		newthread->t_filetable->ft_spinlock = curthread->t_filetable->ft_spinlock;
+
+		spinlock_acquire(curthread->t_filetable->ft_spinlock);
+		int i;
+		for (i = 0; i < __OPEN_MAX; i++) {
+			if(curthread->t_filetable->vn[i] != NULL){
+				*(curthread->t_filetable->ref_count[i])++;
+				newthread->t_filetable->vn[i] = curthread->t_filetable->vn[i];
+				newthread->t_filetable->posinfile[i] = curthread->t_filetable->posinfile[i];
+				newthread->t_filetable->ref_count[i] = curthread->t_filetable->ref_count[i];
+			}
+		}
+		newthread->t_filetable->filecount = curthread->t_filetable->filecount;
+
+		spinlock_release(curthread->t_filetable->ft_spinlock);
+	} else {
+		newthread->t_filetable = NULL;
+	}
+
 	/* Thread subsystem fields */
 	newthread->t_cpu = curthread->t_cpu;
 
