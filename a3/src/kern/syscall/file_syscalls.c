@@ -126,16 +126,13 @@ int
 sys_dup2(int oldfd, int newfd, int *retval)
 {
 	spinlock_acquire(curthread->t_filetable->ft_spinlock);
-	/* Check fd ranges */
-	if ((newfd < 0) || (newfd >= __OPEN_MAX) || (oldfd < 0) || (oldfd >= __OPEN_MAX)) {
+
+	/* Check fd range of new fd and if the old fd is valid */
+	if ((newfd < 0) || (newfd >= __OPEN_MAX) || check_valid_fd(oldfd)) {
 		spinlock_release(curthread->t_filetable->ft_spinlock);
 		return EBADF;
 	}
-	/* Is the old fd real */
-	if ((curthread->t_filetable->vn[oldfd] == NULL)) {
-		spinlock_release(curthread->t_filetable->ft_spinlock);
-		return EBADF;
-	}
+
 	/* Trivial case of them already being the same, no work to do. */
 	if (oldfd == newfd) {
 		spinlock_release(curthread->t_filetable->ft_spinlock);
@@ -186,15 +183,12 @@ sys_read(int fd, userptr_t buf, size_t size, int *retval)
 	struct uio user_uio;
 	struct iovec user_iov;
 
-	/* better be a valid file descriptor */
-	if (fd < 0 || fd >= __OPEN_MAX)
-	    return EBADF;
-
-	/* Is this an open file? If not, we can't read. */
-	if ((curthread->t_filetable->vn[fd] == NULL) || (curthread->t_filetable->refcount[fd] == 0))
-		return EBADF;
-	/* set up a uio with the buffer, its size, and the current offset */
 	spinlock_acquire(curthread->t_filetable->ft_spinlock);
+	if (check_valid_fd(fd)) {
+		spinlock_release(curthread->t_filetable->ft_spinlock);
+		return EBADF;
+	}
+
 	struct vnode *filevn =  curthread->t_filetable->vn[fd];
 	off_t *pos = curthread->t_filetable->posinfile[fd];
 	spinlock_release(curthread->t_filetable->ft_spinlock);
@@ -242,16 +236,14 @@ sys_write(int fd, userptr_t buf, size_t len, int *retval)
 	struct uio user_uio;
 	struct iovec user_iov;
 
-	/* better be a valid file descriptor */
-	if (fd < 0 || fd >= __OPEN_MAX)
-	    return EBADF;
-
-	/* Is this an open file? If not, we can't read. */
-	if ((curthread->t_filetable->vn[fd] == NULL) || (curthread->t_filetable->refcount[fd] == 0))
+	spinlock_acquire(curthread->t_filetable->ft_spinlock);
+	if (check_valid_fd(fd)) {
+		spinlock_release(curthread->t_filetable->ft_spinlock);
 		return EBADF;
+	}
 
     /* set up a uio with the buffer, its size, and the current offset */
-    spinlock_acquire(curthread->t_filetable->ft_spinlock);
+    
     struct vnode *filevn = curthread->t_filetable->vn[fd];
 	off_t *pos = curthread->t_filetable->posinfile[fd];
     spinlock_release(curthread->t_filetable->ft_spinlock);
@@ -433,13 +425,8 @@ sys_getdirentry(int fd, userptr_t buf, size_t buflen, int *retval)
 	if(buf == NULL)
 		return EFAULT;
 
-	if (fd < 0 || fd >= __OPEN_MAX)
-		 return EBADF;
-
 	spinlock_acquire(curthread->t_filetable->ft_spinlock);
-
-	/* Is this an open file? There's not much we can do if it isn't. */
-	if ((curthread->t_filetable->vn[fd] == NULL) || (curthread->t_filetable->refcount[fd] == 0)) {
+	if (check_valid_fd(fd)) {
 		spinlock_release(curthread->t_filetable->ft_spinlock);
 		return EBADF;
 	}

@@ -206,3 +206,17 @@ filetable_destroy(struct filetable *ft)
 
 
 /* END A3 SETUP */
+
+int
+check_valid_fd(int fd)
+{
+	KASSERT(spinlock_do_i_hold(curthread->t_filetable->ft_spinlock));
+	/* better be a valid file descriptor */
+	if (fd < 0 || fd >= __OPEN_MAX)
+	    return EBADF;
+
+	/* Is this an open file? If not, we can't use it. */
+	if ((curthread->t_filetable->vn[fd] == NULL) || (curthread->t_filetable->refcount[fd] == 0))
+		return EBADF;
+	return 0;
+}
