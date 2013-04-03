@@ -80,9 +80,13 @@ file_close(int fd)
 		return EBADF; // File despriptor out of bounds
 	spinlock_acquire(curthread->t_filetable->ft_spinlock);
 	struct vnode *oldvn = curthread->t_filetable->vn[fd];
-	if ((oldvn == NULL) || (curthread->t_filetable->refcount[fd] == 0)) {
+	if ((curthread->t_filetable->refcount[fd] == 0)) {
 		spinlock_release(curthread->t_filetable->ft_spinlock);
-		return EBADF; // fill is closed.
+		return EBADF; // file is closed.
+	}
+	if ((oldvn == NULL)) {
+		spinlock_release(curthread->t_filetable->ft_spinlock);
+		return EIO; // file is closed.
 	}
 	curthread->t_filetable->refcount[fd]--;
 	/* When the ref coutn is 0, we can close it. */
