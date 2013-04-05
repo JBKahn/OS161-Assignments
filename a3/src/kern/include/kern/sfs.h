@@ -95,6 +95,8 @@ struct sfs_inode {
 	uint32_t sfi_indirect;			/* Indirect block */
 	char sfi_inlinedata[SFS_INLINED_BYTES];
 	uint32_t sfi_waste[1];	/* unused space, set to 0 */
+	
+        
 };
 
 /*
