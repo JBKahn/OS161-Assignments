@@ -87,12 +87,14 @@ struct sfs_super {
  * On-disk inode
  */
 struct sfs_inode {
+
 	uint32_t sfi_size;			/* Size of this file (bytes) */
 	uint16_t sfi_type;			/* One of SFS_TYPE_* above */
 	uint16_t sfi_linkcount;			/* # hard links to this file */
 	uint32_t sfi_direct[SFS_NDIRECT];	/* Direct blocks */
 	uint32_t sfi_indirect;			/* Indirect block */
-	uint32_t sfi_waste[128-3-SFS_NDIRECT];	/* unused space, set to 0 */
+	char sfi_inlinedata[SFS_INLINED_BYTES];
+	uint32_t sfi_waste[1];	/* unused space, set to 0 */
 };
 
 /*

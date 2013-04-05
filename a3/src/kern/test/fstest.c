@@ -548,7 +548,7 @@ static int
 checkbuf(char *buf, int buflen, unsigned char c) {
 	int i;
 	for (i=0; i < buflen; i++) {
-		if (buf[i] != c) {
+		if (buf[i] != (char)c) {
 			return EIO;
 		}
 	}

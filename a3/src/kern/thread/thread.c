@@ -564,22 +564,7 @@ thread_fork(const char *name,
 	//immediately share spinlock so that we can lock the filetable
 	//this way any changes can not be made until child process is on it's way
 	if(curthread->t_filetable != NULL){
-		newthread->t_filetable = (struct filetable *)kmalloc(sizeof(struct filetable));
-		newthread->t_filetable->ft_spinlock = curthread->t_filetable->ft_spinlock;
-
-		spinlock_acquire(curthread->t_filetable->ft_spinlock);
-		int i;
-		for (i = 0; i < __OPEN_MAX; i++) {
-			if(curthread->t_filetable->vn[i] != NULL){
-				*(curthread->t_filetable->refcount[i]) = *(curthread->t_filetable->refcount[i]) + 1;
-				newthread->t_filetable->vn[i] = curthread->t_filetable->vn[i];
-				newthread->t_filetable->posinfile[i] = curthread->t_filetable->posinfile[i];
-				newthread->t_filetable->refcount[i] = curthread->t_filetable->refcount[i];
-			}
-		}
-		newthread->t_filetable->filecount = curthread->t_filetable->filecount;
-
-		spinlock_release(curthread->t_filetable->ft_spinlock);
+		newthread->t_filetable = filetable_copy();
 	} else {
 		newthread->t_filetable = NULL;
 	}

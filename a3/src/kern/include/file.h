@@ -39,6 +39,8 @@ int file_close(int fd);
 int
 check_valid_fd(int fd);
 
+struct filetable* filetable_copy(void);
+
 /* A3: You should add additional functions that operate on
  * the filetable to help implement some of the filetable-related
  * system calls.

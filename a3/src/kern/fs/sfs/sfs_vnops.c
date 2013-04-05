@@ -474,11 +474,29 @@ sfs_io(struct sfs_vnode *sv, struct uio *uio)
 		}
 	}
 
+	// if (uio->uio_offset < SFS_INLINED_BYTES) {
+	// 	int numbertoread = SFS_INLINED_BYTES - uio->uio_offset;
+	// 	if ((int)uio->uio_resid < numbertoread)
+	// 		numbertoread = uio->uio_resid;
+	// 	result = uiomove(sv->sv_i.sfi_inlinedata, numbertoread, uio);
+	// 	if (result) {
+	// 		uio->uio_offset = uio->uio_offset - SFS_INLINED_BYTES;
+	// 		goto out;
+	// 	}
+	// 	blkoff = 0;
+	// 	uio->uio_offset = 0;
+	// } else {
+	// 	uio->uio_offset = uio->uio_offset - SFS_INLINED_BYTES;
+		blkoff = uio->uio_offset % SFS_BLOCKSIZE;
+	// }
+
+
 	/*
 	 * First, do any leading partial block.
 	 */
-	blkoff = uio->uio_offset % SFS_BLOCKSIZE;
+
 	if (blkoff != 0) {
+
 		/* Number of bytes at beginning of block to skip */
 		uint32_t skip = blkoff;
 
@@ -527,7 +545,7 @@ sfs_io(struct sfs_vnode *sv, struct uio *uio)
 	}
 
  out:
-
+ 	//uio->uio_offset = uio->uio_offset + SFS_INLINED_BYTES;
 	/* If writing, adjust file length */
 	if (uio->uio_rw == UIO_WRITE && 
 	    uio->uio_offset > (off_t)sv->sv_i.sfi_size) {
@@ -537,8 +555,8 @@ sfs_io(struct sfs_vnode *sv, struct uio *uio)
 
 	/* Add in any extra amount we couldn't read because of EOF */
 	uio->uio_resid += extraresid;
-
 	/* Done */
+	
 	return result;
 }
 

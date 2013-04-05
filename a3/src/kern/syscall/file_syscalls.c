@@ -130,16 +130,17 @@ sys_dup2(int oldfd, int newfd, int *retval)
 	/* Check fd range of new fd and if the old fd is valid */
 	if ((newfd < 0) || (newfd >= __OPEN_MAX) || check_valid_fd(oldfd)) {
 		spinlock_release(curthread->t_filetable->ft_spinlock);
+		*retval = -1;
 		return EBADF;
 	}
 
 	/* Trivial case of them already being the same, no work to do. */
+	*retval = newfd;
 	if (oldfd == newfd) {
 		spinlock_release(curthread->t_filetable->ft_spinlock);
-		*retval = newfd;
 		return 0;
 	}
-	*retval = newfd;
+	
 	/* If newfd names an open file, that file is closed, as per man page */
 	if (curthread->t_filetable->vn[newfd] != NULL) {
 		spinlock_release(curthread->t_filetable->ft_spinlock);
@@ -182,6 +183,7 @@ sys_read(int fd, userptr_t buf, size_t size, int *retval)
 {
 	struct uio user_uio;
 	struct iovec user_iov;
+	*retval = -1;
 
 	spinlock_acquire(curthread->t_filetable->ft_spinlock);
 	if (check_valid_fd(fd)) {
@@ -235,6 +237,7 @@ sys_write(int fd, userptr_t buf, size_t len, int *retval)
 {
 	struct uio user_uio;
 	struct iovec user_iov;
+	*retval = -1;
 
 	spinlock_acquire(curthread->t_filetable->ft_spinlock);
 	if (check_valid_fd(fd)) {
@@ -272,6 +275,7 @@ sys_write(int fd, userptr_t buf, size_t len, int *retval)
 int
 sys_lseek(int fd, off_t offset, int whence, off_t *retval)
 {
+	*retval = -1;
 	int err;
 	if (fd < 0 || fd >= __OPEN_MAX)
 		return EBADF; /* Check fd range */
@@ -364,6 +368,7 @@ sys___getcwd(userptr_t buf, size_t buflen, int *retval)
 	struct vnode *cwd_vn = curthread->t_cwd;
 	struct uio user_uio;
 	struct iovec user_iov;
+	*retval = -1;
 
 	/* Error is there is no current working directory. */
 	if (cwd_vn == NULL)
@@ -421,6 +426,7 @@ sys_getdirentry(int fd, userptr_t buf, size_t buflen, int *retval)
 {
 	struct uio user_uio;
 	struct iovec user_iov;
+	*retval = -1;
 
 	if(buf == NULL)
 		return EFAULT;

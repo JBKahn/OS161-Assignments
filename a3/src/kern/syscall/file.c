@@ -96,8 +96,6 @@ file_close(int fd)
 		spinlock_release(curthread->t_filetable->ft_spinlock);
 		vfs_close(oldvn);
 		spinlock_acquire(curthread->t_filetable->ft_spinlock);
-	} else {
-		*(curthread->t_filetable->refcount[fd]) = *(curthread->t_filetable->refcount[fd]) - 1;
 	}
 	curthread->t_filetable->vn[fd] = NULL;
 	curthread->t_filetable->filecount--;
@@ -223,4 +221,26 @@ check_valid_fd(int fd)
 	if ((curthread->t_filetable->vn[fd] == NULL) || (curthread->t_filetable->refcount[fd] == 0))
 		return EBADF;
 	return 0;
+}
+
+struct filetable*
+filetable_copy(void) {
+	struct filetable *newtable;
+	newtable = (struct filetable *)kmalloc(sizeof(struct filetable));
+	newtable->ft_spinlock = curthread->t_filetable->ft_spinlock;
+
+	spinlock_acquire(curthread->t_filetable->ft_spinlock);
+	int i;
+	for (i = 0; i < __OPEN_MAX; i++) {
+		if(curthread->t_filetable->vn[i] != NULL){
+			*(curthread->t_filetable->refcount[i]) = *(curthread->t_filetable->refcount[i]) + 1;
+			newtable->vn[i] = curthread->t_filetable->vn[i];
+			newtable->posinfile[i] = curthread->t_filetable->posinfile[i];
+			newtable->refcount[i] = curthread->t_filetable->refcount[i];
+		}
+	}
+	newtable->filecount = curthread->t_filetable->filecount;
+
+	spinlock_release(curthread->t_filetable->ft_spinlock);
+	return newtable;
 }
