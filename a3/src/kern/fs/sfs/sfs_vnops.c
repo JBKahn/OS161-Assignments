@@ -452,6 +452,7 @@ sfs_io(struct sfs_vnode *sv, struct uio *uio)
 	uint32_t nblocks, i;
 	int result = 0;
 	uint32_t extraresid = 0;
+	int in_inode = 0;
 
 	/*
 	 * If reading, check for EOF. If we can read a partial area,
@@ -461,6 +462,7 @@ sfs_io(struct sfs_vnode *sv, struct uio *uio)
 	if (uio->uio_rw == UIO_READ) {
 		off_t size = sv->sv_i.sfi_size;
 		off_t endpos = uio->uio_offset + uio->uio_resid;
+		
 
 		if (uio->uio_offset >= size) {
 			/* At or past EOF - just return */
@@ -471,33 +473,34 @@ sfs_io(struct sfs_vnode *sv, struct uio *uio)
 			extraresid = endpos - size;
 			KASSERT(uio->uio_resid > extraresid);
 			uio->uio_resid -= extraresid;
-		}
+		}        
+    }
+    // Check if we should read from the inode's data
+    if (uio->uio_offset < SFS_INLINED_BYTES) {
+    	in_inode = 1;
+
+        // The size of the data we want to read
+        size_t size_to_read = SFS_INLINED_BYTES - uio->uio_offset;
+
+        result = uiomove(sv->sv_i.sfi_inlinedata + uio->uio_offset, size_to_read, uio);
+        if (result) {
+            return result;
         }
+    }
 
-        // Check if we should read from the inode's data
-        if (uio->uio_offset < SFS_INLINED_BYTES) {
+    // Update the offset to work with the new writing in inode feature.
+    // Will change back at out.
+    uio->uio_offset = uio->uio_offset - SFS_INLINED_BYTES;
 
-            // The size of the data we want to read
-            size_t size_to_read = SFS_INLINED_BYTES - uio->uio_offset;
+    /* If we're done, quit. */
+    if (uio->uio_resid == 0) {
+        goto out;
+    }
 
-            result = uiomove(sv->sv_i.sfi_inlinedata + uio->uio_offset, size_to_read, uio);
-            if (result) {
-                return result;
-            }
-        }
+    // This should always be true, if it is not....oh boy.
+    KASSERT(uio->uio_offset >= 0);
 
-        // Update the offset to work with the new writing in inode feature.
-        // Will change back at out.
-        uio->uio_offset = uio->uio_offset - SFS_INLINED_BYTES;
-
-        /* If we're done, quit. */
-        if (uio->uio_resid == 0) {
-            goto out;
-        }
-
-        // This should always be true, if it is not....oh boy.
-        KASSERT(uio->uio_offset >= 0);
-        blkoff = uio->uio_offset % SFS_BLOCKSIZE;
+    blkoff = uio->uio_offset % SFS_BLOCKSIZE;
 
             /*
 	 * First, do any leading partial block.
@@ -510,6 +513,7 @@ sfs_io(struct sfs_vnode *sv, struct uio *uio)
 
 		/* Number of bytes to read/write after that point */
 		uint32_t len = SFS_BLOCKSIZE - blkoff;
+		KASSERT(skip + len <= SFS_BLOCKSIZE);
 
 		/* ...which might be less than the rest of the block */
 		if (len > uio->uio_resid) {
@@ -556,6 +560,8 @@ sfs_io(struct sfs_vnode *sv, struct uio *uio)
         // Changing back offset to correct for inode writing update
  	uio->uio_offset = uio->uio_offset + SFS_INLINED_BYTES;
 	/* If writing, adjust file length */
+	if (uio->uio_rw == UIO_WRITE && in_inode)
+		sv->sv_dirty = true;
 	if (uio->uio_rw == UIO_WRITE && 
 	    uio->uio_offset > (off_t)sv->sv_i.sfi_size) {
 		sv->sv_i.sfi_size = uio->uio_offset;
