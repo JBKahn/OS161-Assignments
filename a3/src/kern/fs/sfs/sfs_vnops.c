@@ -1179,7 +1179,7 @@ sfs_truncate(struct vnode *v, off_t len)
 	struct sfs_fs *sfs = sv->sv_v.vn_fs->fs_data;
 
 	/* Length in blocks (divide rounding up) */
-	uint32_t blocklen = DIVROUNDUP(len, SFS_BLOCKSIZE);
+	uint32_t blocklen = DIVROUNDUP(len - SFS_INLINED_BYTES, SFS_BLOCKSIZE);
 
 	uint32_t i, j, block;
 	uint32_t idblock, baseblock, highblock;
@@ -1192,6 +1192,7 @@ sfs_truncate(struct vnode *v, off_t len)
 
 	// Loop through inline bytes and set all bytes after len to '\0'. Mark it as dirty.
 	if (len < SFS_INLINED_BYTES) {
+		blocklen = DIVROUNDUP(0, SFS_BLOCKSIZE);
 		for (i=SFS_INLINED_BYTES; i >= len; i--) {
 			sv->sv_i.sfi_inlinedata[i] = 0;
 		}
