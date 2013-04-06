@@ -1866,3 +1866,4 @@ sfs_getdirentry(struct vnode *v, struct uio *uio)
 
   	return 0;
 }
+
