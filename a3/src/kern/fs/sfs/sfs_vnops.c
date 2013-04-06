@@ -451,6 +451,7 @@ sfs_io(struct sfs_vnode *sv, struct uio *uio)
 	uint32_t blkoff;
 	uint32_t nblocks, i;
 	int result = 0;
+        int inodealtered = 0;
 	uint32_t extraresid = 0;
 	int in_inode = 0;
 
@@ -481,7 +482,7 @@ sfs_io(struct sfs_vnode *sv, struct uio *uio)
 
         // The size of the data we want to read
         size_t size_to_read = SFS_INLINED_BYTES - uio->uio_offset;
-
+            inodealtered = 1;
         result = uiomove(sv->sv_i.sfi_inlinedata + uio->uio_offset, size_to_read, uio);
         if (result) {
             return result;
@@ -559,7 +560,11 @@ sfs_io(struct sfs_vnode *sv, struct uio *uio)
  out:
         // Changing back offset to correct for inode writing update
  	uio->uio_offset = uio->uio_offset + SFS_INLINED_BYTES;
-	/* If writing, adjust file length */
+	// If inode was altered, regardless of the lack of increase in file size
+        // it is marked as dirty.
+        if (uio->uio_rw == UIO_WRITE && inodealtered)
+            sv->sv_dirty = true;
+        /* If writing, adjust file length */
 	if (uio->uio_rw == UIO_WRITE && in_inode)
 		sv->sv_dirty = true;
 	if (uio->uio_rw == UIO_WRITE && 
