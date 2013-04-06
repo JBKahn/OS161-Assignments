@@ -1185,6 +1185,14 @@ sfs_truncate(struct vnode *v, off_t len)
 
 	vfs_biglock_acquire();
 
+	// Loop through inline bytes and set all bytes after len to '\0'. Mark it as dirty.
+	if (len < SFS_INLINED_BYTES) {
+		for (i=SFS_INLINED_BYTES; i >= len; i--) {
+			sv->sv_i.sfi_inlinedata[i] = '\0';
+		}
+		sv->sv_dirty = true;
+	}
+
 	/*
 	 * Go through the direct blocks. Discard any that are
 	 * past the limit we're truncating to.
