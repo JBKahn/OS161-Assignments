@@ -1,4 +1,4 @@
-/*
+ /*
  * Copyright (c) 2000, 2001, 2002, 2003, 2004, 2005, 2008, 2009
  *	The President and Fellows of Harvard College.
  *
@@ -1197,6 +1197,8 @@ sfs_truncate(struct vnode *v, off_t len)
 	 	for (i=SFS_INLINED_BYTES; i > len; i--) {
 	 		sv->sv_i.sfi_inlinedata[i] = 0;
 	 	}
+	 	if (len == 0)
+	 		sv->sv_i.sfi_inlinedata[0] = 0;
 	 	sv->sv_dirty = true;
 	}
 
