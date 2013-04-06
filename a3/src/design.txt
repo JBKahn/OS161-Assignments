@@ -15,7 +15,9 @@ We recalculate the offset based on it's initial value to see if we need to read 
 After all operations are done, the offset is reset to the unaugmented value to correct for inode writing, by adding SFS_INLINEBYTES back to it, and if writing we adjust the file length and set it as dirty. 
 
 
-Finally, in sfs_truncate, we include a loop to zero out all the bytes after len to \0 and mark the block as dirty.
+Finally, in sfs_truncate, we include a loop to zero out all the bytes after len to \0 and mark the block as dirty. We calculated blocklength using len -inline bytes, to take into account the inline data.
+
+
 The single biggest challenge we had to address for the assignment:
 A tie: mould and inodes.
 On one hand mould problems lead to a lack of time for OS work.
