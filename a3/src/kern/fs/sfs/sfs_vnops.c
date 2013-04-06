@@ -1193,7 +1193,7 @@ sfs_truncate(struct vnode *v, off_t len)
 	// Loop through inline bytes and set all bytes after len to '\0'. Mark it as dirty.
 	if (len < SFS_INLINED_BYTES) {
 		for (i=SFS_INLINED_BYTES; i >= len; i--) {
-			sv->sv_i.sfi_inlinedata[i] = '\0';
+			sv->sv_i.sfi_inlinedata[i] = 0;
 		}
 		sv->sv_dirty = true;
 	}
