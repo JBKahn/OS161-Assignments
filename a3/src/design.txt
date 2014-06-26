@@ -1,0 +1,26 @@
+CSC369 A3 Design Document
+Joseph Kahn and Adrian Paulozza
+
+Discuss the single biggest challenge you had to address for the assignment
+
+How our open file table design supports fork semantics:
+The filetable is accessible through a pointer in the current thread and thus when fork is called, a new file table is created and all the data is copied from the parent's copy to the child's copy. While the spinlock and filecount are copied to new places in memory, the reference count, vnode and positions in the file use the same pointer so that the parent and child will have the same values. The reference count to that file in incremented by one and this ensures that either one exiting will not close the file as the OS will not close a file if there are any other processes using it. All of these operations are done within a spinlock to avoid synchronization issues.
+
+How our implementation of sfs_getdirentry works:
+First we check if it is a directory type, and if is not we return the error code ENOTDIR. Then we check that the slot indicated by the offset is not out of bounds by ensuring that it lies within the number of entries in this directory, using the sfs_dir_nentries() function. Then we iterate over those slots that are within range, starting at the offset (until we run out of space, in which case we simply return 0) until we find a non-empty slot. When we find the non-empty slot we break out of the loop and use uiomove to get it into the uio struct. Then we update the offset, as instructed in the vnode.h description of what getdirentry should do.
+
+Changes we made to use wasted inode space to store file data:
+
+We recalculate the offset based on it's initial value to see if we need to read from the inode-  If it's within SFS_INLINEBYTES then it's  read within the inode and if it is not then SFS_INLINEBYTES is subtracted from it. This corrects for the location of the data after moving a portion of it into the inode. Before reading, the inonde is flagged as true for later marking for dirty. The remaining whole blocks and partial block at then end if applicable.
+After all operations are done, the offset is reset to the unaugmented value to correct for inode writing, by adding SFS_INLINEBYTES back to it, and if writing we adjust the file length and set it as dirty. 
+
+
+Finally, in sfs_truncate, we include a loop to zero out all the bytes after len to \0 and mark the block as dirty. We calculated blocklength using len -inline bytes, to take into account the inline data.
+
+
+The single biggest challenge we had to address for the assignment:
+A tie: mould and inodes.
+On one hand mould problems lead to a lack of time for OS work.
+On the other hand, sfs_vnops.c parsing took the longest amount of time to do and we still have not implemented the inode portion of the assignment. Figuring out the exact places to change the calculations and tweak the uio struct is difficult to figure out. Lots of time was spent simply reading the functions and attempting to follow them but this was to no avail.
+
+

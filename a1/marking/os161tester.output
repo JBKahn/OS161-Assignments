@@ -1,0 +1,462 @@
+Tester path is /h/u1/demke/369/course-36913s/assignments/a1/marking/os161-tester
+Running tests for Assignment 1
+---------------------------------------------------------
+Running: /h/u1/demke/369/course-36913s/assignments/a1/marking/os161-tester/csc369-testing-scripts/asst1-01-argtest.py kernel
+Testing arg passing, pgm name only: 
+PASS
+Testing arg passing, one arg a: 
+PASS
+Testing arg passing, one arg ab: 
+PASS
+Testing arg passing, one arg abc: 
+PASS
+Testing arg passing, one arg abcd: 
+PASS
+Testing arg passing, two args a and b: 
+PASS
+Testing arg passing, two args ab and c: 
+PASS
+Testing arg passing, two args ab and cd: 
+PASS
+Testing arg passing, two args abc and defg: 
+PASS
+Testing arg passing, three args a, b and c: 
+PASS
+Testing arg passing, three args abcd, efgh and ijkl: 
+PASS
+Testing arg passing, four args a, b, c and d: 
+PASS
+Testing arg passing, four args abcd, efgh, ijkl and mnopqrstuvwxyz: 
+PASS
+---------------------------------------------------------
+Running: /h/u1/demke/369/course-36913s/assignments/a1/marking/os161-tester/csc369-testing-scripts/asst1-02-addtest.py kernel
+Testing arg passing, two args 1 and 2: 
+PASS
+Testing arg passing, two args 1 and 23: 
+PASS
+Testing arg passing, two args 1 and 234: 
+PASS
+Testing arg passing, two args 12 and 2345: 
+PASS
+---------------------------------------------------------
+Running: /h/u1/demke/369/course-36913s/assignments/a1/marking/os161-tester/csc369-testing-scripts/asst1-03-amp.py kernel
+Testing no ampersand in menu cmd: 
+TIMEOUT ERROR
+PASS
+Testing ampersand in menu cmd: 
+PASS
+---------------------------------------------------------
+Running: /h/u1/demke/369/course-36913s/assignments/a1/marking/os161-tester/csc369-testing-scripts/asst1-04-wt.py kernel
+Testing builtin waittest, wt 1, output must be manually inspected: 
+wt 1
+Starting wait test...test num=1
+
+Set 1 (wait should generally succeed)
+-------------------------------------
+Spawned pid 2
+Spawned pid 3
+Spawned pid 4
+Spawned pid 5
+Spawned pid 6
+Spawned pid 7
+Spawned pid 8
+Spawned pid 9
+waitfirstthread 0 started...
+waitfirstthread 1 started...
+waitfirstthread 2 started...
+waitfirstthread 3 started...
+waitfirstthread 4 started...
+waitfirstthread 5 started...
+waitfirstthread 6 started...
+waitfirstthread 7 started...
+Waiting on pid 2...
+waitfirstthread 0 exiting.
+waitfirstthread 1 exiting.
+Pid 2 exit status: 0
+Waiting on pid 3...
+Pid 3 exit status: 4
+Waiting on pid 4...
+waitfirstthread 2 exiting.
+Pid 4 exit status: 8
+Waiting on pid 5...
+waitfirstthread 3 exiting.
+Pid 5 exit status: 12
+Waiting on pid 6...
+waitfirstthread 4 exiting.
+Pid 6 exit status: 16
+Waiting on pid 7...
+waitfirstthread 5 exiting.
+Pid 7 exit status: 20
+Waiting on pid 8...
+waitfirstthread 6 exiting.
+Pid 8 exit status: 24
+Waiting on pid 9...
+waitfirstthread 7 exiting.
+Pid 9 exit status: 28
+
+
+FOUND: Wait test done.
+SURVIVED
+Testing builtin waittest, wt 2, output must be manually inspected: 
+wt 2
+Starting wait test...test num=2
+
+Set 2 (wait should always succeed)
+----------------------------------
+Spawned pid 2
+Spawned pid 3
+Spawned pid 4
+Spawned pid 5
+Spawned pid 6
+Spawned pid 7
+Spawned pid 8
+Spawned pid 9
+Waiting for pid 2 to V()...
+exitfirstthread 4 started...
+exitfirstthread 2 started...
+exitfirstthread 5 started...
+exitfirstthread 1 started...
+exitfirstthread 6 started...
+exitfirstthread 3 started...
+exitfirstthread 7 started...
+exitfirstthread 0 started...
+exitfirstthread 1 exiting.
+exitfirstthread 0 exiting.
+exitfirstthread 2 exiting.
+Appears that pid 2 P()'d
+Waiting on pid 2...
+Pid 2 exit status: 0
+Waiting for pid 3 to V()...
+Appears that pid 3 P()'d
+Waiting on pid 3...
+Pid 3 exit status: 4
+Waiting for pid 4 to V()...
+Appears that pid 4 P()'d
+Waiting on pid 4...
+Pid 4 exit status: 8
+Waiting for pid 5 to V()...
+exitfirstthread 3 exiting.
+exitfirstthread 4 exiting.
+Appears that pid 5 P()'d
+Waiting on pid 5...
+Pid 5 exit status: 12
+Waiting for pid 6 to V()...
+Appears that pid 6 P()'d
+Waiting on pid 6...
+Pid 6 exit status: 16
+Waiting for pid 7 to V()...
+exitfirstthread 6 exiting.
+exitfirstthread 5 exiting.
+Appears that pid 7 P()'d
+Waiting on pid 7...
+Pid 7 exit status: 20
+Waiting for pid 8 to V()...
+Appears that pid 8 P()'d
+Waiting on pid 8...
+Pid 8 exit status: 24
+Waiting for pid 9 to V()...
+exitfirstthread 7 exiting.
+Appears that pid 9 P()'d
+Waiting on pid 9...
+Pid 9 exit status: 28
+
+
+FOUND: Wait test done.
+SURVIVED
+Testing builtin waittest, wt 3, output must be manually inspected: 
+wt 3
+Starting wait test...test num=3
+
+Set 3 (wait should never succeed)
+---------------------------------
+Spawned pid 2
+Spawned pid 3
+Spawned pid 4
+Spawned pid 5
+Spawned pid 6
+Spawned pid 7
+Spawned pid 8
+Spawned pid 9
+Waiting for pid 2 to V()...
+exitfirstthread 4 started...
+exitfirstthread 2 started...
+exitfirstthread 5 started...
+exitfirstthread 1 started...
+exitfirstthread 6 started...
+exitfirstthread 3 started...
+exitfirstthread 7 started...
+exitfirstthread 0 started...
+exitfirstthread 1 exiting.
+exitfirstthread 0 exiting.
+exitfirstthread 2 exiting.
+Appears that pid 2 P()'d
+Waiting on pid 2...
+Pid 2 waitpid error No such process (15)!
+Waiting for pid 3 to V()...
+Appears that pid 3 P()'d
+Waiting on pid 3...
+Pid 3 waitpid error No such process (15)!
+Waiting for pid 4 to V()...
+Appears that pid 4 P()'d
+Waiting on pid 4...
+Pid 4 waitpid error No such process (15)!
+Waiting for pid 5 to V()...
+exitfirstthread 3 exiting.
+exitfirstthread 4 exiting.
+exitfirstthread 5 exiting.
+Appears that pid 5 P()'d
+Waiting on pid 5...
+Pid 5 waitpid error No such process (15)!
+Waiting for pid 6 to V()...
+Appears that pid 6 P()'d
+Waiting on pid 6...
+Pid 6 waitpid error No such process (15)!
+Waiting for pid 7 to V()...
+Appears that pid 7 P()'d
+Waiting on pid 7...
+Pid 7 waitpid error No such process (15)!
+Waiting for pid 8 to V()...
+exitfirstthread 6 exiting.
+exitfirstthread 7 exiting.
+Appears that pid 8 P()'d
+Waiting on pid 8...
+Pid 8 waitpid error No such process (15)!
+Waiting for pid 9 to V()...
+Appears that pid 9 P()'d
+Waiting on pid 9...
+Pid 9 waitpid error No such process (15)!
+
+
+FOUND: Wait test done.
+SURVIVED
+Testing builtin waittest, wt 4, output must be manually inspected: 
+wt 4
+Starting wait test...test num=4
+
+Set 4 wait for non-child (wait should always succeed)
+---------------------------------
+Spawned pid 2
+Spawned pid 3
+Spawned pid 4
+Spawned pid 5
+Spawned pid 6
+Spawned pid 7
+Sib 1 joining with 2
+Sib 3 joining with 4
+waitfirstthread 0 started...
+Sib 4 joining with 5
+Sib 2 joining with 3
+Sib 5 joining with 6
+Spawned pid 8
+Spawned pid 9
+Sib 6 joining with 7
+waitfirstthread 0 exiting.
+Sib 7 joining with 8
+pid_detach failed: Invalid argument
+Sib 1 got exit status 0 from 2
+pid_detach failed: Invalid argument
+Sib 2 got exit status 1 from 3
+pid_detach failed: Invalid argument
+Sib 3 got exit status 2 from 4
+pid_detach failed: Invalid argument
+Sib 4 got exit status 3 from 5
+pid_detach failed: Invalid argument
+Sib 5 got exit status 4 from 6
+pid_detach failed: Invalid argument
+Sib 6 got exit status 5 from 7
+pid_detach failed: Invalid argument
+Sib 7 got exit status 6 from 8
+Pid 9 exit status: 7
+
+
+FOUND: Wait test done.
+SURVIVED
+Testing builtin waittest, wt 5, output must be manually inspected: 
+wt 5
+Starting wait test...test num=5
+
+Set 5 multiple joiners (wait should always succeed)
+---------------------------------
+Spawned pid 2
+waitfirstthread 42 started...
+Spawned pid 3
+Spawned pid 4
+Spawned pid 5
+Spawned pid 6
+Spawned pid 7
+Spawned pid 8
+Spawned pid 9
+Sib 4 joining with 2
+Sib 1 joining with 2
+Sib 5 joining with 2
+Sib 3 joining with 2
+Sib 6 joining with 2
+Sib 2 joining with 2
+Sib 7 joining with 2
+waitfirstthread 42 exiting.
+pid_detach failed: Invalid argument
+Sib 4 got exit status 42 from 2
+
+TIMEOUT ERROR
+FAILED SURVIVAL
+---------------------------------------------------------
+Running: /h/u1/demke/369/course-36913s/assignments/a1/marking/os161-tester/csc369-testing-scripts/asst1-05-badwait.py kernel
+Testing bad waitpid calls: 
+ b
+panic: Assertion failed: pid>=0, at ../../thread/pid.c:165 (pi_get)
+sys161: 46142846 cycles (14139093 run, 32003753 global-idle)
+sys161:   cpu0: 14037188 kern, 101905 user, 0 idle)
+sys161: 2277 irqs 1180 exns 0r/0w disk 19r/1686w console 10r/0w/3m emufs 0r/0w net
+sys161: Elapsed real time: 1.757634 seconds (26.2528 mhz)
+sys161: Elapsed virtual time: 1.845713857 seconds (25 mhz)
+
+END OF FILE ERROR
+FAILED SURVIVAL
+---------------------------------------------------------
+Running: /h/u1/demke/369/course-36913s/assignments/a1/marking/os161-tester/csc369-testing-scripts/asst1-06-waittest.py kernel
+Testing waitpid using testbin/waittest: 
+p markbin/waittest
+markbin/waittest: Starting.
+markbin/waittest: Creating long-running child.  Parent should have to wait.
+markbin/waittest: child starting loop.
+markbin/waittest: child exiting with 10.
+markbin/waittest: 
+FOUND: waitpid returned status 10 (raw 40).
+
+markbin/waittest: Creating short-running child.  Parent should not have to wait.
+markbin/waittest: child starting loop.
+markbin/waittest: child exiting with 20.
+markbin/waittest: Parent calling waitpid, expect child already exited.
+markbin/waittest: 
+FOUND: waitpid returned status 20 (raw 80).
+
+markbin/waittest: Creating long-running child.  Parent should not have to wait (WNOHANG).
+markbin/waittest: waitpmarkbin/waittest: child starting loopid returned 0 with status unc.
+hanged.: Operation succeeded
+markbin/waittest: child exiting with 30.
+markbin/waittest: waitpid returned status 30 (raw 120).
+markbin/waittest: Complete.
+Operation took 2.816815320 seconds
+OS/161 kernel [? for menu]: 
+TIMEOUT ERROR
+FAIL
+---------------------------------------------------------
+Running: /h/u1/demke/369/course-36913s/assignments/a1/marking/os161-tester/csc369-testing-scripts/asst1-07-badkill.py kernel
+Testing bad kill calls: 
+ }
+testbin/badcall: FAILURE: kill for pid -8: Operation succeeded
+testbin/badcall: FAILURE: kill for pid -1: Operation succeeded
+testbin/badcall: FAILURE: nonexistent pid: Operation succeeded
+testbin/badcall: FAILURE: kill with -1 signal: Operation succeeded
+testbin/badcall: FAILURE: kill with signal num (32) too high: Operation succeeded
+testbin/badcall: FAILURE: kill with signal num (100) too high: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 3: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 4: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 5: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 6: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 7: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 8: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 10: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 11: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 12: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 13: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 14: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 16: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 18: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 20: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 21: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 22: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 23: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 24: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 25: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 26: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 27: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 30: Operation succeeded
+testbin/badcall: FAILURE: kill with unimplemented signal 31: Operation succeeded
+testbin/badcall: FAILURE: kill with valid pid, signal 0: Operation succeeded
+testbin/badcall: passed: kill with valid pid, signal SIGKILL returned 0
+
+FOUND: Choose:
+SURVIVED
+---------------------------------------------------------
+Running: /h/u1/demke/369/course-36913s/assignments/a1/marking/os161-tester/csc369-testing-scripts/asst1-08-fullkill.py kernel
+Testing kill and waitpid using markbin/kt-die: 
+p markbin/kt-die
+markbin/kt-die: Starting.
+markbin/kt-die: Child 3 created.
+markbin/kt-die: 
+FOUND: Child 3 sent SIGKILL.
+
+markbin/kt-die: 
+FOUND: waitpid succeeded (signal SIGKILL, status 0, rawstatus 1).
+
+markbin/kt-die: 	 status indicates exit due to signal.
+markbin/kt-die: Child 4 created.
+markbin/kt-die: 
+FOUND: Child 4 sent SIGHUP.
+
+markbin/kt-die: 
+FOUND: waitpid succeeded (signal SIGHUP, status 0, rawstatus 1).
+
+markbin/kt-die: 	 status indicates exit due to signal.
+markbin/kt-die: Child 5 created.
+markbin/kt-die: 
+FOUND: Child 5 sent SIGINT.
+
+markbin/kt-die: 
+FOUND: waitpid succeeded (signal SIGINT, status 0, rawstatus 1).
+
+markbin/kt-die: 	 status indicates exit due to signal.
+markbin/kt-die: Child 6 created.
+markbin/kt-die: 
+FOUND: Child 6 sent SIGTERM.
+
+markbin/kt-die: 
+FOUND: waitpid succeeded (signal SIGTERM, status 0, rawstatus 1).
+
+PASS
+Testing kill and waitpid using markbin/kt-ignore: 
+p markbin/kt-ignore
+markbin/kt-ignore: Starting.
+markbin/kt-ignore: Child 3 created.
+markbin/kt-ignore: 
+FOUND: Child 3 sent SIGWINCH.
+
+markbin/kt-ignore: 
+FOUND: Success: signal SIGWINCH appears to be ignored.
+
+markbin/kt-ignore: Sending SIGKILL to Child 3 to clean up...
+markbin/kt-ignore: 	retrieved 1 status from pid 3
+
+markbin/kt-ignore: Child 4 created.
+markbin/kt-ignore: 
+FOUND: Child 4 sent SIGINFO.
+
+markbin/kt-ignore: 
+FOUND: Success: signal SIGINFO appears to be ignored.
+PASS
+Testing kill and waitpid using markbin/kt-stop: 
+p markbin/kt-stop
+markbin/kt-stop: Starting.
+markbin/kt-stop: circular stop and continue test, parent has pid 2.
+333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333markbin/kt-stop: Child 4, parent 3333333333333333333333333332, trying to kill 3.
+33333333333333333333333333333333333333333333333333333333333333333333333333333333markbin/kt-stop: Child 5, parent 2, trying to kill 4.
+markbin/kt-stop: Child 6, parent333333333333333333333333333 2, trying to kill 5.
+33333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333333markbin/kt-stop: child 3 done, exiting.
+markbin/kt-stop: Continuing child 5.
+
+FOUND: 6666666666666666666666
+666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666666markbin/kt-stop: child 6 done, exiting.
+markbin/kt-stop: Continuing child 4.
+5555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555555markbin/kt-stop: child 5 done, exiting.
+markbin/kt-stop: Continuing child 3.
+markbin/kt-stop: Getting exitstatus fro444444444444444444444444444m 3.
+markbin/kt-stop: Getting 444444444444444444444444444exitstatus from 4.
+4444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444444markbin/kt-stop: child 4 done, exiting.
+markbin/kt-stop: Getting exitstatus from 5.
+markbin/kt-stop: Getting exitstatus from 6.
+markbin/kt-stop: Complete.
+Operation took 5.592830080 seconds
+OS/161 kernel [? for menu]: 
+TIMEOUT ERROR
+FAIL
